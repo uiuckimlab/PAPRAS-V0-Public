@@ -1,0 +1,5 @@
+string planning_group
+JointPosition joint_position
+float64 path_time
+---
+bool is_planned

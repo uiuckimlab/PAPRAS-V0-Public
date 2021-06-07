@@ -1,0 +1,17 @@
+<launch>
+  <!-- These are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="with_gripper" default="true"/>
+  <arg name="arm_id_2" default="2"/>
+
+  <!-- BEGIN ROBOT 2-->
+  <group ns="robot_2">
+    <param name="tf_prefix" value="robot2_tf" />
+    <include file="$(find open_manipulator_p_controller)/launch/open_manipulator_p_controller.launch" >
+      <arg name="with_gripper"         value="$(arg with_gripper)"/>
+      <arg name="arm_id"         value="$(arg arm_id_2)"/>
+    </include>
+    <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
+      <arg name="with_gripper"         value="$(arg with_gripper)"/>
+    </include>
+  </group>
+</launch>

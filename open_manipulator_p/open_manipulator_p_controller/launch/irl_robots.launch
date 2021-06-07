@@ -1,0 +1,58 @@
+<launch>
+  <arg name="usb_port_0"     default="/dev/ttyUSB0"/>
+  <arg name="usb_port_1"     default="/dev/ttyUSB1"/>
+  <arg name="usb_port_2"     default="/dev/ttyUSB2"/>
+  <arg name="baud_rate"    default="1000000"/>
+  <arg name="control_period"         default="0.010"/>
+  <arg name="use_platform"           default="true"/>
+  <arg name="with_gripper"           default="false"/>
+  <arg name="arm_id_1"                 default="1"/>
+  <arg name="arm_id_2"                 default="2"/>
+  <arg name="arm_id_3"                 default="3"/>
+
+ 
+
+  <!-- GUI -->
+  <group ns="robot_1">
+    <param name="tf_prefix" value="robot1_tf" />
+    <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+    </include>
+
+    <node name="open_manipulator_p_controller" pkg="open_manipulator_p_controller" type="open_manipulator_p_controller"
+     output="screen" args="$(arg usb_port_0) $(arg baud_rate) $(arg arm_id_1)">
+      <param name="using_platform"       value="$(arg use_platform)"/>
+      <param name="control_period"       value="$(arg control_period)"/>
+      <param name="with_gripper"         value="$(arg with_gripper)"/>
+    </node>
+  </group>
+
+  <group ns="robot_2">
+    <param name="tf_prefix" value="robot2_tf" />
+    <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+    </include>
+
+    <node name="open_manipulator_p_controller" pkg="open_manipulator_p_controller" type="open_manipulator_p_controller"
+     output="screen" args="$(arg usb_port_1) $(arg baud_rate) $(arg arm_id_2)">
+      <param name="using_platform"       value="$(arg use_platform)"/>
+      <param name="control_period"       value="$(arg control_period)"/>
+      <param name="with_gripper"         value="$(arg with_gripper)"/>
+    </node>
+  </group>
+
+  <group ns="robot_3">
+    <param name="tf_prefix" value="robot3_tf" />
+    <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+    </include>
+
+    <node name="open_manipulator_p_controller" pkg="open_manipulator_p_controller" type="open_manipulator_p_controller"
+     output="screen" args="$(arg usb_port_2) $(arg baud_rate) $(arg arm_id_3)">
+      <param name="using_platform"       value="$(arg use_platform)"/>
+      <param name="control_period"       value="$(arg control_period)"/>
+      <param name="with_gripper"         value="$(arg with_gripper)"/>
+    </node>
+  </group>
+
+</launch>

@@ -1,0 +1,38 @@
+<launch>
+    <arg name="robot_name"/>
+    <arg name="init_pose"/>
+    <arg name="with_gripper"/>
+    <arg name="arm_id"/>
+    <arg name="usb_port"/>
+    <arg name="use_platform"/>
+
+    <!-- Load the URDF into the ROS Para with_grippermeter Server -->
+
+    <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+    </include>
+
+    <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+      args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"/>
+
+    <!-- Run controller utils -->
+    <!-- <include file="$(find papras_gazebo)/launch/controller_utils.launch"/> -->
+
+    <!-- ros_control robotis manipulator launch file -->
+    <include file="$(find papras_gazebo)/launch/papras_controller.launch">
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+    </include>
+
+    <include file="$(find open_manipulator_p_controller)/launch/open_manipulator_p_controller.launch">
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+      <arg name="use_platform" value="$(arg use_platform)"/>
+      <arg name="usb_port" value="$(arg usb_port)"/>
+      <arg name="arm_id" value="$(arg arm_id)"/>
+    </include>
+
+    <!-- GUI -->
+    <!-- <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+    </include> -->
+</launch>
