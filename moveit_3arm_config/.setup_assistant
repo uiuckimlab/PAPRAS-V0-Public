@@ -8,4 +8,4 @@ moveit_setup_assistant_config:
   CONFIG:
     author_name: Kazuki Shin
     author_email: kazukis2@illinois.edu
-    generated_timestamp: 1622754821
+    generated_timestamp: 1623183621

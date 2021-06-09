@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1.3)
-project(omp_moveit_config)
+project(moveit_3arm_config)
 
 find_package(catkin REQUIRED)
 

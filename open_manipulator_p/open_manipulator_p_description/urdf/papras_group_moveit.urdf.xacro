@@ -2,57 +2,38 @@
 <robot name="open_manipulator_p" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <!-- Import Rviz colors -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/materials.xacro" />
+  <xacro:include filename="$(find open_manipulator_p_description)/urdf/materials.xacro"/>
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/open_manipulator_p.gazebo.xacro" />
+  <xacro:include filename="$(find open_manipulator_p_description)/urdf/open_manipulator_p.gazebo.xacro"/>
 
   <!-- Import Transmission -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/open_manipulator_p.transmission.xacro" />
+  <xacro:include filename="$(find open_manipulator_p_description)/urdf/open_manipulator_p.transmission.xacro"/>
 
   <xacro:arg name="base_offset" default ="0.046375"/>
 
-  <xacro:arg name="robot1_base_x" default="0"/>
-  <xacro:property name="robot1_base_x" value="0"/>
-  <xacro:arg name="robot1_base_y" default="0"/>
-  <xacro:property name="robot1_base_y" value="0"/>
-  <xacro:arg name="robot1_base_z" default="0"/>
-  <xacro:property name="robot1_base_z" value="0"/>
+  <xacro:arg name="robot1_base_x" default="-0.3"/>
+  <xacro:arg name="robot1_base_y" default="0.1"/>
+  <xacro:arg name="robot1_base_z" default="0.9"/>
+  <xacro:arg name="robot1_base_yaw" default="1.57"/>
 
-  <xacro:arg name="robot2_base_x" default="0"/>
-  <xacro:property name="robot2_base_x" value="0.5"/>
-  <xacro:arg name="robot2_base_y" default="0"/>
-  <xacro:property name="robot2_base_y" value="0.5"/>
-  <xacro:arg name="robot2_base_z" default="0"/>
-  <xacro:property name="robot2_base_z" value="0"/>
+  <xacro:arg name="robot2_base_x" default="-0.3"/>
+  <xacro:arg name="robot2_base_y" default="-0.5"/>
+  <xacro:arg name="robot2_base_z" default="0.9"/>
+  <xacro:arg name="robot2_base_yaw" default="1.57"/>
 
-  <xacro:arg name="robot3_base_x" default="0"/>
-  <xacro:property name="robot3_base_x" value="1"/>
-  <xacro:arg name="robot3_base_y" default="0"/>
-  <xacro:property name="robot3_base_y" value="0"/>
-  <xacro:arg name="robot3_base_z" default="0"/>
-  <xacro:property name="robot3_base_z" value="0"/>
+  <xacro:arg name="robot3_base_x" default="0.3"/>
+  <xacro:arg name="robot3_base_y" default="0.0"/>
+  <xacro:arg name="robot3_base_z" default="0.9"/>
+  <xacro:arg name="robot3_base_yaw" default="-1.57"/>
 
   <xacro:macro name="omp_arm" params="id">
-
-    <!-- <joint name="robot${prefix}/fixed" type="fixed">
-      <parent link="world"/>
-      <origin xyz="$(eval robot${prefix}_base_x) $(eval robot${prefix}_base_y) $(eval robot${prefix}_base_z-base_offset)"/>
-      <child link="robot${prefix}/base_link"/>
-    </joint>
-
-    <link name="robot${prefix}/floating_world_0"/>
-
-    <joint name="robot${prefix}/base_link_floating_world" type="fixed">
-      <parent link="robot${prefix}/base_link"/>
-      <origin xyz="0 0 ${base_offset}" />
-      <child link="robot${prefix}/floating_world_0"/>
-    </joint> -->
 
     <joint name="robot${id}/world_fixed" type="fixed">
         <parent link="world" />
         <child link="robot${id}/link1" />
-        <origin xyz="$(eval robot${id}_base_x) $(eval robot${id}_base_y) $(eval robot${id}_base_z-base_offset)"/>
+        <origin xyz="$(eval robot${id}_base_x) $(eval robot${id}_base_y) $(eval robot${id}_base_z-base_offset)"
+                rpy="0 0 $(eval robot${id}_base_yaw)"/>
     </joint>
 
     <!-- link 1 -->

@@ -1,6 +1,6 @@
 <package>
 
-  <name>omp_moveit_config</name>
+  <name>moveit_3arm_config</name>
   <version>0.3.0</version>
   <description>
      An automatically generated package with all the configuration and launch files for using the open_manipulator_p with the MoveIt! Motion Planning Framework
