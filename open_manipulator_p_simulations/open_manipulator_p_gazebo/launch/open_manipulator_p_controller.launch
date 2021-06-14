@@ -1,0 +1,29 @@
+<launch>
+  <!-- <arg name="use_robot_name" default="open_manipulator_p"/> -->
+  <arg name="with_gripper" default="false"/>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find open_manipulator_p_gazebo)/config/arm_controller.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="arm_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" args="joint1_position
+                          joint2_position
+                          joint3_position
+                          joint4_position
+                          joint5_position
+                          joint6_position"/>
+
+  <group if="$(arg with_gripper)">
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <rosparam file="$(find open_manipulator_p_gazebo)/config/gripper_controller.yaml" command="load"/>
+
+    <!-- load the controllers -->
+    <node name="gripper_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+      output="screen" args="gripper_position
+                            gripper_sub_position"/>
+
+    <!-- Run gripper sub position publisher -->
+    <node name="omp_gripper_sub_publisher" pkg="open_manipulator_p_gazebo" type="omp_gripper_sub_publisher" output="screen"/>
+  </group>
+</launch>

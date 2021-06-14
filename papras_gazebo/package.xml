@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>papras_gazebo</name>
+  <version>1.0.0</version>
+  <description>
+    Package for PAPRAS Gazebo
+  </description>
+  <license>Apache 2.0</license>
+  <author email="kazukis2@illinois.edu">Kazuki Shin</author>
+  <maintainer email="kazukis2@illinois.edu">Kazuki Shin</maintainer>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_ros_control</depend>
+  <depend>controller_manager</depend>
+  <depend>xacro</depend>
+  <depend>urdf</depend>
+  <export>
+    <gazebo_ros plugin_path="${prefix}/lib" gazebo_media_path="${prefix}" gazebo_model_path="${prefix}/models"/>
+  </export>
+</package>
