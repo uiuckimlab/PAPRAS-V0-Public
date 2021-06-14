@@ -4,6 +4,14 @@
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="false"/>
 
+  <!-- startup ros_control for real robot -->
+  <group unless="$(arg sim)">
+    <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
+      <arg name="usb_port" value="$(arg usb_port)"/>
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+    </include>
+  </group>
+
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">
     <include file="$(find papras_gazebo)/launch/system_urdf.launch">
@@ -15,28 +23,20 @@
   <include file="$(find open_manipulator_p_hw)/launch/controller_utils.launch"/>
 
   <!-- joint_trajectory_controller -->
-  <!-- <group if="$(arg sim)">
+  <group unless="$(arg sim)">
+    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller.yaml" command="load"/>
+  </group>
+  <group if="$(arg sim)">
     <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
   </group>
-  <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm_controller"/> -->
-
-  <!-- joint_trajectory_controller -->
-
-  <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
   <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
   <node name="arm2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm2_controller"/>
   <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/>
-
-
-  <!-- <group ns="robot2">
-    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
-    <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm_controller"/>
+  <group if="$(arg with_gripper)">
+    <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
+    <node name="gripper2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper2_controller"/>
+    <node name="gripper3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper3_controller"/>
   </group>
-
-  <group ns="robot3">
-    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
-    <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm_controller"/>
-  </group> -->
 
   <!-- startup move_group related -->
   <group unless="$(arg with_gripper)">
