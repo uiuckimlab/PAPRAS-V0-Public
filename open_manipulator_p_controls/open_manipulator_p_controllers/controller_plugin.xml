@@ -1,0 +1,7 @@
+<library path="lib/libopen_manipulator_p_controllers">
+  <class name="open_manipulator_p_controllers/GravityCompensationController" type="open_manipulator_p_controllers::GravityCompensationController" base_class_type="controller_interface::ControllerBase">
+    <description>
+      GravityCompensationController
+    </description>
+  </class>
+</library>

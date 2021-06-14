@@ -1,0 +1,12 @@
+gravity_compensation_controller:
+  type: open_manipulator_p_controllers/GravityCompensationController
+  joint_names:
+    - joint1
+    - joint2
+    - joint3
+    - joint4
+    - joint5
+    - joint6
+
+  root_link: world
+  tip_link: end_link

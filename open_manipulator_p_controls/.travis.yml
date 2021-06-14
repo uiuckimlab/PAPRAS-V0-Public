@@ -1,0 +1,29 @@
+# This config file for Travis CI utilizes ros-industrial/industrial_ci package.
+# For more info for the package, see https://github.com/ros-industrial/industrial_ci/blob/master/README.rst
+
+sudo: required
+dist: trusty
+services:
+  - docker
+language: generic
+python:
+  - "2.7"
+compiler:
+  - gcc
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+    recipients:
+      - jhshim@robotis.com
+env:
+  matrix:
+    - ROS_DISTRO=kinetic ROS_REPO=ros-shadow-fixed UPSTREAM_WORKSPACE=file $ROSINSTALL_FILENAME=".open_manipulator_p_controls.rosinstall" OS_NAME=ubuntu OS_CODE_NAME=xenial
+
+branches:
+  only:
+    - master
+install:
+  - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
+script:
+  - source .ci_config/travis.sh
