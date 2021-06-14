@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- start fake calibration -->
+  <node pkg="rostopic" type="rostopic" name="fake_joint_calibration"
+        args="pub /calibrated std_msgs/Bool true" />
+
+  <!-- start joint state controller -->
+  <rosparam file="$(find open_manipulator_p_hw)/config/joint_state_controller.yaml" command="load"/>
+  <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager"
+    args="spawn joint_state_controller" respawn="false" output="screen"/>
+</launch>

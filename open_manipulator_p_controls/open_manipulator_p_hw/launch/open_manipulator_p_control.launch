@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="usb_port" default="/dev/ttyUSB0" />
+  <arg name="baud_rate" default="1000000" />
+  <arg name="yaml_file" default="$(find open_manipulator_p_hw)/config/hardware.yaml"/>
+  <arg name="interface" default="position"/>
+  <arg name="with_gripper" default="false"/>
+
+  <group unless="$(arg with_gripper)">
+    <node pkg="open_manipulator_p_hw" type="omp_control_node" name="omp_control_node" output="screen">
+      <param name="usb_port" value="$(arg usb_port)"/>
+      <param name="baud_rate" value="$(arg baud_rate)"/>    
+      <param name="interface" value="$(arg interface)"/>
+      <param name="yaml_file" value="$(arg yaml_file)"/>
+    </node>
+  </group>
+  <group if="$(arg with_gripper)">
+    <node pkg="open_manipulator_p_hw" type="omp_control_node" name="omp_control_node" output="screen">
+      <param name="usb_port" value="$(arg usb_port)"/>
+      <param name="baud_rate" value="$(arg baud_rate)"/>    
+      <param name="interface" value="$(arg interface)"/>
+      <param name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_with_gripper.yaml"/>
+    </node>
+  </group>
+
+  <!-- send robot urdf to param server -->
+  <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
+    <arg name="with_gripper" value="$(arg with_gripper)"/>
+  </include>
+</launch>
