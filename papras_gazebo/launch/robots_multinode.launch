@@ -7,19 +7,24 @@
   <arg name="use_sim_time" default="true"/>
   <arg name="with_gripper" default="false"/>
   <arg name="use_platform"  default="false"/>
+  <arg name="synced_gui"  default="false"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->
   <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
     <arg name="with_gripper" value="$(arg with_gripper)"/>
   </include>
 
-  <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
+  <!-- Launch the Control GUI -->
+  <group if="$(arg synced_gui)">
+    <include file="$(find open_manipulator_p_control_gui_synced)/launch/open_manipulator_p_control_gui_synced.launch">
+        <arg name="with_gripper" value="$(arg with_gripper)"/>
+    </include>
+  </group>
+
+  <!-- Launch Rviz -->
+  <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_rviz.launch">
       <arg name="with_gripper" value="$(arg with_gripper)"/>
   </include>
-
-  <!-- <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_rviz.launch">
-      <arg name="with_gripper" value="$(arg with_gripper)"/>
-  </include> -->
 
   <!-- BEGIN ROBOT 1-->
   <group ns="robot1">
@@ -32,6 +37,7 @@
       <arg name="usb_port" value="/dev/ttyUSB0"/>
       <arg name="arm_id" value="1"/>
       <arg name="use_platform" value="$(arg use_platform)"/>
+      <arg name="synced_gui" value="$(arg synced_gui)"/>
     </include>
   </group>
 
@@ -45,6 +51,7 @@
       <arg name="usb_port" value="/dev/ttyUSB1"/>
       <arg name="arm_id" value="2"/>
       <arg name="use_platform" value="$(arg use_platform)"/>
+      <arg name="synced_gui" value="$(arg synced_gui)"/>
     </include>
   </group>
 
@@ -58,6 +65,7 @@
       <arg name="usb_port" value="/dev/ttyUSB2"/>
       <arg name="arm_id" value="3"/>
       <arg name="use_platform" value="$(arg use_platform)"/>
+      <arg name="synced_gui" value="$(arg synced_gui)"/>
     </include>
   </group>
 

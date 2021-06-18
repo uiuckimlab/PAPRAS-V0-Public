@@ -16,8 +16,8 @@
 
 /* Authors: Darby Lim, Hye-Jong KIM, Ryan Shim, Yong-Ho Na */
 
-#ifndef OPEN_MANIPULATOR_P_CONTROL_GUI_MAIN_WINDOW_H
-#define OPEN_MANIPULATOR_P_CONTROL_GUI_MAIN_WINDOW_H
+#ifndef OPEN_MANIPULATOR_P_CONTROL_GUI_SYNCED_MAIN_WINDOW_H
+#define OPEN_MANIPULATOR_P_CONTROL_GUI_SYNCED_MAIN_WINDOW_H
 
 /*****************************************************************************
 ** Includes
@@ -33,7 +33,7 @@
 ** Namespace
 *****************************************************************************/
 
-namespace open_manipulator_p_control_gui {
+namespace open_manipulator_p_control_gui_synced {
 
 /*****************************************************************************
 ** Interface [MainWindow]
@@ -51,6 +51,7 @@ public Q_SLOTS:
   void on_btn_timer_start_clicked(void);
   void on_btn_init_pose_clicked(void);
   void on_btn_home_pose_clicked(void);
+  void on_btn_rest_pose_clicked(void);
   void on_btn_gripper_open_clicked(void);
   void on_btn_gripper_close_clicked(void);
   void on_btn_read_joint_angle_clicked(void);
@@ -75,6 +76,6 @@ private:
   QTimer *timer;
 };
 
-}  // namespace open_manipulator_p_control_gui
+}  // namespace open_manipulator_p_control_gui_synced
 
-#endif // OPEN_MANIPULATOR_P_CONTROL_GUI_MAIN_WINDOW_H
+#endif // OPEN_MANIPULATOR_P_CONTROL_GUI_SYNCED_MAIN_WINDOW_H

@@ -5,9 +5,10 @@
     <arg name="arm_id"/>
     <arg name="usb_port"/>
     <arg name="use_platform"/>
+    <arg name="synced_gui"/>
+
 
     <!-- Load the URDF into the ROS Para with_grippermeter Server -->
-
     <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
       <arg name="with_gripper" value="$(arg with_gripper)"/>
     </include>
@@ -32,7 +33,9 @@
     </include>
 
     <!-- GUI -->
-    <!-- <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
-      <arg name="with_gripper" value="$(arg with_gripper)"/>
-    </include> -->
+    <group unless="$(arg synced_gui)">
+      <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
+          <arg name="with_gripper" value="$(arg with_gripper)"/>
+      </include>
+    </group>
 </launch>

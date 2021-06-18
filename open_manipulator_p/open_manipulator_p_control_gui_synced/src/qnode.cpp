@@ -25,13 +25,13 @@
 #include <string>
 #include <std_msgs/String.h>
 #include <sstream>
-#include "../include/open_manipulator_p_control_gui/qnode.hpp"
+#include "../include/open_manipulator_p_control_gui_synced/qnode.hpp"
 
 /*****************************************************************************
 ** Namespaces
 *****************************************************************************/
 
-namespace open_manipulator_p_control_gui {
+namespace open_manipulator_p_control_gui_synced {
 
 /*****************************************************************************
 ** Implementation
@@ -54,7 +54,7 @@ QNode::~QNode() {
 }
 
 bool QNode::init() {
-	ros::init(init_argc,init_argv,"open_manipulator_p_control_gui");
+	ros::init(init_argc,init_argv,"open_manipulator_p_control_gui_synced");
 	if ( ! ros::master::check() ) {
 		return false;
 	}
@@ -69,12 +69,18 @@ bool QNode::init() {
   open_manipulator_joint_states_sub_ = n.subscribe("joint_states", 10, &QNode::jointStatesCallback, this);
   open_manipulator_kinematics_pose_sub_ = n.subscribe("kinematics_pose", 10, &QNode::kinematicsPoseCallback, this);
   // service client
-  goal_joint_space_path_client_ = n.serviceClient<open_manipulator_msgs::SetJointPosition>("goal_joint_space_path");
+  goal_joint_space_path_client_ = n.serviceClient<open_manipulator_msgs::SetJointPosition>("robot1/goal_joint_space_path");
   goal_task_space_path_position_only_client_ = n.serviceClient<open_manipulator_msgs::SetKinematicsPose>("goal_task_space_path_position_only");
   goal_task_space_path_client_= n.serviceClient<open_manipulator_msgs::SetKinematicsPose>("goal_task_space_path");
   goal_tool_control_client_ = n.serviceClient<open_manipulator_msgs::SetJointPosition>("goal_tool_control");
-  set_actuator_state_client_ = n.serviceClient<open_manipulator_msgs::SetActuatorState>("set_actuator_state");
+  set_actuator_state_client_ = n.serviceClient<open_manipulator_msgs::SetActuatorState>("robot1/set_actuator_state");
   goal_drawing_trajectory_client_ = n.serviceClient<open_manipulator_msgs::SetDrawingTrajectory>("goal_drawing_trajectory");
+  
+  goal_joint_space_path_client_2_ = n.serviceClient<open_manipulator_msgs::SetJointPosition>("robot2/goal_joint_space_path");
+  set_actuator_state_client_2_ = n.serviceClient<open_manipulator_msgs::SetActuatorState>("robot2/set_actuator_state");
+
+  goal_joint_space_path_client_3_ = n.serviceClient<open_manipulator_msgs::SetJointPosition>("robot3/goal_joint_space_path");
+  set_actuator_state_client_3_ = n.serviceClient<open_manipulator_msgs::SetActuatorState>("robot3/set_actuator_state");
 
   // ROS params
   with_gripper_ = priv_n.param<bool>("with_gripper", false);
@@ -188,7 +194,7 @@ bool QNode::setJointSpacePath(std::vector<std::string> joint_name, std::vector<d
   srv.request.joint_position.position = joint_angle;
   srv.request.path_time = path_time;
 
-  if(goal_joint_space_path_client_.call(srv))
+  if(goal_joint_space_path_client_.call(srv) && goal_joint_space_path_client_2_.call(srv) && goal_joint_space_path_client_3_.call(srv))
   {
     return srv.response.is_planned;
   }
@@ -252,8 +258,8 @@ bool QNode::setActuatorState(bool actuator_state)
 {
   open_manipulator_msgs::SetActuatorState srv;
   srv.request.set_actuator_state = actuator_state;
-
-  if(set_actuator_state_client_.call(srv))
+  
+  if(set_actuator_state_client_.call(srv) && set_actuator_state_client_2_.call(srv) && set_actuator_state_client_3_.call(srv))
   {
     return srv.response.is_planned;
   }
@@ -261,4 +267,4 @@ bool QNode::setActuatorState(bool actuator_state)
 }
 
 
-}  // namespace open_manipulator_p_control_gui
+}  // namespace open_manipulator_p_control_gui_synced

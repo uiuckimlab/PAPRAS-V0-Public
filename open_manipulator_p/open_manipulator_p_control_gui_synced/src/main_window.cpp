@@ -23,13 +23,13 @@
 #include <QtGui>
 #include <QMessageBox>
 #include <iostream>
-#include "../include/open_manipulator_p_control_gui/main_window.hpp"
+#include "../include/open_manipulator_p_control_gui_synced/main_window.hpp"
 
 /*****************************************************************************
 ** Namespaces
 *****************************************************************************/
 
-namespace open_manipulator_p_control_gui {
+namespace open_manipulator_p_control_gui_synced {
 
 using namespace Qt;
 
@@ -119,6 +119,7 @@ void MainWindow::on_btn_timer_start_clicked(void)
   ui.btn_actuator_enable->setEnabled(true);
   ui.btn_home_pose->setEnabled(true);
   ui.btn_init_pose->setEnabled(true);
+  ui.btn_rest_pose->setEnabled(true);
   ui.btn_read_joint_angle->setEnabled(true);
   ui.btn_read_kinematic_pose->setEnabled(true);
   ui.btn_send_joint_angle->setEnabled(true);
@@ -195,6 +196,27 @@ void MainWindow::on_btn_home_pose_clicked(void)
     return;
   }
   writeLog("Send joint angle to home pose");
+}
+
+void MainWindow::on_btn_rest_pose_clicked(void)
+{
+  std::vector<std::string> joint_name;
+  std::vector<double> joint_angle;
+  double path_time = 2.0;
+
+  joint_name.push_back("joint1"); joint_angle.push_back(0.0);
+  joint_name.push_back("joint2"); joint_angle.push_back(-1.6);
+  joint_name.push_back("joint3"); joint_angle.push_back(1.5);
+  joint_name.push_back("joint4"); joint_angle.push_back(0.0);
+  joint_name.push_back("joint5"); joint_angle.push_back(0.4);
+  joint_name.push_back("joint6"); joint_angle.push_back(0.0);
+
+  if(!qnode.setJointSpacePath(joint_name, joint_angle, path_time))
+  {
+    writeLog("[ERR!!] Failed to send service");
+    return;
+  }
+  writeLog("Send joint angle to rest pose");
 }
 
 void MainWindow::on_btn_gripper_open_clicked(void)
@@ -386,5 +408,5 @@ void MainWindow::on_btn_send_drawing_trajectory_clicked(void)
   writeLog("Send drawing trajectory");
 }
 
-}  // namespace open_manipulator_p_control_gui
+}  // namespace open_manipulator_p_control_gui_synced
 

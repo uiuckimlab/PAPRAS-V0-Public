@@ -20,8 +20,8 @@
 ** Ifdefs
 *****************************************************************************/
 
-#ifndef OPEN_MANIPULATOR_P_CONTROL_GUI_QNODE_HPP_
-#define OPEN_MANIPULATOR_P_CONTROL_GUI_QNODE_HPP_
+#ifndef OPEN_MANIPULATOR_P_CONTROL_GUI_SYNCED_QNODE_HPP_
+#define OPEN_MANIPULATOR_P_CONTROL_GUI_SYNCED_QNODE_HPP_
 
 /*****************************************************************************
 ** Includes
@@ -55,7 +55,7 @@
 ** Namespaces
 *****************************************************************************/
 
-namespace open_manipulator_p_control_gui {
+namespace open_manipulator_p_control_gui_synced {
 
 /*****************************************************************************
 ** Class
@@ -129,6 +129,12 @@ private:
   ros::ServiceClient set_actuator_state_client_;
   ros::ServiceClient goal_drawing_trajectory_client_;
 
+  ros::ServiceClient goal_joint_space_path_client_2_;
+  ros::ServiceClient set_actuator_state_client_2_;
+
+  ros::ServiceClient goal_joint_space_path_client_3_;
+  ros::ServiceClient set_actuator_state_client_3_;
+
   std::vector<double> present_joint_angle_;
   std::vector<double> present_kinematics_position_;
   Eigen::Quaterniond present_kinematics_orientation_;
@@ -139,6 +145,6 @@ private:
   bool open_manipulator_actuator_enabled_;
 };
 
-}  // namespace open_manipulator_p_control_gui
+}  // namespace open_manipulator_p_control_gui_synced
 
-#endif /* OPEN_MANIPULATOR_P_CONTROL_GUI_QNODE_HPP_ */
+#endif /* OPEN_MANIPULATOR_P_CONTROL_GUI_SYNCED_QNODE_HPP_ */
