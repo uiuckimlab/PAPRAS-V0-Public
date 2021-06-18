@@ -8,23 +8,23 @@
   <xacro:include filename="$(find open_manipulator_p_description)/urdf/open_manipulator_p.gazebo.xacro"/>
 
   <!-- Import Transmission -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/open_manipulator_p.transmission.xacro"/>
+  <xacro:include filename="$(find open_manipulator_p_description)/urdf/3arm_moveit.transmission.xacro"/>
 
   <xacro:arg name="base_offset" default ="0.046375"/>
 
   <xacro:arg name="robot1_base_x" default="-0.3"/>
   <xacro:arg name="robot1_base_y" default="0.1"/>
-  <xacro:arg name="robot1_base_z" default="0.9"/>
+  <xacro:arg name="robot1_base_z" default="1.1"/>
   <xacro:arg name="robot1_base_yaw" default="1.57"/>
 
   <xacro:arg name="robot2_base_x" default="-0.3"/>
   <xacro:arg name="robot2_base_y" default="-0.5"/>
-  <xacro:arg name="robot2_base_z" default="0.9"/>
+  <xacro:arg name="robot2_base_z" default="1.1"/>
   <xacro:arg name="robot2_base_yaw" default="1.57"/>
 
   <xacro:arg name="robot3_base_x" default="0.3"/>
   <xacro:arg name="robot3_base_y" default="0.0"/>
-  <xacro:arg name="robot3_base_z" default="0.9"/>
+  <xacro:arg name="robot3_base_z" default="1.1"/>
   <xacro:arg name="robot3_base_yaw" default="-1.57"/>
 
   <xacro:macro name="omp_arm" params="id">

@@ -17,7 +17,7 @@
       args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"/>
 
     <!-- Run controller utils -->
-    <!-- <include file="$(find papras_gazebo)/launch/controller_utils.launch"/> -->
+    <include file="$(find papras_gazebo)/launch/controller_utils.launch"/>
 
     <!-- ros_control robotis manipulator launch file -->
     <include file="$(find papras_gazebo)/launch/papras_controller.launch">

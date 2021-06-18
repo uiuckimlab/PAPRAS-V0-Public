@@ -13,9 +13,9 @@
     <arg name="with_gripper" value="$(arg with_gripper)"/>
   </include>
 
-  <!-- <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
+  <include file="$(find open_manipulator_p_control_gui)/launch/open_manipulator_p_control_gui.launch">
       <arg name="with_gripper" value="$(arg with_gripper)"/>
-  </include> -->
+  </include>
 
   <!-- <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_rviz.launch">
       <arg name="with_gripper" value="$(arg with_gripper)"/>
