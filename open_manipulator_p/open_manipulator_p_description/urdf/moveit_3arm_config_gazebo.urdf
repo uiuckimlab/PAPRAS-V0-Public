@@ -338,16 +338,16 @@
     <!-- link 3 -->
     <link name="robot1/link3">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -372,16 +372,16 @@
     <!-- link 4 -->
     <link name="robot1/link4">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -440,16 +440,16 @@
     <!-- link 6 -->
     <link name="robot1/link6">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -570,16 +570,16 @@
     <!-- link 3 -->
     <link name="robot2/link3">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -604,16 +604,16 @@
     <!-- link 4 -->
     <link name="robot2/link4">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -672,16 +672,16 @@
     <!-- link 6 -->
     <link name="robot2/link6">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -802,16 +802,16 @@
     <!-- link 3 -->
     <link name="robot3/link3">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -836,16 +836,16 @@
     <!-- link 4 -->
     <link name="robot3/link4">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -904,16 +904,16 @@
     <!-- link 6 -->
     <link name="robot3/link6">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         
@@ -1381,16 +1381,16 @@
     <!-- link 3 -->
     <link name="robot1/link3">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -1413,16 +1413,16 @@
     <!-- link 4 -->
     <link name="robot1/link4">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -1477,16 +1477,16 @@
     <!-- link 6 -->
     <link name="robot1/link6">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -1599,16 +1599,16 @@
     <!-- link 3 -->
     <link name="robot2/link3">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -1631,16 +1631,16 @@
     <!-- link 4 -->
     <link name="robot2/link4">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -1695,16 +1695,16 @@
     <!-- link 6 -->
     <link name="robot2/link6">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -1817,16 +1817,16 @@
     <!-- link 3 -->
     <link name="robot3/link3">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -1849,16 +1849,16 @@
     <!-- link 4 -->
     <link name="robot3/link4">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
@@ -1913,16 +1913,16 @@
     <!-- link 6 -->
     <link name="robot3/link6">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="grey" />
         </visual>
         <collision>
-            <origin rpy="0 0 0" xyz="0 0 0" />
+            <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://open_manipulator_p_description/meshes/link6.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
         <inertial>
