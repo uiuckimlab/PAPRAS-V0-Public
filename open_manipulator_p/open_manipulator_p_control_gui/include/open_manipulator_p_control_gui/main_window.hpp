@@ -51,6 +51,7 @@ public Q_SLOTS:
   void on_btn_timer_start_clicked(void);
   void on_btn_init_pose_clicked(void);
   void on_btn_home_pose_clicked(void);
+  void on_btn_rest_pose_clicked(void);
   void on_btn_gripper_open_clicked(void);
   void on_btn_gripper_close_clicked(void);
   void on_btn_read_joint_angle_clicked(void);

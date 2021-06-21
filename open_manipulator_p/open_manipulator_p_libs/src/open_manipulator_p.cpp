@@ -35,7 +35,7 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
   /*****************************************************************************
   ** Initialize Manipulator Parameter
   *****************************************************************************/
-  ROS_INFO_STREAM(1+(arm_id-1)*6);
+  ROS_INFO_STREAM(100+(arm_id*10)+1);
 
   addWorld("world",    // world name
            "joint1");  // child name
@@ -147,7 +147,7 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
   double gripper_len = 0.0;
   if (with_gripper)
   {
-    gripper_id = 121;
+    gripper_id = 100+(arm_id*10)+1;
     gripper_len = 0.1223;
   }
   addTool("gripper",  // my name
@@ -200,15 +200,12 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
     jointDxlId.push_back(4+(arm_id-1)*6);
     jointDxlId.push_back(5+(arm_id-1)*6);
     jointDxlId.push_back(6+(arm_id-1)*6);
-    ROS_INFO_STREAM("After push_back");
     addJointActuator(JOINT_DYNAMIXEL, actuator_, jointDxlId, p_dxl_comm_arg);
-    ROS_INFO_STREAM("After addJointActuator");
-
+  
     // Set joint actuator control mode
     STRING joint_dxl_mode_arg = "position_mode";
     void *p_joint_dxl_mode_arg = &joint_dxl_mode_arg;
     setJointActuatorMode(JOINT_DYNAMIXEL, jointDxlId, p_joint_dxl_mode_arg);
-    ROS_INFO_STREAM("After setJointActuatorMode");
 
     /*****************************************************************************
     ** Initialize Tool Actuator
@@ -217,7 +214,7 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
     {
       tool_ = new dynamixel::GripperDynamixel();
 
-      uint8_t gripperDxlId = 121;
+      uint8_t gripperDxlId = 100+(arm_id*10)+1;
       addToolActuator(TOOL_DYNAMIXEL, tool_, gripperDxlId, p_dxl_comm_arg);
 
       // Set gripper actuator control mode

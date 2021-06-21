@@ -7,7 +7,7 @@
   <arg name="use_sim_time" default="true"/>
   <arg name="with_gripper" default="false"/>
   <arg name="use_platform"  default="false"/>
-  <arg name="synced_gui"  default="false"/>
+  <arg name="synced_gui"  default="true"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->
   <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
@@ -20,11 +20,6 @@
         <arg name="with_gripper" value="$(arg with_gripper)"/>
     </include>
   </group>
-
-  <!-- Launch Rviz -->
-  <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_rviz.launch">
-      <arg name="with_gripper" value="$(arg with_gripper)"/>
-  </include>
 
   <!-- BEGIN ROBOT 1-->
   <group ns="robot1">
