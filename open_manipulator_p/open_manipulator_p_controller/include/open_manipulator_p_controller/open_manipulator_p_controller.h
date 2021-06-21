@@ -66,6 +66,7 @@ class OpenManipulatorController
   ** ROS Parameters
   *****************************************************************************/
   bool using_platform_;
+  bool using_sim_;
   double control_period_;
   bool with_gripper_;
   int arm_id_;

@@ -7,6 +7,8 @@
   <arg name="use_sim_time" default="true"/>
   <arg name="with_gripper" default="false"/>
   <arg name="use_platform"  default="false"/>
+  <arg name="use_sim"  default="true"/>
+  <arg name="use_rviz"  default="false"/>
   <arg name="synced_gui"  default="true"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->
@@ -32,6 +34,7 @@
       <arg name="usb_port" value="/dev/ttyUSB0"/>
       <arg name="arm_id" value="1"/>
       <arg name="use_platform" value="$(arg use_platform)"/>
+      <arg name="use_sim" value="$(arg use_sim)"/>
       <arg name="synced_gui" value="$(arg synced_gui)"/>
     </include>
   </group>
@@ -46,6 +49,7 @@
       <arg name="usb_port" value="/dev/ttyUSB1"/>
       <arg name="arm_id" value="2"/>
       <arg name="use_platform" value="$(arg use_platform)"/>
+      <arg name="use_sim" value="$(arg use_sim)"/>
       <arg name="synced_gui" value="$(arg synced_gui)"/>
     </include>
   </group>
@@ -60,6 +64,7 @@
       <arg name="usb_port" value="/dev/ttyUSB2"/>
       <arg name="arm_id" value="3"/>
       <arg name="use_platform" value="$(arg use_platform)"/>
+      <arg name="use_sim" value="$(arg use_sim)"/>
       <arg name="synced_gui" value="$(arg synced_gui)"/>
     </include>
   </group>

@@ -141,7 +141,6 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
                                 9.3127351e-05),                                   // inertial tensor
             math::vector3(4.4206755e-02, 3.6839985e-07, 8.9142216e-03)            // COM
             );
-  ROS_INFO_STREAM("Added Joints");
 
   int gripper_id = -1;
   double gripper_len = 0.0;
@@ -177,8 +176,6 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
   void *p_with_gripper = &with_gripper;
   setKinematicsOption(p_with_gripper);
 
-  ROS_INFO_STREAM("Before");
-
   if (using_actual_robot_state)
   {
     /*****************************************************************************
@@ -192,7 +189,6 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
     void *p_dxl_comm_arg = &dxl_comm_arg;
 
     // Set joint actuator id
-    ROS_INFO_STREAM("Before push_back");
     std::vector<uint8_t> jointDxlId;
     jointDxlId.push_back(1+(arm_id-1)*6);
     jointDxlId.push_back(2+(arm_id-1)*6);
@@ -242,7 +238,6 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
     receiveAllJointActuatorValue();
 
     if (with_gripper) receiveAllToolActuatorValue();
-    ROS_INFO_STREAM("Init Manip Done");
   }
 
   /*****************************************************************************

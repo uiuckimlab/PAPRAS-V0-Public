@@ -32,6 +32,7 @@ OpenManipulatorController::OpenManipulatorController(std::string usb_port, std::
   ************************************************************/
   control_period_       = priv_node_handle_.param<double>("control_period", 0.010f);
   using_platform_       = priv_node_handle_.param<bool>("using_platform", false);
+  using_sim_            = priv_node_handle_.param<bool>("using_platform", false);
   with_gripper_         = priv_node_handle_.param<bool>("with_gripper", false);
   arm_id_ = arm_id;
 
@@ -41,7 +42,7 @@ OpenManipulatorController::OpenManipulatorController(std::string usb_port, std::
   open_manipulator_.initOpenManipulator(using_platform_, usb_port, baud_rate, control_period_, with_gripper_, arm_id_);
 
   if (using_platform_ == true) log::info("Succeeded to init " + priv_node_handle_.getNamespace());
-  log::info("Ready to simulate " + priv_node_handle_.getNamespace() + " on Gazebo");
+  if (using_sim_ == true) log::info("Ready to simulate " + priv_node_handle_.getNamespace() + " on Gazebo");
 
   /************************************************************
   ** Initialize ROS publishers, subscribers and servers
@@ -150,18 +151,20 @@ void OpenManipulatorController::initPublisher()
   {
     open_manipulator_joint_states_pub_ = node_handle_.advertise<sensor_msgs::JointState>("joint_states", 10);
   }
-  
-  auto gazebo_joints_name = open_manipulator_.getManipulator()->getAllActiveJointComponentName();
-  gazebo_joints_name.reserve(gazebo_joints_name.size() + om_tools_name.size());
-  gazebo_joints_name.insert(gazebo_joints_name.end(), om_tools_name.begin(), om_tools_name.end());
-
-  for (auto const& name:gazebo_joints_name)
+  if (using_sim_==true)
   {
-    ros::Publisher pb;
-    pb = node_handle_.advertise<std_msgs::Float64>(name + "_position/command", 10);
-    gazebo_goal_joint_position_pub_.push_back(pb);
-  }
+    auto gazebo_joints_name = open_manipulator_.getManipulator()->getAllActiveJointComponentName();
+    gazebo_joints_name.reserve(gazebo_joints_name.size() + om_tools_name.size());
+    gazebo_joints_name.insert(gazebo_joints_name.end(), om_tools_name.begin(), om_tools_name.end());
 
+    for (auto const& name:gazebo_joints_name)
+    {
+      ros::Publisher pb;
+      pb = node_handle_.advertise<std_msgs::Float64>(name + "_position/command", 10);
+      gazebo_goal_joint_position_pub_.push_back(pb);
+    }
+  }
+  
   control_time_pub_ = node_handle_.advertise<std_msgs::Float64>("control_time", 10);
   
 }
@@ -532,7 +535,7 @@ void OpenManipulatorController::process(double time)
 void OpenManipulatorController::publishCallback(const ros::TimerEvent&)
 {
   if (using_platform_ == true) publishJointStates();
-  publishGazeboCommand();
+  if (using_sim_ == true) publishGazeboCommand();
 
   publishOpenManipulatorStates();
   publishKinematicsPose();

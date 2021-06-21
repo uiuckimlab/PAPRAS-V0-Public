@@ -2,6 +2,8 @@
   <!-- These are the arguments you can pass this launch file, for example paused:=true -->
   <arg name="with_gripper" default="false"/>
   <arg name="use_platform" default="false"/>
+  <arg name="use_sim" default="true"/>
+  <arg name="use_rviz" default="false"/>
   <arg name="usb_port" default="/dev/ttyUSB0"/>
   <arg name="arm_id" default="1"/>
 
@@ -10,14 +12,18 @@
   <arg name="use_sim_time" default="false"/>
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="gui" value="$(arg gui)"/>
-    <arg name="paused" value="$(arg paused)"/>
-    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
-  </include>
+  <group if="$(arg use_sim)">
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="gui" value="$(arg gui)"/>
+      <arg name="paused" value="$(arg paused)"/>
+      <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    </include>
+  </group>
 
   <include file="$(find papras_gazebo)/launch/robot.launch">
     <arg name="use_platform" value="$(arg use_platform)"/>
+    <arg name="use_sim" value="$(arg use_sim)"/>
+    <arg name="use_rviz" value="$(arg use_rviz)"/>
     <arg name="with_gripper" value="$(arg with_gripper)"/>
     <arg name="usb_port" value="$(arg usb_port)"/>
     <arg name="arm_id" value="$(arg arm_id)"/>
