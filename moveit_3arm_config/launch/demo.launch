@@ -14,10 +14,13 @@
   <!-- By default, we will load or override the robot_description -->
   <arg name="load_robot_description" default="true"/>
 
+  <!-- Set execution mode for fake execution controllers -->
+  <arg name="execution_type" default="interpolate" />
+
   <!--
   By default, hide joint_state_publisher's GUI
 
-  MoveIt!'s "demo" mode replaces the real robot driver with the joint_state_publisher.
+  MoveIt's "demo" mode replaces the real robot driver with the joint_state_publisher.
   The latter one maintains and publishes the current joint configuration of the simulated robot.
   It also provides a GUI to move the simulated robot around "manually".
   This corresponds to moving around the real robot without the use of MoveIt.
@@ -39,10 +42,11 @@
   <!-- Given the published joint states, publish tf for the robot links -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
 
-  <!-- Run the main MoveIt! executable without trajectory execution (we do not have controllers configured by default) -->
+  <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
   <include file="$(find moveit_3arm_config)/launch/move_group.launch">
     <arg name="allow_trajectory_execution" value="true"/>
     <arg name="fake_execution" value="true"/>
+    <arg name="execution_type" value="$(arg execution_type)"/>
     <arg name="info" value="true"/>
     <arg name="debug" value="$(arg debug)"/>
     <arg name="pipeline" value="$(arg pipeline)"/>

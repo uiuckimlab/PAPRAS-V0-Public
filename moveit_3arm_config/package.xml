@@ -3,10 +3,10 @@
   <name>moveit_3arm_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the open_manipulator_p with the MoveIt! Motion Planning Framework
+     An automatically generated package with all the configuration and launch files for using the open_manipulator_p with the MoveIt Motion Planning Framework
   </description>
-  <author email="kazukis2@illinois.edu">Kazuki Shin</author>
-  <maintainer email="kazukis2@illinois.edu">Kazuki Shin</maintainer>
+  <author email="dmathur2@illinois.edu">Dhruv Mathur</author>
+  <maintainer email="dmathur2@illinois.edu">Dhruv Mathur</maintainer>
 
   <license>BSD</license>
 
@@ -22,9 +22,11 @@
   <run_depend>moveit_planners_ompl</run_depend>
   <run_depend>moveit_ros_visualization</run_depend>
   <run_depend>moveit_setup_assistant</run_depend>
+  <run_depend>moveit_simple_controller_manager</run_depend>
   <run_depend>joint_state_publisher</run_depend>
   <run_depend>joint_state_publisher_gui</run_depend>
   <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rviz</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>xacro</run_depend>
   <!-- This package is referenced in the warehouse launch files, but does not build out of the box at the moment. Commented the dependency until this works. -->

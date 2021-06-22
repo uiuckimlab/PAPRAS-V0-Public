@@ -14,7 +14,7 @@
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
   </include>
 
-  <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
+  <include file="$(find open_manipulator_p_description)/launch/3arm_moveit_upload.launch">
     <arg name="with_gripper" value="$(arg with_gripper)"/>
   </include>
 

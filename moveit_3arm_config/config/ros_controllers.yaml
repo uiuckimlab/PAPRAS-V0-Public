@@ -36,37 +36,37 @@ joint_state_controller:
 controller_list:
   - name: arm1_controller
     action_ns: follow_joint_trajectory
+    default: True
     type: FollowJointTrajectory
-    default: true
     joints:
-    - robot1/joint1
-    - robot1/joint2
-    - robot1/joint3
-    - robot1/joint4
-    - robot1/joint5
-    - robot1/joint6
+      - robot1/joint1
+      - robot1/joint2
+      - robot1/joint3
+      - robot1/joint4
+      - robot1/joint5
+      - robot1/joint6
   - name: arm2_controller
     action_ns: follow_joint_trajectory
+    default: True
     type: FollowJointTrajectory
-    default: true
     joints:
-    - robot2/joint1
-    - robot2/joint2
-    - robot2/joint3
-    - robot2/joint4
-    - robot2/joint5
-    - robot2/joint6
+      - robot2/joint1
+      - robot2/joint2
+      - robot2/joint3
+      - robot2/joint4
+      - robot2/joint5
+      - robot2/joint6
   - name: arm3_controller
     action_ns: follow_joint_trajectory
+    default: True
     type: FollowJointTrajectory
-    default: true
     joints:
-    - robot3/joint1
-    - robot3/joint2
-    - robot3/joint3
-    - robot3/joint4
-    - robot3/joint5
-    - robot3/joint6
+      - robot3/joint1
+      - robot3/joint2
+      - robot3/joint3
+      - robot3/joint4
+      - robot3/joint5
+      - robot3/joint6
 arm_position_controller:
   type: position_controllers/JointPositionController
   joints:

@@ -11,11 +11,11 @@
     </include>
 
     <!-- A table -->
-    <include>
+    <!-- <include>
       <uri>model://table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 1.6</pose>
-    </include>
+    </include> -->
 
     <physics type="ode">
       <real_time_update_rate>1000.0</real_time_update_rate>
@@ -46,7 +46,7 @@
 
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose> 2.0 -2.0 1.2 0.0 0.275643 2.356190 </pose>
+        <pose> 3.0 -3.0 2.0 0.0 0.275643 2.356190 </pose>
         <view_controller>orbit</view_controller>
       </camera>
     </gui>

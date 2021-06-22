@@ -1,4 +1,11 @@
 planner_configs:
+  AnytimePathShortening:
+    type: geometric::AnytimePathShortening
+    shortcut: true  # Attempt to shortcut all new solution paths
+    hybridize: true  # Compute hybrid solution trajectories
+    max_hybrid_paths: 24  # Number of hybrid paths generated per iteration
+    num_planners: 4  # The number of default planners to use for planning
+    planners: ""  # A comma-separated list of planner types (e.g., "PRM,EST,RRTConnect"Optionally, planner parameters can be passed to change the default:"PRM[max_nearest_neighbors=5],EST[goal_bias=.5],RRT[range=10. goal_bias=.1]"
   SBL:
     type: geometric::SBL
     range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
@@ -123,6 +130,7 @@ planner_configs:
 arm1:
   default_planner_config: RRTstar
   planner_configs:
+    - AnytimePathShortening
     - SBL
     - EST
     - LBKPIECE
@@ -146,9 +154,12 @@ arm1:
     - LazyPRMstar
     - SPARS
     - SPARStwo
+  projection_evaluator: joints(robot1/joint1,robot1/joint2)
+  longest_valid_segment_fraction: 0.005
 arm2:
   default_planner_config: RRTstar
   planner_configs:
+    - AnytimePathShortening
     - SBL
     - EST
     - LBKPIECE
@@ -172,9 +183,12 @@ arm2:
     - LazyPRMstar
     - SPARS
     - SPARStwo
+  projection_evaluator: joints(robot2/joint1,robot2/joint2)
+  longest_valid_segment_fraction: 0.005
 arm3:
   default_planner_config: RRTstar
   planner_configs:
+    - AnytimePathShortening
     - SBL
     - EST
     - LBKPIECE
@@ -198,9 +212,12 @@ arm3:
     - LazyPRMstar
     - SPARS
     - SPARStwo
+  projection_evaluator: joints(robot3/joint1,robot3/joint2)
+  longest_valid_segment_fraction: 0.005
 arm1_2:
   default_planner_config: RRTstar
   planner_configs:
+    - AnytimePathShortening
     - SBL
     - EST
     - LBKPIECE
@@ -224,9 +241,12 @@ arm1_2:
     - LazyPRMstar
     - SPARS
     - SPARStwo
+  projection_evaluator: joints(robot1/joint1,robot1/joint2)
+  longest_valid_segment_fraction: 0.005
 arm2_3:
   default_planner_config: RRTstar
   planner_configs:
+    - AnytimePathShortening
     - SBL
     - EST
     - LBKPIECE
@@ -250,9 +270,12 @@ arm2_3:
     - LazyPRMstar
     - SPARS
     - SPARStwo
+  projection_evaluator: joints(robot2/joint1,robot2/joint2)
+  longest_valid_segment_fraction: 0.005
 arm1_3:
   default_planner_config: RRTstar
   planner_configs:
+    - AnytimePathShortening
     - SBL
     - EST
     - LBKPIECE
@@ -276,9 +299,12 @@ arm1_3:
     - LazyPRMstar
     - SPARS
     - SPARStwo
+  projection_evaluator: joints(robot1/joint1,robot1/joint2)
+  longest_valid_segment_fraction: 0.005
 arm1_2_3:
   default_planner_config: RRTstar
   planner_configs:
+    - AnytimePathShortening
     - SBL
     - EST
     - LBKPIECE
@@ -302,3 +328,5 @@ arm1_2_3:
     - LazyPRMstar
     - SPARS
     - SPARStwo
+  projection_evaluator: joints(robot1/joint1,robot1/joint2)
+  longest_valid_segment_fraction: 0.005

@@ -10,29 +10,27 @@
   <!-- Import Transmission -->
   <xacro:include filename="$(find open_manipulator_p_description)/urdf/3arm_moveit.transmission.xacro"/>
 
-  <xacro:arg name="base_offset" default ="0.046375"/>
-
-  <xacro:arg name="robot1_base_x" default="-0.3"/>
-  <xacro:arg name="robot1_base_y" default="0.1"/>
-  <xacro:arg name="robot1_base_z" default="1.1"/>
+  <xacro:arg name="robot1_base_x" default="-0.3795"/>
+  <xacro:arg name="robot1_base_y" default="0.0435"/>
+  <xacro:arg name="robot1_base_z" default="$(eval 0.77-0.084)"/>
   <xacro:arg name="robot1_base_yaw" default="1.57"/>
 
-  <xacro:arg name="robot2_base_x" default="-0.3"/>
-  <xacro:arg name="robot2_base_y" default="-0.5"/>
-  <xacro:arg name="robot2_base_z" default="1.1"/>
+  <xacro:arg name="robot2_base_x" default="-0.3835"/>
+  <xacro:arg name="robot2_base_y" default="-0.5545"/>
+  <xacro:arg name="robot2_base_z" default="$(eval 0.77-0.084)"/>
   <xacro:arg name="robot2_base_yaw" default="1.57"/>
 
-  <xacro:arg name="robot3_base_x" default="0.3"/>
-  <xacro:arg name="robot3_base_y" default="0.0"/>
-  <xacro:arg name="robot3_base_z" default="1.1"/>
+  <xacro:arg name="robot3_base_x" default="0.3735"/>
+  <xacro:arg name="robot3_base_y" default="-0.2535"/>
+  <xacro:arg name="robot3_base_z" default="$(eval 0.77-0.084)"/>
   <xacro:arg name="robot3_base_yaw" default="-1.57"/>
 
   <xacro:macro name="omp_arm" params="id">
 
-    <joint name="robot${id}/world_fixed" type="fixed">
-        <parent link="world" />
+    <joint name="robot${id}/arm_desk_fixed" type="fixed">
+        <parent link="papras_desk" />
         <child link="robot${id}/link1" />
-        <origin xyz="$(eval robot${id}_base_x) $(eval robot${id}_base_y) $(eval robot${id}_base_z-base_offset)"
+        <origin xyz="$(eval robot${id}_base_x) $(eval robot${id}_base_y) $(eval robot${id}_base_z)"
                 rpy="0 0 $(eval robot${id}_base_yaw)"/>
     </joint>
 
@@ -277,8 +275,29 @@
     </link>
   </xacro:macro>
 
-  <!-- World -->
+  <!-- World with PAPRAS Desk-->
   <link name="world"/>
+  <joint name="desk_world_fixed" type="fixed">
+      <parent link="world" />
+      <child link="papras_desk" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="papras_desk">
+    <visual>
+      <origin xyz="0.0 0.0 0.77" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://open_manipulator_p_description/meshes/desk.stl"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0 0.0 0.77" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://open_manipulator_p_description/meshes/desk.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Arms -->
   <xacro:omp_arm id="1"/>
   <xacro:omp_arm id="2"/>
   <xacro:omp_arm id="3"/>
