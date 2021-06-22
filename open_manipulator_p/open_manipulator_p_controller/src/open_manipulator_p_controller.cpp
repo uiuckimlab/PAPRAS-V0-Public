@@ -32,7 +32,7 @@ OpenManipulatorController::OpenManipulatorController(std::string usb_port, std::
   ************************************************************/
   control_period_       = priv_node_handle_.param<double>("control_period", 0.010f);
   using_platform_       = priv_node_handle_.param<bool>("using_platform", false);
-  using_sim_            = priv_node_handle_.param<bool>("using_platform", false);
+  using_sim_            = priv_node_handle_.param<bool>("using_sim", false);
   with_gripper_         = priv_node_handle_.param<bool>("with_gripper", false);
   arm_id_ = arm_id;
 
