@@ -310,9 +310,7 @@
         <joint name="robot3/joint6" value="0"/>
     </group_state>
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
-    <virtual_joint name="virtual_joint_1" type="fixed" parent_frame="world" child_link="robot1/link1"/>
-    <virtual_joint name="virtual_joint_2" type="fixed" parent_frame="world" child_link="robot2/link1"/>
-    <virtual_joint name="virtual_joint_3" type="fixed" parent_frame="world" child_link="robot3/link1"/>
+    <virtual_joint name="virtual_joint_papras_desk" type="fixed" parent_frame="world" child_link="papras_desk"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="papras_desk" link2="robot1/link1" reason="Adjacent"/>
     <disable_collisions link1="papras_desk" link2="robot1/link2" reason="Never"/>
@@ -364,7 +362,6 @@
     <disable_collisions link1="robot1/link3" link2="robot3/link2" reason="Never"/>
     <disable_collisions link1="robot1/link3" link2="robot3/link3" reason="Never"/>
     <disable_collisions link1="robot1/link3" link2="robot3/link4" reason="Never"/>
-    <disable_collisions link1="robot1/link3" link2="robot3/link5" reason="Never"/>
     <disable_collisions link1="robot1/link4" link2="robot1/link5" reason="Adjacent"/>
     <disable_collisions link1="robot1/link4" link2="robot1/link6" reason="Never"/>
     <disable_collisions link1="robot1/link4" link2="robot2/link1" reason="Never"/>
@@ -376,7 +373,6 @@
     <disable_collisions link1="robot1/link5" link2="robot2/link1" reason="Never"/>
     <disable_collisions link1="robot1/link5" link2="robot3/link1" reason="Never"/>
     <disable_collisions link1="robot1/link5" link2="robot3/link2" reason="Never"/>
-    <disable_collisions link1="robot1/link6" link2="robot2/link1" reason="Never"/>
     <disable_collisions link1="robot1/link6" link2="robot3/link1" reason="Never"/>
     <disable_collisions link1="robot1/link6" link2="robot3/link2" reason="Never"/>
     <disable_collisions link1="robot2/end_link" link2="robot2/link4" reason="Never"/>

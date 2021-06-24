@@ -118,7 +118,7 @@
       <collision>
         <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://open_manipulator_p_description/meshes/link3_papras_simple.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -154,7 +154,7 @@
       <collision>
         <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://open_manipulator_p_description/meshes/link4_papras_simple.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -226,7 +226,7 @@
       <collision>
         <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://open_manipulator_p_description/meshes/link6_papras_simple.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
