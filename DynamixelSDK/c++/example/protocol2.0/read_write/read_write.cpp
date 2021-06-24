@@ -175,6 +175,7 @@ int main()
     printf("Press any key to continue! (or press ESC to quit!)\n");
     if (getch() == ESC_ASCII_VALUE)
       break;
+    break;
 
     // Write goal position
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, DXL_ID, ADDR_PRO_GOAL_POSITION, dxl_goal_position[index], &dxl_error);

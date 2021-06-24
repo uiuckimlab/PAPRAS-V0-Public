@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: dynamixel-sdk
+Version: 3.7.41
+Summary: Dynamixel SDK 3. python package
+Home-page: https://github.com/ROBOTIS-GIT/DynamixelSDK
+Author: Leon Jung
+Author-email: rwjung@robotis.com
+License: Apache 2.0
+Platform: UNKNOWN
+License-File: LICENSE.txt
+
+Description is available at http://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
+
