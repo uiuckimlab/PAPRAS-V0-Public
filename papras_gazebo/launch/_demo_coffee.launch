@@ -7,7 +7,7 @@
   <!-- startup ros_control for real robot -->
   <group unless="$(arg sim)">
     <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
-      <arg name="usb_port" value="$(arg usb_port)"/>
+      <arg name="usb_port" value="/dev/ttyUSB0"/>
       <arg name="with_gripper" value="$(arg with_gripper)"/>
     </include>
   </group>
@@ -29,6 +29,7 @@
   <group if="$(arg sim)">
     <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
   </group>
+
   <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
   <node name="arm2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm2_controller"/>
   <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/>
@@ -40,14 +41,17 @@
 
   <!-- startup move_group related -->
   <group unless="$(arg with_gripper)">
-    <include file="$(find moveit_3arm_config)/launch/move_group.launch">
-      <arg name="allow_trajectory_execution" value="true"/>
-      <arg name="fake_execution" value="false"/>
-      <arg name="publish_monitored_planning_scene" value="true"/>
-    </include>
+    <include file="$(find moveit_3arm_config)/launch/move_group.launch"/>
     <include file="$(find moveit_3arm_config)/launch/moveit_rviz.launch">
       <arg name="rviz_config" value="$(find moveit_3arm_config)/launch/moveit.rviz"/>
     </include>
   </group>
+  <group if="$(arg with_gripper)">
+    <include file="$(find moveit_3arm_with_gripper_config)/launch/move_group.launch"/>
+    <include file="$(find moveit_3arm_with_gripper_config)/launch/moveit_rviz.launch">
+      <arg name="rviz_config" value="$(find moveit_3arm_with_gripper_config)/launch/moveit.rviz"/>
+    </include>
+  </group>
+
 
 </launch>

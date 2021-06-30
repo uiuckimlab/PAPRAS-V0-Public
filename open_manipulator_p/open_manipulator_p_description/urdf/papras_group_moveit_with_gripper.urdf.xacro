@@ -8,7 +8,7 @@
   <xacro:include filename="$(find open_manipulator_p_description)/urdf/open_manipulator_p.gazebo.xacro"/>
 
   <!-- Import Transmission -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/3arm_moveit.transmission.xacro"/>
+  <xacro:include filename="$(find open_manipulator_p_description)/urdf/3arm_moveit_with_gripper.transmission.xacro"/>
 
   <xacro:arg name="robot1_base_x" default="-0.3795"/>
   <xacro:arg name="robot1_base_y" default="0.0435"/>
@@ -271,6 +271,140 @@
         <mass value="0.01919"/>
         <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
         <!--<inertia ixx="0.00000938" ixy="0.0" ixz="0.0" iyy="0.00000338" iyz="0.0" izz="0.00000635" />-->
+      </inertial>
+    </link>
+
+     <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_link_fixed" type="fixed">
+      <parent link="robot${id}/end_link"/>
+      <child link="robot${id}/gripper_main_link"/>
+      <origin xyz="0.007 0.0 0.0" rpy="0 0 0" />
+    </joint>
+
+    <!-- gripper main link -->
+    <link name="robot${id}/gripper_main_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://open_manipulator_p_description/meshes/gripper_main_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://open_manipulator_p_description/meshes/gripper_main_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <mass value="0.509"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+
+    <!-- gripper joint -->
+    <joint name="robot${id}/gripper" type="revolute">
+      <axis xyz="0 0 1" />		
+      <origin xyz="0.0552 -0.0400 0" rpy="0 0 -0.4"/>
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/gripper_link"/>
+      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.1" />
+      <dynamics damping="0.1" friction="0.0" />
+    </joint>
+
+    <!-- gripper link -->
+    <link name="robot${id}/gripper_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://open_manipulator_p_description/meshes/gripper_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://open_manipulator_p_description/meshes/gripper_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.013"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+
+    <!-- gripper joint 1 -->
+    <joint name="robot${id}/gripper_sub" type="revolute">
+      <axis xyz="0 0 -1" />
+      <origin xyz="0.0552 0.0400 0" rpy="0 0 0.4"/>
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/gripper_sub_link"/>
+      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.1" />
+      <dynamics damping="0.1" friction="0.0" />
+      <mimic joint="robot${id}/gripper" multiplier="1"/>
+    </joint> 
+
+    <!-- gripper 1 link -->
+    <link name="robot${id}/gripper_sub_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://open_manipulator_p_description/meshes/gripper_sub_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://open_manipulator_p_description/meshes/gripper_sub_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.013"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+
+    <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_effector_joint" type="fixed">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/end_effector_link"/>
+      <origin xyz="0.14 0.0 0.0" rpy="0 0 0" />
+    </joint>
+
+    <!-- End Effector -->
+    <link name="robot${id}/end_effector_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>      
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>      
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.001" /> 
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
       </inertial>
     </link>
   </xacro:macro>

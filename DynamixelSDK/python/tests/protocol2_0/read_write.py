@@ -50,17 +50,17 @@ else:
 from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 # Control table address
-ADDR_PRO_TORQUE_ENABLE      = 64               # Control table address is different in Dynamixel model
-ADDR_PRO_GOAL_POSITION      = 116
-ADDR_PRO_PRESENT_POSITION   = 132
+ADDR_PRO_TORQUE_ENABLE      = 512               # Control table address is different in Dynamixel model, change to 
+ADDR_PRO_GOAL_POSITION      = 564
+ADDR_PRO_PRESENT_POSITION   = 580
 
 # Protocol version
 PROTOCOL_VERSION            = 2.0               # See which protocol version is used in the Dynamixel
 
 # Default setting
-DXL_ID                      = 12                # Dynamixel ID : 1
+# DXL_ID                      = 1                # Dynamixel ID : 1
 BAUDRATE                    = 1000000             # Dynamixel default baudrate : 57600
-DEVICENAME                  = '/dev/ttyUSB2'    # Check which port is being used on your controller
+# DEVICENAME                  = '/dev/ttyUSB2'    # Check which port is being used on your controller
                                                 # ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 DEVICE_NAMES                = ['/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2']
 
@@ -110,7 +110,6 @@ def disable_dynamixel_torque(packetHandler,portHandler, dxl_id):
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
-
 
 def classify_arm_config(valid_ids):
     if len(valid_ids) < 6:
