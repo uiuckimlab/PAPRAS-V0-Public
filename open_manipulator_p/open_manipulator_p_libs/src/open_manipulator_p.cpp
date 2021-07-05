@@ -65,7 +65,7 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
             Y_AXIS,    // axis of rotation
             2+(arm_id-1)*6,         // actuator id
             M_PI,      // max joint limit (3.14 rad)
-            -M_PI,     // min joint limit (-3.14 rad)
+            -2.0,     // min joint limit (-3.14 rad)
             1.0,       // coefficient
             1.3850917e-01,                                                        // mass
             math::inertiaMatrix(3.3055381e-04, 9.7940978e-08, -3.8505711e-05,

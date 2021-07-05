@@ -1,6 +1,0 @@
-<launch>
-
-  <node name="cup_demo" pkg="papras_moveit" type="cup_demo" respawn="false" output="screen">
-  </node>
-
-</launch>

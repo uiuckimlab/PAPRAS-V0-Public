@@ -1,7 +1,7 @@
 # Simulation settings for using moveit_sim_controllers
-moveit_sim_hwu_interface:
+moveit_sim_hw_interface:
   joint_model_group: arm1
-  joint_model_grop_pose: init
+  joint_model_group_pose: init
 # Settings for ros_control_boilerplate control loop
 generic_hw_control_loop:
   loop_hz: 300

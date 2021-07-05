@@ -94,16 +94,16 @@ controller_list:
       - robot3/joint6
 initial:  # Define initial robot poses.
   - group: arm1
-    pose: init
+    pose: rest
   - group: arm2
-    pose: init
+    pose: rest
   - group: arm3
-    pose: init
+    pose: rest
   - group: arm1_2
-    pose: init
+    pose: rest
   - group: arm2_3
-    pose: init
+    pose: rest
   - group: arm1_3
-    pose: init
+    pose: rest
   - group: arm1_2_3
-    pose: init
+    pose: rest
