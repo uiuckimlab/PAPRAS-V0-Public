@@ -5,7 +5,7 @@
   <xacro:include filename="$(find open_manipulator_p_description)/urdf/materials.xacro"/>
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/open_manipulator_p.gazebo.xacro"/>
+  <xacro:include filename="$(find open_manipulator_p_description)/urdf/3arm_moveit.gazebo.xacro"/>
 
   <!-- Import Transmission -->
   <xacro:include filename="$(find open_manipulator_p_description)/urdf/3arm_moveit.transmission.xacro"/>

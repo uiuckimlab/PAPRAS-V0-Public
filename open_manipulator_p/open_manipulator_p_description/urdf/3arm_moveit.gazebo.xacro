@@ -17,6 +17,9 @@
   <!-- World -->
   <gazebo reference="world"/>
 
+  <!-- Desk Link -->
+  <gazebo reference="papras_desk"/>
+
   <!-- Link1 -->
   <RefLink ref="link1"/>
 
