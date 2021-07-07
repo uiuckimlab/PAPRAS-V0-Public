@@ -64,7 +64,7 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
             math::convertRPYToRotationMatrix(0.0, 0.0, 0.0), // relative orientation
             Y_AXIS,    // axis of rotation
             2+(arm_id-1)*6,         // actuator id
-            M_PI,      // max joint limit (3.14 rad)
+            2.0,      // max joint limit (3.14 rad)
             -2.0,     // min joint limit (-3.14 rad)
             1.0,       // coefficient
             1.3850917e-01,                                                        // mass
@@ -81,7 +81,7 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
             math::convertRPYToRotationMatrix(0.0, 0.0, 0.0), // relative orientation
             Y_AXIS,    // axis of rotation
             3+(arm_id-1)*6,         // actuator id
-            M_PI,      // max joint limit (3.14 rad)
+            0.5*M_PI,      // max joint limit (3.14 rad)
             -M_PI,     // min joint limit (-3.14 rad)
             1.0,       // coefficient
             1.3274562e-01,                                                        // mass
@@ -98,8 +98,8 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
             math::convertRPYToRotationMatrix(0.0, 0.0, 0.0), // relative orientation
             X_AXIS,    // axis of rotation
             4+(arm_id-1)*6,         // actuator id
-            7*M_PI/8,      // max joint limit (3.14 rad)
-            -7*M_PI/8,     // min joint limit (-3.14 rad)
+            0.875*M_PI,      // max joint limit (3.14 rad)
+            -0.875*M_PI,     // min joint limit (-3.14 rad)
             1.0,       // coefficient
             1.4327573e-01,                                                        // mass
             math::inertiaMatrix(8.0870749e-05, 0.0, -1.0157896e-06,
@@ -115,8 +115,8 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
             math::convertRPYToRotationMatrix(0.0, 0.0, 0.0), // relative orientation
             Y_AXIS,    // axis of rotation
             5+(arm_id-1)*6,         // actuator id
-            M_PI,      // max joint limit (3.14 rad)
-            -M_PI,     // min joint limit (-3.14 rad)
+            0.5*M_PI,      // max joint limit (3.14 rad)
+            -0.5*M_PI,     // min joint limit (-3.14 rad)
             1.0,       // coefficient
             1.4327573e-01,                                                        // mass
             math::inertiaMatrix(8.0870749e-05, 0.0, -1.0157896e-06,
