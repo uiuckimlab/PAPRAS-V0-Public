@@ -18,20 +18,6 @@
     <arg name="with_gripper" value="$(arg with_gripper)"/>
   </include>
 
-  <!-- Launch the Control GUI -->
-  <group if="$(arg synced_gui)">
-    <include file="$(find open_manipulator_p_control_gui_synced)/launch/open_manipulator_p_control_gui_synced.launch">
-        <arg name="with_gripper" value="$(arg with_gripper)"/>
-    </include>
-  </group>
-
-  <!-- Launch Rviz -->
-  <group if="$(arg use_rviz)">
-    <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_rviz.launch">
-        <arg name="with_gripper" value="$(arg with_gripper)"/>
-    </include>
-  </group>
-
   <include file="$(find papras_gazebo)/launch/one_arm.launch" >
     <arg name="robot_name"  value="robot3" />
     <arg name="with_gripper" value="$(arg with_gripper)"/>

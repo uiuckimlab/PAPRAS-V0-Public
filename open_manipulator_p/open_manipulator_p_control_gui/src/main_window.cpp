@@ -248,14 +248,16 @@ void MainWindow::on_btn_gripper_close_clicked(void)
 
 void MainWindow::on_btn_read_joint_angle_clicked(void)
 {
+  writeLog("Before getPresentJointAngle");
   std::vector<double> joint_angle = qnode.getPresentJointAngle();
+  writeLog("Before setValue");
   ui.doubleSpinBox_j1->setValue(joint_angle.at(0));
   ui.doubleSpinBox_j2->setValue(joint_angle.at(1));
   ui.doubleSpinBox_j3->setValue(joint_angle.at(2));
   ui.doubleSpinBox_j4->setValue(joint_angle.at(3));
   ui.doubleSpinBox_j5->setValue(joint_angle.at(4));
   ui.doubleSpinBox_j6->setValue(joint_angle.at(5));
-  // ui.doubleSpinBox_gripper->setValue(joint_angle.at(4));
+  ui.doubleSpinBox_gripper->setValue(joint_angle.at(6));
 
   writeLog("Read joint angle");
 }

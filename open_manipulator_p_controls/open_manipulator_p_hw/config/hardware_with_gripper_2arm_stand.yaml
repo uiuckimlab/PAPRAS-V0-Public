@@ -1,0 +1,30 @@
+left_arm/joint1:
+  ID: 1
+left_arm/joint2:
+  ID: 2
+left_arm/joint3:
+  ID: 3
+left_arm/joint4:
+  ID: 4
+left_arm/joint5:
+  ID: 5
+left_arm/joint6:
+  ID: 6
+left_arm/gripper:
+  ID: 111
+
+right_arm/joint1:
+  ID: 7
+right_arm/joint2:
+  ID: 8
+right_arm/joint3:
+  ID: 9
+right_arm/joint4:
+  ID: 10
+right_arm/joint5:
+  ID: 11
+right_arm/joint6:
+  ID: 12
+right_arm/gripper:
+  ID: 121
+

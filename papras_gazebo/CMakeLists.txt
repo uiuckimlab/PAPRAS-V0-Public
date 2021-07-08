@@ -33,11 +33,16 @@ find_package(catkin REQUIRED
     tf2_ros
     tf2_eigen
     tf2_geometry_msgs
+    sensor_msgs
+    robotis_manipulator
+    open_manipulator_msgs
+    cmake_modules
 )
 
 find_package(gazebo REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED system filesystem date_time thread)
+find_package(Qt5Widgets REQUIRED)
 
 ################################################################################
 # Setup for python modules and scripts
@@ -68,9 +73,16 @@ catkin_package(
     moveit_ros_planning_interface
     interactive_markers
     tf2_geometry_msgs
+    sensor_msgs
+    robotis_manipulator
+    open_manipulator_msgs
   DEPENDS
     EIGEN3
 )
+
+# ensure generated header files are being created in the devel space
+set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
+set(CMAKE_CURRENT_BINARY_DIR ${papras_gazebo_INCLUDE_DIRECTORIES})
 
 ################################################################################
 # Build
@@ -78,8 +90,10 @@ catkin_package(
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
 include_directories(
+  ${papras_gazebo_INCLUDE_DIRECTORIES}
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 add_executable(coffee_demo src/coffee_demo.cpp)
@@ -89,6 +103,10 @@ install(TARGETS coffee_demo DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 add_executable(arm3_test src/arm3_test.cpp)
 target_link_libraries(arm3_test ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS arm3_test DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(command_operator src/command_operator.cpp)
+target_link_libraries(command_operator Qt5::Widgets ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES})
+install(TARGETS command_operator DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ################################################################################
 # Install

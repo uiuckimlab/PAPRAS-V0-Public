@@ -1,12 +1,12 @@
 <launch>
-    <arg name="robot_name"/>
+    <arg name="robot_name" default="robot"/>
     <arg name="init_pose" default="-x 0 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
     <arg name="with_gripper"/>
     <arg name="arm_id"/>
     <arg name="usb_port"/>
     <arg name="use_platform"/>
     <arg name="use_sim"/>
-    <arg name="synced_gui"/>
+    <arg name="synced_gui" default="false"/>
 
     <!-- Load the URDF into the ROS Para with_grippermeter Server -->
     <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
@@ -14,8 +14,8 @@
     </include>
 
     <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
-    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-      args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"/>
+    <!-- <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+      args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"/> -->
 
     <!-- Run controller utils -->
     <!-- <include file="$(find papras_gazebo)/launch/controller_utils.launch"/> -->

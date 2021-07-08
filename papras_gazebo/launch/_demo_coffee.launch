@@ -4,17 +4,17 @@
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="false"/>
 
-  <!-- startup ros_control for real robot -->
-  <group unless="$(arg sim)">
-    <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
-      <arg name="usb_port" value="/dev/ttyUSB0"/>
+  <!-- startup simulated world and spawn robot-->
+  <group if="$(arg sim)">
+    <include file="$(find papras_gazebo)/launch/system_urdf.launch">
       <arg name="with_gripper" value="$(arg with_gripper)"/>
     </include>
   </group>
 
-  <!-- startup simulated world and spawn robot-->
-  <group if="$(arg sim)">
-    <include file="$(find papras_gazebo)/launch/system_urdf.launch">
+  <!-- startup ros_control for real robot -->
+  <group unless="$(arg sim)">
+    <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
+      <arg name="usb_port" value="/dev/ttyUSB0"/>
       <arg name="with_gripper" value="$(arg with_gripper)"/>
     </include>
   </group>
@@ -41,13 +41,17 @@
 
   <!-- startup move_group related -->
   <group unless="$(arg with_gripper)">
-    <include file="$(find moveit_3arm_config)/launch/move_group.launch"/>
+    <include file="$(find moveit_3arm_config)/launch/move_group.launch">
+      <arg name="pipeline" value="chomp"/>
+    </include>
     <include file="$(find moveit_3arm_config)/launch/moveit_rviz.launch">
       <arg name="rviz_config" value="$(find moveit_3arm_config)/launch/moveit.rviz"/>
     </include>
   </group>
   <group if="$(arg with_gripper)">
-    <include file="$(find moveit_3arm_with_gripper_config)/launch/move_group.launch"/>
+    <include file="$(find moveit_3arm_with_gripper_config)/launch/move_group.launch">
+      <arg name="pipeline" value="chomp"/>
+    </include>
     <include file="$(find moveit_3arm_with_gripper_config)/launch/moveit_rviz.launch">
       <arg name="rviz_config" value="$(find moveit_3arm_with_gripper_config)/launch/moveit.rviz"/>
     </include>

@@ -649,8 +649,6 @@ int main(int argc, char **argv)
   // init
   ros::init(argc, argv, "open_manipulator_p_controller");
   ros::NodeHandle node_handle("");
-  // ros::NodeHandle node_handle_1(node_handle,"robot_1");
-  // ros::NodeHandle node_handle_3(node_handle,"robot_3");
 
   std::string usb_port = "/dev/ttyUSB0";
   std::string baud_rate = "1000000";
