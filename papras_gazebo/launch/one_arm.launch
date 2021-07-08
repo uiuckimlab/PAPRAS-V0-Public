@@ -14,8 +14,10 @@
     </include>
 
     <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
-    <!-- <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-      args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"/> -->
+    <group if="$(arg use_sim)">
+      <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"/>
+    </group>
 
     <!-- Run controller utils -->
     <!-- <include file="$(find papras_gazebo)/launch/controller_utils.launch"/> -->

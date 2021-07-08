@@ -310,9 +310,11 @@ int main(int argc, char** argv)
   std::string arm_config = argv[1];
   Command_Operator cmd_op(argc, argv);
   
-  double path_time = 5.0;
-  double long_sleep_time = path_time + 0.5;
-  double short_sleep_time = 2.0;
+  // double long_path_time = 4.0;
+  double long_path_time = 10.0;
+  double long_sleep_time = long_path_time + 0.1;
+  double short_path_time = 2.0;
+  double short_sleep_time = short_path_time + 0.1;
   double joint1 = (arm_config.compare("left_arm") == 0) ? 2.5 : -2.5;
   double joint2 = 1.0;
   double joint3 = -0.5;
@@ -334,37 +336,110 @@ int main(int argc, char** argv)
   ROS_INFO("[Command Sent] Close");
   ros::Duration(short_sleep_time).sleep();
 
+  // ROS_INFO("[Sending Command] Beg Pose");
+  // cmd_op.read_joint_angle();
+  // std::vector<double> waypoint_joint_angle_beg {0.0, -1.6 , -1.6 , 0.0 , 0.0 , 0.0 };
+  // cmd_op.move_arm(waypoint_joint_angle_beg, short_path_time);
+  // ROS_INFO("[Command Sent] Beg Pose");
+  // ros::Duration(short_sleep_time).sleep();
+
   // init pose
   ROS_INFO("[Sending Command] Init Pose");
   cmd_op.read_joint_angle();
   std::vector<double> waypoint_joint_angle_init {0.0, 0.0 , 0.0 , 0.0 , 0.0 , 0.0 };
-  cmd_op.move_arm(waypoint_joint_angle_init, path_time);
+  cmd_op.move_arm(waypoint_joint_angle_init, long_path_time);
   ROS_INFO("[Command Sent] Init Pose");
   ros::Duration(long_sleep_time).sleep();
 
   // first move 
-  ROS_INFO("[Sending Command] Moving Joint 1 to -2.5 rad");
-  cmd_op.read_joint_angle();
-  std::vector<double> waypoint_joint_angle_1 {joint1, 0.0 , 0.0 , 0.0 , 0.0 , 0.0 };
-  cmd_op.move_arm(waypoint_joint_angle_1, path_time);
-  ROS_INFO("[Command Sent] Finished moving Joint 1 to -2.5 rad");
-  ros::Duration(long_sleep_time).sleep();
+  // ROS_INFO("[Sending Command] Moving Joint 1 to -2.5 rad");
+  // cmd_op.read_joint_angle();
+  // std::vector<double> waypoint_joint_angle_1 {joint1, 0.0 , 0.0 , 0.0 , 0.0 , 0.0 };
+  // cmd_op.move_arm(waypoint_joint_angle_1, long_path_time);
+  // ROS_INFO("[Command Sent] Finished moving Joint 1 to -2.5 rad");
+  // ros::Duration(long_sleep_time).sleep();
   
   // second move 
-  ROS_INFO("[Sending Command] Moving Joint 3 to -0.5 rad");
-  cmd_op.read_joint_angle();
-  std::vector<double> waypoint_joint_angle_2 {joint1, 0.0 , joint3 , 0.0 , 0.0 , 0.0 };
-  cmd_op.move_arm(waypoint_joint_angle_2, path_time);
-  ROS_INFO("[Command Sent] Finished moving Joint 3 to -0.5 rad");
-  ros::Duration(long_sleep_time).sleep();
+  // ROS_INFO("[Sending Command] Moving Joint 3 to -0.5 rad");
+  // cmd_op.read_joint_angle();
+  // std::vector<double> waypoint_joint_angle_2 {joint1, 0.0 , joint3 , 0.0 , 0.0 , 0.0 };
+  // cmd_op.move_arm(waypoint_joint_angle_2, short_path_time);
+  // ROS_INFO("[Command Sent] Finished moving Joint 3 to -0.5 rad");
+  // ros::Duration(short_sleep_time).sleep();
 
   // third move
   ROS_INFO("[Sending Command] Moving Joint 2 to 1.0 rad");
   cmd_op.read_joint_angle();
   std::vector<double> waypoint_joint_angle_3 {joint1, joint2, joint3 , 0.0 , 0.0 , 0.0 };
-  cmd_op.move_arm(waypoint_joint_angle_3, path_time);
+  cmd_op.move_arm(waypoint_joint_angle_3, long_path_time);
   ROS_INFO("[Command Sent] Finished moving Joint 2 to 1.0 rad");
   ros::Duration(long_sleep_time).sleep();
+
+  // wave right arm 
+  if(arm_config.compare("right_arm") == 0){
+
+    cmd_op.set_gripper(0);
+    ros::Duration(1).sleep();
+
+    // third move
+    ROS_INFO("[Sending Command] Moving Joint 2 to 1.0 rad");
+    cmd_op.read_joint_angle();
+    joint1 = -0.5;
+    std::vector<double> waypoint_joint_angle_4 {joint1, joint2, joint3 , 0.0 , 0.0 , 0.0 };
+    cmd_op.move_arm(waypoint_joint_angle_4, long_path_time);
+    ROS_INFO("[Command Sent] Finished moving Joint 2 to 1.0 rad");
+    ros::Duration(long_sleep_time).sleep();
+
+    //small wave 1
+    ROS_INFO("[Sending Command] Moving Joint 2 to 1.0 rad");
+    cmd_op.read_joint_angle();
+    joint3 = -1;
+    double joint5 = -0.5;
+    std::vector<double> waypoint_joint_angle_5 {joint1, joint2, joint3 , 0.0 , joint5 , 1.57 };
+    cmd_op.move_arm(waypoint_joint_angle_5, short_path_time);
+    ROS_INFO("[Command Sent] Finished moving Joint 2 to 1.0 rad");
+    ros::Duration(short_sleep_time).sleep();    
+
+    ROS_INFO("[Sending Command] Moving Joint 2 to 1.0 rad");
+    cmd_op.read_joint_angle();
+    joint3 = -0.5;
+    joint5 = 0.0;
+    std::vector<double> waypoint_joint_angle_6 {joint1, joint2, joint3 , 0.0 , joint5 , 1.57 };
+    cmd_op.move_arm(waypoint_joint_angle_6, short_path_time);
+    ROS_INFO("[Command Sent] Finished moving Joint 2 to 1.0 rad");
+    ros::Duration(short_sleep_time).sleep();
+
+    //small wave 2
+    ROS_INFO("[Sending Command] Moving Joint 2 to 1.0 rad");
+    cmd_op.read_joint_angle();
+    joint3 = -1;
+    joint5 = -0.5;
+    std::vector<double> waypoint_joint_angle_7 {joint1, joint2, joint3 , 0.0, joint5, 1.57 };
+    cmd_op.move_arm(waypoint_joint_angle_7, short_path_time);
+    ROS_INFO("[Command Sent] Finished moving Joint 2 to 1.0 rad");
+    ros::Duration(short_sleep_time).sleep();
+
+    ROS_INFO("[Sending Command] Moving Joint 2 to 1.0 rad");
+    cmd_op.read_joint_angle();
+    joint3 = -0.5;
+    joint5 = 0.0;
+    std::vector<double> waypoint_joint_angle_8 {joint1, joint2, joint3 , 0.0 , joint5 , 1.57 };
+    cmd_op.move_arm(waypoint_joint_angle_8, short_path_time);
+    ROS_INFO("[Command Sent] Finished moving Joint 2 to 1.0 rad");
+    ros::Duration(short_sleep_time).sleep();
+
+    cmd_op.set_gripper(0);
+    ros::Duration(1).sleep();
+
+    // return to rest
+    ROS_INFO("[Sending Command] Moving Joint 2 to 1.0 rad");
+    cmd_op.read_joint_angle();
+    joint1 = -2.5;
+    std::vector<double> waypoint_joint_angle_9 {joint1, joint2, joint3 , 0.0 , joint5 , 0.0 };
+    cmd_op.move_arm(waypoint_joint_angle_9, long_path_time);
+    ROS_INFO("[Command Sent] Finished moving Joint 2 to 1.0 rad");
+    ros::Duration(long_sleep_time).sleep();
+  }
 
   // gripper flap x2
   cmd_op.set_gripper(0);
