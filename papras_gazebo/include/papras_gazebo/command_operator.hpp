@@ -58,7 +58,7 @@ public:
   // from main_window.hpp
   void enable_actuator(void);
   void disable_actuator(void);
-  void move_arm(std::vector<double> waypoint_joint_angle_, double path_time_);
+  void move_arm(std::vector<double> command);
   void set_gripper(double joint_angle_val_);
   void read_joint_angle(void);
 

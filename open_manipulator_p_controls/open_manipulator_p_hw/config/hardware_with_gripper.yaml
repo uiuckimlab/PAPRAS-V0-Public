@@ -15,20 +15,20 @@ robot1/joint6:
 robot1/gripper:
   ID: 111
 
-# robot3/joint1:
-#   ID: 7
-# robot3/joint2:
-#   ID: 8
-# robot3/joint3:
-#   ID: 9
-# robot3/joint4:
-#   ID: 10
-# robot3/joint5:
-#   ID: 11
-# robot3/joint6:
-#   ID: 12
-# robot3/gripper:
-#   ID: 121
+robot2/joint1:
+  ID: 7
+robot2/joint2:
+  ID: 8
+robot2/joint3:
+  ID: 9
+robot2/joint4:
+  ID: 10
+robot2/joint5:
+  ID: 11
+robot2/joint6:
+  ID: 12
+robot2/gripper:
+  ID: 121
 
 robot3/joint1:
   ID: 13

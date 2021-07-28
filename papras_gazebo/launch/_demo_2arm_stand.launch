@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <launch>
   <!-- These are the arguments you can pass this launch file, for example paused:=true -->
   <arg name="gui" default="true"/>
@@ -7,7 +8,7 @@
   <arg name="with_gripper" default="true"/>
   <arg name="use_platform" default="false"/>
   <arg name="use_sim" default="true"/>
-  <arg name="use_rviz" default="false"/>
+  <arg name="use_rviz" default="true"/>
   <arg name="cmd_op" default="true"/>  
 
   <!-- startup simulated world and spawn robot-->
@@ -20,39 +21,40 @@
     </include>
   </group>
 
-  <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
+  <include file="$(find open_manipulator_p_description)/launch/2arm_stand_upload.launch">
     <arg name="with_gripper" value="$(arg with_gripper)"/>
   </include>
 
-  <!-- BEGIN ROBOT 1-->
-  <group ns="left_arm">
-    <param name="tf_prefix" value="left_arm_tf" />
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args=" -urdf -param /robot_description -model 2arm_stand"/>
 
-    <include file="$(find papras_gazebo)/launch/one_arm.launch" >
-      <arg name="init_pose" value="-x 0.0 -y 0.0565 -z 1.661 -R -1.571 -P -1.571 -Y 0.0" />
-      <arg name="robot_name"  value="robot1" />
-      <arg name="with_gripper" value="$(arg with_gripper)"/>
-      <arg name="usb_port" value="/dev/ttyUSB1"/>
-      <arg name="arm_id" value="1"/>
-      <arg name="use_platform" value="$(arg use_platform)"/>
-      <arg name="use_sim" value="$(arg use_sim)"/>
-      <arg name="synced_gui" value="$(arg cmd_op)"/>
-    </include>
+  <!-- We do not have a robot connected, so publish fake joint states -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+  </node>
+
+  <!-- controller utils -->
+  <include file="$(find open_manipulator_p_hw)/launch/controller_utils.launch"/>
+
+  <!-- joint_trajectory_controller -->
+  <rosparam file="$(find open_manipulator_p_controllers)/config/2arm_stand_joint_controller_gazebo.yaml" command="load"/>
+
+  <node name="left_arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn left_arm_controller"/>
+  <node name="right_arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn right_arm_controller"/>
+
+  <group if="$(arg with_gripper)">
+    <node name="left_gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn left_gripper_controller"/>
+    <node name="right_gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn right_gripper_controller"/>
   </group>
 
-  <!-- BEGIN ROBOT 2-->
-  <group ns="right_arm">
-    <param name="tf_prefix" value="right_arm_tf" />
-    <include file="$(find papras_gazebo)/launch/one_arm.launch" >
-      <arg name="init_pose" value="-x 0.0 -y -0.0565 -z 1.661 -R 1.571 -P -1.571 -Y 0.0" />
-      <arg name="robot_name"  value="right_arm" />
-      <arg name="with_gripper" value="$(arg with_gripper)"/>
-      <arg name="usb_port" value="/dev/ttyUSB2"/>
-      <arg name="arm_id" value="2"/>
-      <arg name="use_platform" value="$(arg use_platform)"/>
-      <arg name="use_sim" value="$(arg use_sim)"/>
-      <arg name="synced_gui" value="$(arg cmd_op)"/>
-    </include>
-  </group>
+  <!-- startup move_group related -->
+  <include file="$(find moveit_2arm_stand_config)/launch/move_group.launch">
+    <arg name="pipeline" value="ompl"/>
+  </include>
+  <include file="$(find moveit_2arm_stand_config)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find moveit_2arm_stand_config)/launch/moveit.rviz"/>
+  </include>
 
 </launch>
+

@@ -18,7 +18,7 @@
   <xacro:arg name="robot2_base_x" default="-0.3835"/>
   <xacro:arg name="robot2_base_y" default="-0.5545"/>
   <xacro:arg name="robot2_base_z" default="$(eval 0.77-0.084)"/>
-  <xacro:arg name="robot2_base_yaw" default="1.57"/>
+  <xacro:arg name="robot2_base_yaw" default="0.0"/>
 
   <xacro:arg name="robot3_base_x" default="0.3735"/>
   <xacro:arg name="robot3_base_y" default="-0.2535"/>

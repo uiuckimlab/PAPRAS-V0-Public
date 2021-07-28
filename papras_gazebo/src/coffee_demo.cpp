@@ -68,6 +68,10 @@ const moveit::core::JointModelGroup* joint_model_gripper2;
 const moveit::core::JointModelGroup* joint_model_arm3;
 const moveit::core::JointModelGroup* joint_model_gripper3;
 
+// Double pointers for current move
+moveit::planning_interface::MoveGroupInterface** current_move_group;
+const moveit::core::JointModelGroup** current_joint_model;
+
 // Visualization
 moveit_visual_tools::MoveItVisualTools* visual_tools;
 
@@ -104,48 +108,22 @@ geometry_msgs::Pose pose_transform(const tf2Scalar& x, const tf2Scalar& y, const
   return pose_out;
 }
 
-void plan_execute_arm_move(const int arm)
+void plan_execute_arm_move(const int arm,
+                           moveit::planning_interface::MoveGroupInterface** move_group,
+                           const moveit::core::JointModelGroup** joint_model)
 {
   // Create plan object
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
   
   // Plan and execute on appropriate arm
   bool success;
-  switch (arm)
-  {
-  case 1:
-    success = (move_group_arm1->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    visual_tools->publishTrajectoryLine(my_plan.trajectory_, joint_model_arm1->getLinkModel("robot1/end_effector_link"), joint_model_arm1);
-    visual_tools->trigger();
-    if (success)
-    {
-      visual_tools->prompt("Press 'next' to execute plan");
-      move_group_arm1->execute(my_plan);
-    }
-    break;
-  case 2:
-    success = (move_group_arm2->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    visual_tools->publishTrajectoryLine(my_plan.trajectory_, joint_model_arm2->getLinkModel("robot2/end_effector_link"), joint_model_arm2);
-    visual_tools->trigger();
-    if (success)
-    {
-      visual_tools->prompt("Press 'next' to execute plan");
-      move_group_arm2->execute(my_plan);
-    }
-    break;
-  case 3:
-    success = (move_group_arm3->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    visual_tools->publishTrajectoryLine(my_plan.trajectory_, joint_model_arm3->getLinkModel("robot3/end_effector_link"), joint_model_arm3);
-    visual_tools->trigger();
-    if (success)
-    {
-      visual_tools->prompt("Press 'next' to execute plan");
-      move_group_arm3->execute(my_plan);
-    }
-    break;
+  success = ((**move_group).plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+  visual_tools->publishTrajectoryLine(my_plan.trajectory_, (**joint_model).getLinkModel((**move_group).getEndEffectorLink()), *joint_model);
+  visual_tools->trigger();
+  if (success) {
+    visual_tools->prompt("Press 'next' to execute plan");
+    (**move_group).execute(my_plan);
   }
 }
 
@@ -153,21 +131,67 @@ void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z
                       const tf2Scalar& roll, const tf2Scalar& pitch, const tf2Scalar& yaw,
                       const int arm, const std::string pose_name)
 {
+  // Assign double pointers for current move group
+  switch (arm)
+  {
+    case 1:
+      current_move_group = &move_group_arm1;
+      current_joint_model = &joint_model_arm1;
+      break;
+    case 2:
+      current_move_group = &move_group_arm2;
+      current_joint_model = &joint_model_arm2;
+      break;
+    case 3:
+      current_move_group = &move_group_arm3;
+      current_joint_model = &joint_model_arm3;
+  }
+  // Set planning pipeline id to chomp
+  (**current_move_group).setPlanningPipelineId("ompl");
+  (**current_move_group).setPlanningTime(1.0);
+  
   // Create goal pose in world frame
   geometry_msgs::Pose goal_pose = pose_transform(x, y, z, roll, pitch, yaw, arm);
 
-  // Set pose target for appropriate move group
-  switch (arm)
-  {
-  case 1:
-    move_group_arm1->setPoseTarget(goal_pose);
-    break;
-  case 2:
-    move_group_arm2->setPoseTarget(goal_pose);
-    break;
-  case 3:
-    move_group_arm3->setPoseTarget(goal_pose);
-    break;
+  // Height constraint on end-effector of 0.6m
+  // shape_msgs::SolidPrimitive box;
+  // box.type = box.BOX;
+  // box.dimensions.resize(3);
+  // box.dimensions[box.BOX_X] = 1.0;
+  // box.dimensions[box.BOX_Y] = 2.0;
+  // box.dimensions[box.BOX_Z] = 0.6;
+  // geometry_msgs::Pose box_pose;
+  // box_pose.position.x = 0.0;
+  // box_pose.position.y = 0.0;
+  // box_pose.position.z = 0.95;
+  // box_pose.orientation.w = 1.0;
+  // moveit_msgs::BoundingVolume bounding_box;
+  // bounding_box.primitives.push_back(box);
+  // bounding_box.primitive_poses.push_back(box_pose);
+  // moveit_msgs::PositionConstraint eef_height;
+  // eef_height.header.frame_id = "world";
+  // eef_height.link_name = (**current_move_group).getEndEffectorLink();
+  // eef_height.constraint_region = bounding_box;
+  // eef_height.weight = 1.0;
+  // moveit_msgs::Constraints constraints;
+  // constraints.position_constraints.push_back(eef_height);
+  // (**current_move_group).setPathConstraints(constraints);
+
+
+  // Set joint target from IK for current move group
+  bool success;
+  success = (**current_move_group).setJointValueTarget(goal_pose, (**current_move_group).getEndEffectorLink());
+  ROS_INFO("IK Solver %s", success ? "PASSED" : "FAILED");
+  // if (!success) {
+  //   success = (**current_move_group).setApproximateJointValueTarget(goal_pose, (**current_move_group).getEndEffectorLink());
+  //   ROS_INFO("Approx IK Solver %s", success ? "PASSED" : "FAILED");
+  // }
+  int ik_attempts = 1;
+  while (!success) {
+    if (ik_attempts > 10) break;
+    success = (**current_move_group).setJointValueTarget(goal_pose, (**current_move_group).getEndEffectorLink());
+    ROS_INFO("IK Solver %s", success ? "PASSED" : "FAILED");
+    ik_attempts++;
   }
 
   // Terminal info and pose in Rviz
@@ -176,124 +200,125 @@ void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z
   visual_tools->publishAxisLabeled(goal_pose, pose_name);
 
   // Plan and execute move
-  plan_execute_arm_move(arm);
+  plan_execute_arm_move(arm, current_move_group, current_joint_model);
+
+  // Clear constraints
+  // (**current_move_group).clearPathConstraints();
 }
 
 void do_arm_named_move(const int arm, const std::string pose_name)
 {
-  // Set joint target for appropriate move group
+  // Assign double pointers for current move group
   switch (arm)
   {
-  case 1:
-    move_group_arm1->setJointValueTarget(move_group_arm1->getNamedTargetValues(pose_name));
-    break;
-  case 2:
-    move_group_arm2->setJointValueTarget(move_group_arm2->getNamedTargetValues(pose_name));
-    break;
-  case 3:
-    move_group_arm3->setJointValueTarget(move_group_arm3->getNamedTargetValues(pose_name));
-    break;
+    case 1:
+      current_move_group = &move_group_arm1;
+      current_joint_model = &joint_model_arm1;
+      break;
+    case 2:
+      current_move_group = &move_group_arm2;
+      current_joint_model = &joint_model_arm2;
+      break;
+    case 3:
+      current_move_group = &move_group_arm3;
+      current_joint_model = &joint_model_arm3;
   }
+  // Set planning pipeline id to chomp
+  (**current_move_group).setPlanningPipelineId("ompl");
+  (**current_move_group).setPlanningTime(1.0);
+
+  // Set joint target for the current move group
+  (**current_move_group).setNamedTarget(pose_name);
 
   // Terminal info
   ROS_INFO("Move arm %d to pose %s", arm, pose_name.c_str());
   visual_tools->deleteAllMarkers();
 
   // Plan and execute move
-  plan_execute_arm_move(arm);
+  plan_execute_arm_move(arm, current_move_group, current_joint_model);
 }
 
-void plan_execute_gripper_move(const int gripper)
+void plan_execute_gripper_move(const int gripper,
+                               moveit::planning_interface::MoveGroupInterface** move_group,
+                               const moveit::core::JointModelGroup** joint_model)
 {
   // Create plan object
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
   
   // Plan and execute on appropriate gripper
   bool success;
-  switch (gripper)
-  {
-  case 1:
-    success = (move_group_gripper1->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    visual_tools->trigger();
-    if (success)
-    {
-      visual_tools->prompt("Press 'next' to execute plan");
-      move_group_gripper1->execute(my_plan);
-    }
-    break;
-  case 2:
-    success = (move_group_gripper2->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    visual_tools->trigger();
-    if (success)
-    {
-      visual_tools->prompt("Press 'next' to execute plan");
-      move_group_gripper2->execute(my_plan);
-    }
-    break;
-  case 3:
-    success = (move_group_gripper3->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    visual_tools->trigger();
-    if (success)
-    {
-      visual_tools->prompt("Press 'next' to execute plan");
-      move_group_gripper3->execute(my_plan);
-    }
-    break;
+  success = ((**move_group).plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+  visual_tools->trigger();
+  if (success) {
+    visual_tools->prompt("Press 'next' to execute plan");
+    (**move_group).execute(my_plan);
   }
 }
 
 void do_gripper_angle_move(const tf2Scalar& angle, const int gripper)
 {
+  // Assign double pointers for current move group
+  switch (gripper)
+  {
+    case 1:
+      current_move_group = &move_group_gripper1;
+      current_joint_model = &joint_model_gripper1;
+      break;
+    case 2:
+      current_move_group = &move_group_gripper2;
+      current_joint_model = &joint_model_gripper2;
+      break;
+    case 3:
+      current_move_group = &move_group_gripper3;
+      current_joint_model = &joint_model_gripper3;
+  }
+  // Set planning pipeline id to ompl
+  (**current_move_group).setPlanningPipelineId("ompl");
+  
   // Create vector for target angle
   std::vector<double> target_angle{ angle, angle };
 
-  // Set pose target for appropriate move group
-  switch (gripper)
-  {
-  case 1:
-    move_group_gripper1->setJointValueTarget(target_angle);
-    break;
-  case 2:
-    move_group_gripper2->setJointValueTarget(target_angle);
-    break;
-  case 3:
-    move_group_gripper3->setJointValueTarget(target_angle);
-    break;
-  }
+  // Set pose target for current move group
+  (**current_move_group).setJointValueTarget(target_angle);
 
   // Terminal info
   ROS_INFO("Move gripper %d to angle %f", gripper, angle);
   visual_tools->deleteAllMarkers();
 
   // Plan and execute move
-  plan_execute_gripper_move(gripper);
+  plan_execute_gripper_move(gripper, current_move_group, current_joint_model);
 }
 
 void do_gripper_named_move(const int gripper, const std::string pose_name)
 {
-  // Set joint target for appropriate move group
+  // Assign double pointers for current move group
   switch (gripper)
   {
-  case 1:
-    move_group_gripper1->setJointValueTarget(move_group_gripper1->getNamedTargetValues(pose_name));
-    break;
-  case 2:
-    move_group_gripper2->setJointValueTarget(move_group_gripper2->getNamedTargetValues(pose_name));
-    break;
-  case 3:
-    move_group_gripper3->setJointValueTarget(move_group_gripper3->getNamedTargetValues(pose_name));
-    break;
+    case 1:
+      current_move_group = &move_group_gripper1;
+      current_joint_model = &joint_model_gripper1;
+      break;
+    case 2:
+      current_move_group = &move_group_gripper2;
+      current_joint_model = &joint_model_gripper2;
+      break;
+    case 3:
+      current_move_group = &move_group_gripper3;
+      current_joint_model = &joint_model_gripper3;
   }
+  // Set planning pipeline id to ompl
+  (**current_move_group).setPlanningPipelineId("ompl");
+  
+  // Set joint target for current move group
+  (**current_move_group).setNamedTarget(pose_name);
 
   // Terminal info
   ROS_INFO("Move gripper %d to pose %s", gripper, pose_name.c_str());
   visual_tools->deleteAllMarkers();
 
   // Plan and execute move
-  plan_execute_gripper_move(gripper);
+  plan_execute_gripper_move(gripper, current_move_group, current_joint_model);
 }
 
 int main(int argc, char** argv)
@@ -333,7 +358,7 @@ int main(int argc, char** argv)
   ROS_INFO("Arm 2 end effector link: %s", move_group_arm2->getEndEffectorLink().c_str());
   ROS_INFO("Arm 3 planning frame: %s", move_group_arm3->getPlanningFrame().c_str());
   ROS_INFO("Arm 3 end effector link: %s", move_group_arm3->getEndEffectorLink().c_str());
-  
+
   //****************************************************************************
   // Set up visualization
   namespace rvt = rviz_visual_tools;
@@ -351,8 +376,8 @@ int main(int argc, char** argv)
 
   // User input to start demo
   visual_tools->prompt("Press 'next' in the RvizVisualToolsGui window to begin");
-  do_arm_named_move(3, "rest");
   do_arm_named_move(1, "rest");
+  do_arm_named_move(3, "rest");
 
   //****************************************************************************
   /* Coffee Demo
@@ -379,6 +404,8 @@ int main(int argc, char** argv)
     // String parsing
     std::string move_name = *it;
     std::string control_group = move_name.substr(0, move_name.find("/"));
+    std::string control_name = control_group.substr(0, control_group.length()-1);
+    std::string control_id = control_group.substr(control_group.length()-1);
     std::string pose_name = move_name.substr(move_name.find("/")+1);
     // ROS_INFO("Move found: %s, control_group: %s, pose_name: %s", move_name.c_str(), control_group.c_str(), pose_name.c_str());
 
@@ -387,18 +414,10 @@ int main(int argc, char** argv)
     node_handle.getParam("/"+move_name, pose_data);
 
     // Do appropriate move
-    if (control_group == "arm1") {
-      do_arm_pose_move(pose_data.at(0), pose_data.at(1), pose_data.at(2), pose_data.at(3), pose_data.at(4), pose_data.at(5), 1, pose_name);
-    } else if (control_group == "arm2") {
-      do_arm_pose_move(pose_data.at(0), pose_data.at(1), pose_data.at(2), pose_data.at(3), pose_data.at(4), pose_data.at(5), 2, pose_name);
-    } else if (control_group == "arm3") {
-      do_arm_pose_move(pose_data.at(0), pose_data.at(1), pose_data.at(2), pose_data.at(3), pose_data.at(4), pose_data.at(5), 3, pose_name);
-    } else if (control_group == "gripper1") {
-      do_gripper_angle_move(pose_data.at(0), 1);
-    } else if (control_group == "gripper2") {
-      do_gripper_angle_move(pose_data.at(0), 2);
-    } else if (control_group == "gripper3") {
-      do_gripper_angle_move(pose_data.at(0), 3);
+    if (control_name == "arm") {
+      do_arm_pose_move(pose_data.at(0), pose_data.at(1), pose_data.at(2), pose_data.at(3), pose_data.at(4), pose_data.at(5), std::stoi(control_id), pose_name);
+    } else if (control_name == "gripper") {
+      do_gripper_angle_move(pose_data.at(0), std::stoi(control_id));
     } else {} // Do nothing
   }
 

@@ -1,12 +1,3 @@
 <launch>
-  <arg name="left_arm"  default="left_arm"/>
-  <arg name="right_arm" default="right_arm"/>
-
-  <group ns="left_arm">
-    <node name="cmd_op" pkg="papras_gazebo" type="command_operator" respawn="false" output="screen" args="$(arg left_arm)"/>
-  </group>
-  <group ns="right_arm">
-    <node name="cmd_op" pkg="papras_gazebo" type="command_operator" respawn="false" output="screen" args="$(arg right_arm)"/>
-  </group>
-
+    <node name="cmd_op" pkg="papras_gazebo" type="command_operator" respawn="false" output="screen"/>
 </launch>
