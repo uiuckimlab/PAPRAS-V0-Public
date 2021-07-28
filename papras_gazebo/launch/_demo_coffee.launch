@@ -3,6 +3,7 @@
   <arg name="sim" default="true"/>
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="true"/>
+  <arg name="pipeline" default="ompl"/>
 
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">
@@ -42,7 +43,7 @@
   <!-- startup move_group related -->
   <group unless="$(arg with_gripper)">
     <include file="$(find moveit_3arm_config)/launch/move_group.launch">
-      <arg name="pipeline" value="ompl"/>
+      <arg name="pipeline" value="$(arg pipeline)"/>
     </include>
     <include file="$(find moveit_3arm_config)/launch/moveit_rviz.launch">
       <arg name="rviz_config" value="$(find moveit_3arm_config)/launch/moveit.rviz"/>
@@ -50,7 +51,7 @@
   </group>
   <group if="$(arg with_gripper)">
     <include file="$(find moveit_3arm_with_gripper_config)/launch/move_group.launch">
-      <arg name="pipeline" value="ompl"/>
+      <arg name="pipeline" value="$(arg pipeline)"/>
     </include>
     <include file="$(find moveit_3arm_with_gripper_config)/launch/moveit_rviz.launch">
       <arg name="rviz_config" value="$(find moveit_3arm_with_gripper_config)/launch/moveit.rviz"/>

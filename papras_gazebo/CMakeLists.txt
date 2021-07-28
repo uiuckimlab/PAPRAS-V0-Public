@@ -100,9 +100,9 @@ add_executable(coffee_demo src/coffee_demo.cpp)
 target_link_libraries(coffee_demo ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS coffee_demo DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-add_executable(arm3_test src/arm3_test.cpp)
-target_link_libraries(arm3_test ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS arm3_test DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+add_executable(test_multi src/test_multi.cpp)
+target_link_libraries(test_multi ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS test_multi DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(command_operator src/command_operator.cpp)
 target_link_libraries(command_operator Qt5::Widgets ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES})
