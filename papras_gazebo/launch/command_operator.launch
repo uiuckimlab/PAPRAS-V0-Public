@@ -1,3 +1,0 @@
-<launch>
-    <node name="cmd_op" pkg="papras_gazebo" type="command_operator" respawn="false" output="screen"/>
-</launch>

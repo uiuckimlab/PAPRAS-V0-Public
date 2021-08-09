@@ -1,0 +1,3 @@
+<launch>
+    <node name="cmd_op" pkg="papras" type="command_operator" respawn="false" output="screen"/>
+</launch>

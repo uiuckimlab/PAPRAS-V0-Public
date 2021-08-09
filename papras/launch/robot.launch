@@ -1,0 +1,32 @@
+<launch>
+  <arg name="use_robot_name" default="papras"/>
+
+  <!-- These are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="with_gripper" default="false"/>
+  <arg name="use_platform"  default="false"/>
+  <arg name="use_sim"  default="false"/>
+  <arg name="use_rviz"  default="false"/>
+  <arg name="synced_gui"  default="false"/>
+  <arg name="usb_port" default="/dev/ttyUSB0"/>
+  <arg name="arm_id" default="1"/>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
+    <arg name="with_gripper" value="$(arg with_gripper)"/>
+  </include>
+
+  <include file="$(find papras)/launch/one_arm.launch" >
+    <arg name="robot_name"  value="robot3" />
+    <arg name="with_gripper" value="$(arg with_gripper)"/>
+    <arg name="usb_port" value="$(arg usb_port)"/>
+    <arg name="arm_id" value="$(arg arm_id)"/>
+    <arg name="use_platform" value="$(arg use_platform)"/>
+    <arg name="use_sim" value="$(arg use_sim)"/>
+    <arg name="synced_gui" value="$(arg synced_gui)"/>
+  </include>
+
+
+</launch>
