@@ -1,6 +1,6 @@
 <launch>
 
-  <rosparam file="$(find papras)/config/mission_plan_coffee_demo_2arm.yaml">
+  <rosparam file="$(find papras)/config/mission_plan_coffee_demo.yaml">
   </rosparam>
   
   <node name="coffee_demo" pkg="papras" type="coffee_demo" respawn="false" output="screen">
