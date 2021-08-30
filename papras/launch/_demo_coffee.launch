@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <launch>
-  <arg name="sim" default="false"/>
+  <arg name="sim" default="true"/>
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="true"/>
   <arg name="pipeline" default="ompl"/>

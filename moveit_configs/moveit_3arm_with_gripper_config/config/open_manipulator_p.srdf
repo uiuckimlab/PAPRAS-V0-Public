@@ -18,7 +18,7 @@
         <joint name="robot1/joint6"/>
         <joint name="robot1/end_link_fixed"/>
         <joint name="robot1/end_effector_joint"/>
-        <joint name="robot1/camera_joint"/>
+        <!-- <joint name="robot1/camera_joint"/> -->
     </group>
     <group name="arm2">
         <joint name="robot2/joint1"/>
@@ -29,7 +29,7 @@
         <joint name="robot2/joint6"/>
         <joint name="robot2/end_link_fixed"/>
         <joint name="robot2/end_effector_joint"/>
-        <joint name="robot2/camera_joint"/>
+        <!-- <joint name="robot2/camera_joint"/> -->
     </group>
     <group name="arm3">
         <joint name="robot3/joint1"/>
@@ -40,7 +40,7 @@
         <joint name="robot3/joint6"/>
         <joint name="robot3/end_link_fixed"/>
         <joint name="robot3/end_effector_joint"/>
-        <joint name="robot3/camera_joint"/>
+        <!-- <joint name="robot3/camera_joint"/> -->
     </group>
     <group name="arm1_2">
         <group name="arm1"/>
