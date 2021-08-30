@@ -336,6 +336,7 @@ void HardwareInterface::registerControlInterfaces()
 
 void HardwareInterface::read()
 {
+  ros::Time start_time = ros::Time::now();
   bool result = false;
   const char* log = NULL;
 
@@ -354,6 +355,7 @@ void HardwareInterface::read()
     id_array[id_cnt++] = (uint8_t)dxl.second;
   }
 
+  ros::Time cp1 = ros::Time::now();
   result = dxl_wb_->syncRead(sync_read_handler,
                               id_array,
                               dynamixel_.size(),
@@ -362,6 +364,9 @@ void HardwareInterface::read()
   {
     ROS_ERROR("%s", log);
   }
+  ros::Time cp2 = ros::Time::now();
+  ROS_INFO("cp 2: %f secs\n", (cp2 - cp1).toSec());
+  ROS_INFO("dyxl size %d\n", dynamixel_.size());
 
   result = dxl_wb_->getSyncReadData(sync_read_handler,
                                     id_array,

@@ -27,8 +27,15 @@ void timerCallback(open_manipulator_p_hw::HardwareInterface &hardware_interface,
   last_time = curr_time;
 
   hardware_interface.read();
+  ros::Time read_time = ros::Time::now();
   cm.update(ros::Time::now(), elapsed_time);
+  ros::Time update_time = ros::Time::now();
   hardware_interface.write();
+  ros::Time write_time = ros::Time::now();
+  ROS_INFO("read time: %f secs\n", (read_time - curr_time).toSec());
+  // ROS_INFO("update time: %f secs\n", (update_time - read_time).toSec());
+  // ROS_INFO("write time: %f secs\n", (write_time - update_time).toSec());
+  // ROS_INFO("Total controlT: %f secs\n", (write_time - curr_time).toSec());
 }
 
 int main(int argc, char **argv)
@@ -50,6 +57,6 @@ int main(int argc, char **argv)
     boost::bind(timerCallback, boost::ref(hardware_interface), boost::ref(cm), boost::ref(last_time)),
     &queue);
   ros::Timer timer = node_handle.createTimer(timer_options);
-  ros::spin();
+  ros::spin(); // loop rate is 100hz
   return 0;
 }
