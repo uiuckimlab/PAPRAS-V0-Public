@@ -1,11 +1,11 @@
 <launch>
   <!-- These are the arguments you can pass this launch file, for example paused:=true -->
   <arg name="with_gripper" default="true"/>
-  <arg name="use_platform" default="false"/>
-  <arg name="use_sim" default="true"/>
-  <arg name="use_rviz" default="false"/>
+  <arg name="use_platform" default="true"/>
+  <arg name="use_sim" default="false"/>
+  <arg name="use_rviz" default="true"/>
   <arg name="usb_port" default="/dev/ttyUSB0"/>
-  <arg name="arm_id" default="1"/>
+  <arg name="arm_id" default="3"/>
   <arg name="cmd_op" default="false"/>
 
   <arg name="gui" default="true"/>

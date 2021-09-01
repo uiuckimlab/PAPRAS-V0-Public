@@ -203,6 +203,17 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
     void *p_joint_dxl_mode_arg = &joint_dxl_mode_arg;
     setJointActuatorMode(JOINT_DYNAMIXEL, jointDxlId, p_joint_dxl_mode_arg);
 
+    // Set joint actuator parameter
+    STRING joint_dxl_opt_arg[2];
+    void *p_joint_dxl_opt_arg = &joint_dxl_opt_arg;
+    joint_dxl_opt_arg[0] = "Profile_Acceleration";
+    joint_dxl_opt_arg[1] = "100";
+    setJointActuatorMode(JOINT_DYNAMIXEL, jointDxlId, p_joint_dxl_opt_arg);
+
+    joint_dxl_opt_arg[0] = "Profile_Velocity";
+    joint_dxl_opt_arg[1] = "50";
+    setJointActuatorMode(JOINT_DYNAMIXEL, jointDxlId, p_joint_dxl_opt_arg);
+
     /*****************************************************************************
     ** Initialize Tool Actuator
     *****************************************************************************/
@@ -219,15 +230,15 @@ void OpenManipulator::initOpenManipulator(bool using_actual_robot_state, STRING 
       setToolActuatorMode(TOOL_DYNAMIXEL, p_gripper_dxl_mode_arg);
 
       // Set gripper actuator parameter
-      // STRING gripper_dxl_opt_arg[2];
-      // void *p_gripper_dxl_opt_arg = &gripper_dxl_opt_arg;
-      // gripper_dxl_opt_arg[0] = "Profile_Acceleration";
-      // gripper_dxl_opt_arg[1] = "20";
-      // setToolActuatorMode(TOOL_DYNAMIXEL, p_gripper_dxl_opt_arg);
+      STRING gripper_dxl_opt_arg[2];
+      void *p_gripper_dxl_opt_arg = &gripper_dxl_opt_arg;
+      gripper_dxl_opt_arg[0] = "Profile_Acceleration";
+      gripper_dxl_opt_arg[1] = "20";
+      setToolActuatorMode(TOOL_DYNAMIXEL, p_gripper_dxl_opt_arg);
 
-      // gripper_dxl_opt_arg[0] = "Profile_Velocity";
-      // gripper_dxl_opt_arg[1] = "20";
-      // setToolActuatorMode(TOOL_DYNAMIXEL, p_gripper_dxl_opt_arg);
+      gripper_dxl_opt_arg[0] = "Profile_Velocity";
+      gripper_dxl_opt_arg[1] = "20";
+      setToolActuatorMode(TOOL_DYNAMIXEL, p_gripper_dxl_opt_arg);
     }
 
     // Enable All Actuators
