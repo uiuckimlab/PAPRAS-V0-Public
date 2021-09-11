@@ -18,6 +18,7 @@
     <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
       <arg name="usb_port" value="/dev/ttyUSB0"/>
       <arg name="with_gripper" value="$(arg with_gripper)"/>
+      <arg name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_coffee_arm3.yaml"/>
     </include>
   </group>
 
@@ -32,32 +33,23 @@
     <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
   </group>
 
-  <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
-  <node name="arm2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm2_controller"/>
+
   <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/>
   <group if="$(arg with_gripper)">
-    <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
-    <node name="gripper2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper2_controller"/>
     <node name="gripper3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper3_controller"/>
   </group>
 
   <!-- startup move_group related -->
-  <group unless="$(arg with_gripper)">
-    <include file="$(find moveit_3arm_config)/launch/move_group.launch">
-      <arg name="pipeline" value="$(arg pipeline)"/>
-    </include>
-    <include file="$(find moveit_3arm_config)/launch/moveit_rviz.launch">
-      <arg name="rviz_config" value="$(find moveit_3arm_config)/launch/moveit.rviz"/>
-    </include>
-  </group>
   <group if="$(arg with_gripper)">
-    <include file="$(find moveit_3arm_with_gripper_config)/launch/move_group.launch">
+    <include file="$(find coffee_3arm_config)/launch/move_group.launch">
       <arg name="pipeline" value="$(arg pipeline)"/>
     </include>
-    <include file="$(find moveit_3arm_with_gripper_config)/launch/moveit_rviz.launch">
-      <arg name="rviz_config" value="$(find moveit_3arm_with_gripper_config)/launch/moveit.rviz"/>
+    <include file="$(find coffee_3arm_config)/launch/moveit_rviz.launch">
+      <arg name="rviz_config" value="$(find coffee_3arm_config)/launch/moveit.rviz"/>
     </include>
   </group>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
 </launch>
+
+

@@ -19,7 +19,8 @@
       <param name="usb_port" value="$(arg usb_port)"/>
       <param name="baud_rate" value="$(arg baud_rate)"/>    
       <param name="interface" value="$(arg interface)"/>
-      <param name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_with_gripper.yaml"/>
+      <!-- <param name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_with_gripper.yaml"/> -->
+      <param name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_coffee_arm3.yaml"/>
     </node>
   </group>
 

@@ -17,10 +17,12 @@
 /* Authors: Ryan Shim */
 
 #include "open_manipulator_p_hw/hardware_interface.h"
+#include "std_msgs/Float32.h"
 
 void timerCallback(open_manipulator_p_hw::HardwareInterface &hardware_interface,
                    controller_manager::ControllerManager &cm,
-                   ros::Time &last_time)
+                   ros::Time &last_time, ros::Publisher &controlT_pub,
+                   ros::Publisher &readT_pub, ros::Publisher &updateT_pub, ros::Publisher &writeT_pub)
 {
   ros::Time curr_time = ros::Time::now();
   ros::Duration elapsed_time = curr_time - last_time;
@@ -32,10 +34,22 @@ void timerCallback(open_manipulator_p_hw::HardwareInterface &hardware_interface,
   ros::Time update_time = ros::Time::now();
   hardware_interface.write();
   ros::Time write_time = ros::Time::now();
-  ROS_INFO("read time: %f secs\n", (read_time - curr_time).toSec());
-  // ROS_INFO("update time: %f secs\n", (update_time - read_time).toSec());
-  // ROS_INFO("write time: %f secs\n", (write_time - update_time).toSec());
-  // ROS_INFO("Total controlT: %f secs\n", (write_time - curr_time).toSec());
+
+  std_msgs::Float32 controlT_msg;
+  controlT_msg.data = (write_time - curr_time).toSec();
+  controlT_pub.publish(controlT_msg);
+
+  std_msgs::Float32 readT_msg;
+  readT_msg.data = (read_time - curr_time).toSec();
+  readT_pub.publish(readT_msg);
+
+  std_msgs::Float32 updateT_msg;
+  updateT_msg.data = (update_time - read_time).toSec();
+  updateT_pub.publish(updateT_msg);
+
+  std_msgs::Float32 writeT_msg;
+  writeT_msg.data = (write_time - update_time).toSec();
+  writeT_pub.publish(writeT_msg);
 }
 
 int main(int argc, char **argv)
@@ -44,6 +58,12 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "open_manipulator_p_hw");
   ros::NodeHandle node_handle("");
   ros::NodeHandle priv_node_handle("~");
+  
+  ros::Publisher controlT_pub = node_handle.advertise<std_msgs::Float32>("controlT", 1000);
+  ros::Publisher readT_pub = node_handle.advertise<std_msgs::Float32>("readT", 1000);
+  ros::Publisher updateT_pub = node_handle.advertise<std_msgs::Float32>("updateT", 1000);
+  ros::Publisher writeT_pub = node_handle.advertise<std_msgs::Float32>("writeT", 1000);
+
   open_manipulator_p_hw::HardwareInterface hardware_interface(node_handle, priv_node_handle);
   controller_manager::ControllerManager cm(&hardware_interface, node_handle);
 
@@ -53,10 +73,16 @@ int main(int argc, char **argv)
   spinner.start();
   ros::Time last_time = ros::Time::now();
   ros::TimerOptions timer_options(
-    ros::Duration(0.010), // 10ms
-    boost::bind(timerCallback, boost::ref(hardware_interface), boost::ref(cm), boost::ref(last_time)),
+    ros::Duration(0.004), // 10ms
+    boost::bind(timerCallback, boost::ref(hardware_interface), 
+                               boost::ref(cm), 
+                               boost::ref(last_time), 
+                               boost::ref(controlT_pub),
+                               boost::ref(readT_pub),
+                               boost::ref(updateT_pub),
+                               boost::ref(writeT_pub)),
     &queue);
   ros::Timer timer = node_handle.createTimer(timer_options);
-  ros::spin(); // loop rate is 100hz
+  ros::spin(); // loop rate is 250hz
   return 0;
 }
