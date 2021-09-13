@@ -418,6 +418,7 @@ namespace open_manipulator_p_hw
                                id_array,
                                dynamixel_.size(),
                                &log);
+
     if (result == false)
     {
       ROS_ERROR("%s", log);
