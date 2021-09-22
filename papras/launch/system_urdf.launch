@@ -5,6 +5,8 @@
   <arg name="use_sim_time" default="true"/>
   <arg name="with_gripper" default="false"/>
   <arg name="use_platform" default="false"/>
+  <arg name="urdf_upload" default="3arm_moveit_upload"/>
+
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -14,7 +16,7 @@
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
   </include>
 
-  <include file="$(find open_manipulator_p_description)/launch/3arm_moveit_upload.launch">
+  <include file="$(find open_manipulator_p_description)/launch/$(arg urdf_upload)">
     <arg name="with_gripper" value="$(arg with_gripper)"/>
   </include>
 
