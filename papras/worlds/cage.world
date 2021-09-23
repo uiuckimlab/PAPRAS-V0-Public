@@ -1,5 +1,5 @@
 <sdf version="1.4">
-  <world name="papras_system">
+  <world name="cage_world">
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
@@ -39,7 +39,7 @@
 
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose> 4.5 -2.0 2.5 0.0 0.314 2.576 </pose>
+        <pose> 6.7 -2.9 3.4 0.0 0.314 2.576 </pose>
         <view_controller>orbit</view_controller>
       </camera>
     </gui>
