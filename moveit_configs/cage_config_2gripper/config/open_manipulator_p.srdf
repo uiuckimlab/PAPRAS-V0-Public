@@ -65,6 +65,10 @@
         <group name="arm3"/>
         <group name="arm4"/>
     </group>
+    <group name="arm1_4">
+        <group name="arm1"/>
+        <group name="arm4"/>
+    </group>
     <group name="arm1_2_3">
         <group name="arm1"/>
         <group name="arm2"/>
@@ -158,6 +162,20 @@
         <joint name="robot3/joint4" value="0"/>
         <joint name="robot3/joint5" value="0"/>
         <joint name="robot3/joint6" value="0"/>
+    </group_state>
+    <group_state name="init" group="arm1_4">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="0"/>
+        <joint name="robot1/joint3" value="0"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0"/>
+        <joint name="robot1/joint6" value="0"/>
+        <joint name="robot4/joint1" value="0"/>
+        <joint name="robot4/joint2" value="0"/>
+        <joint name="robot4/joint3" value="0"/>
+        <joint name="robot4/joint4" value="0"/>
+        <joint name="robot4/joint5" value="0"/>
+        <joint name="robot4/joint6" value="0"/>
     </group_state>
     <group_state name="init" group="arm1_2_3">
         <joint name="robot1/joint1" value="0"/>
@@ -279,6 +297,20 @@
         <joint name="robot3/joint5" value="0.393"/>
         <joint name="robot3/joint6" value="0"/>
     </group_state>
+    <group_state name="home" group="arm1_4">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="-0.785"/>
+        <joint name="robot1/joint3" value="0.393"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0.393"/>
+        <joint name="robot1/joint6" value="0"/>
+        <joint name="robot4/joint1" value="0"/>
+        <joint name="robot4/joint2" value="-0.785"/>
+        <joint name="robot4/joint3" value="0.393"/>
+        <joint name="robot4/joint4" value="0"/>
+        <joint name="robot4/joint5" value="0.393"/>
+        <joint name="robot4/joint6" value="0"/>
+    </group_state>
     <group_state name="home" group="arm1_2_3">
         <joint name="robot1/joint1" value="0"/>
         <joint name="robot1/joint2" value="-0.785"/>
@@ -399,6 +431,20 @@
         <joint name="robot3/joint5" value="0.4"/>
         <joint name="robot3/joint6" value="0"/>
     </group_state>
+    <group_state name="rest" group="arm1_4">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="-1.5707"/>
+        <joint name="robot1/joint3" value="1.5"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0.4"/>
+        <joint name="robot1/joint6" value="0"/>
+        <joint name="robot4/joint1" value="0"/>
+        <joint name="robot4/joint2" value="-1.5707"/>
+        <joint name="robot4/joint3" value="1.5"/>
+        <joint name="robot4/joint4" value="0"/>
+        <joint name="robot4/joint5" value="0.4"/>
+        <joint name="robot4/joint6" value="0"/>
+    </group_state>
     <group_state name="rest" group="arm1_2_3">
         <joint name="robot1/joint1" value="0"/>
         <joint name="robot1/joint2" value="-1.5707"/>
@@ -496,6 +542,20 @@
         <joint name="robot3/joint4" value="0"/>
         <joint name="robot3/joint5" value="0"/>
         <joint name="robot3/joint6" value="0"/>
+        <joint name="robot4/joint1" value="0"/>
+        <joint name="robot4/joint2" value="-1.57"/>
+        <joint name="robot4/joint3" value="-1.57"/>
+        <joint name="robot4/joint4" value="0"/>
+        <joint name="robot4/joint5" value="0"/>
+        <joint name="robot4/joint6" value="0"/>
+    </group_state>
+    <group_state name="down" group="arm1_4">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="-1.57"/>
+        <joint name="robot1/joint3" value="-1.57"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0"/>
+        <joint name="robot1/joint6" value="0"/>
         <joint name="robot4/joint1" value="0"/>
         <joint name="robot4/joint2" value="-1.57"/>
         <joint name="robot4/joint3" value="-1.57"/>
