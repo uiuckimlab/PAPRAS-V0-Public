@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <launch>
-  <arg name="sim" default="true"/>
+  <arg name="sim" default="false"/>
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="true"/>
   <arg name="pipeline" default="ompl"/>
@@ -36,10 +36,10 @@
 
   <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
   <node name="arm2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm2_controller"/>
-  <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/>
+  <!-- <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/> -->
   <node name="arm4_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm4_controller"/>
   <group if="$(arg with_gripper)">
-    <node name="gripper3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper3_controller"/>
+    <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
     <node name="gripper4_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper4_controller"/>
   </group>
 
