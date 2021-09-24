@@ -22,12 +22,12 @@ hardware_interface:
     - robot2/joint4
     - robot2/joint5
     - robot2/joint6
-    # - robot3/joint1
-    # - robot3/joint2
-    # - robot3/joint3
-    # - robot3/joint4
-    # - robot3/joint5
-    # - robot3/joint6
+    - robot3/joint1
+    - robot3/joint2
+    - robot3/joint3
+    - robot3/joint4
+    - robot3/joint5
+    - robot3/joint6
     - robot4/joint1
     - robot4/joint2
     - robot4/joint3
@@ -64,17 +64,17 @@ controller_list:
       - robot2/joint4
       - robot2/joint5
       - robot2/joint6
-  # - name: arm3_controller
-  #   action_ns: follow_joint_trajectory
-  #   default: True
-  #   type: FollowJointTrajectory
-  #   joints:
-  #     - robot3/joint1
-  #     - robot3/joint2
-  #     - robot3/joint3
-  #     - robot3/joint4
-  #     - robot3/joint5
-  #     - robot3/joint6
+  - name: arm3_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - robot3/joint1
+      - robot3/joint2
+      - robot3/joint3
+      - robot3/joint4
+      - robot3/joint5
+      - robot3/joint6
   - name: arm4_controller
     action_ns: follow_joint_trajectory
     default: True

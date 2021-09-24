@@ -1,0 +1,15 @@
+cage_moves:
+  - arm1_4/rest 
+  - arm1_4/home
+  - arm1_4/init
+  - arm1_4/left_arm
+left_arm: 
+  rest: [0.0, -1.6, 1.5, 0.0, 0.4, 0.0, 4]
+right_arm: 
+  rest: [0.0, -1.6, 1.5, 0.0, 0.4, 0.0, 4]
+left_gripper: # Gripper angle
+  open: [0.0]
+  close: [1.1]
+right_gripper:
+  open: [0.0]
+  close: [1.1]
