@@ -1,5 +1,5 @@
 import yaml
-import ipdb
+# import ipdb
 
 def generate(config, n_robots = 3, n_joints = 6):
     actuator_list = {}
@@ -38,13 +38,13 @@ def generate(config, n_robots = 3, n_joints = 6):
     return actuator_list
 
 if __name__ == "__main__":
-    read_path = '../config/arm_config.yaml'
-    write_path = '../../open_manipulator_p_controls/open_manipulator_p_hw/config/hardware.yaml'
+    read_path = '../config/cage_arm_config.yaml'
+    write_path = '../../open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_cage_2gripper.yaml'
 
     with open(read_path, 'r') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
-    actuator_list = generate(config)
+    actuator_list = generate(config, n_robots=4)
 
     with open(write_path, 'w') as file:
         yaml.dump(actuator_list, file, default_flow_style=False, sort_keys=False)
