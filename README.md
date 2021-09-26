@@ -33,7 +33,7 @@ source devel/setup.bash
 
 4. Run the executable
 ```
-roslaunch papras_gazebo _demo_coffee.launch
+roslaunch papras _demo_coffee.launch
 ```
 Example output:
 ```
