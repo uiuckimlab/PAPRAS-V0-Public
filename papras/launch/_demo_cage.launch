@@ -4,6 +4,7 @@
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="true"/>
   <arg name="pipeline" default="ompl"/>
+  <arg name="gazebo_gui" default="true"/>
 
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">
@@ -11,6 +12,7 @@
       <arg name="with_gripper" value="$(arg with_gripper)"/>
       <arg name="use_sim_time" value="true"/>
       <arg name="urdf_upload" value="cage_upload.launch"/> 
+      <arg name="gui" value="$(arg gazebo_gui)"/> 
     </include>
   </group>
 

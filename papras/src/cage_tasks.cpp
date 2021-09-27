@@ -115,8 +115,10 @@ void plan_execute_arm_move(moveit::planning_interface::MoveGroupInterface* move_
   // Create plan object
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
-  move_group->setMaxVelocityScalingFactor(0.1);
-  move_group->setMaxAccelerationScalingFactor(0.1);
+  move_group->setMaxVelocityScalingFactor(0.07);
+  move_group->setMaxAccelerationScalingFactor(0.07);
+  move_group->setPlanningTime(1);
+  move_group->setNumPlanningAttempts(10);
   
   // Plan and execute on appropriate arm
   bool success;
@@ -175,14 +177,12 @@ int main(int argc, char** argv)
 
   // User input to start demo
   visual_tools->prompt("Press 'next' in the RvizVisualToolsGui window to begin");
-  // move_group_arm1_2_3_4->setNamedTarget("rest");
-  // plan_execute_arm_move(move_group_arm1_2_3_4);
+  move_group_arm1_2_3_4->setNamedTarget("rest");
+  plan_execute_arm_move(move_group_arm1_2_3_4);
 
   // Load list of moves from ROS Parameter Server
   std::vector<std::string> moves_list;
   node_handle.getParam("/cage_moves", moves_list);
-  move_group_arm1_4->setNamedTarget("rest");
-  plan_execute_arm_move(move_group_arm1_4);
 
   for (std::vector<std::string>::iterator it = std::begin(moves_list); it != std::end(moves_list); ++it)
   {
@@ -209,8 +209,8 @@ int main(int argc, char** argv)
     }
   }
 
-  move_group_arm1_4->setNamedTarget("rest");
-  plan_execute_arm_move(move_group_arm1_4);
+  move_group_arm1_2_3_4->setNamedTarget("rest");
+  plan_execute_arm_move(move_group_arm1_2_3_4);
   ros::shutdown();
   return 0;
 }
