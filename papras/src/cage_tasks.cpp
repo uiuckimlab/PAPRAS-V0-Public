@@ -57,12 +57,14 @@ static const std::string PLANNING_GROUP_ARM2_3 = "arm2_3";
 static const std::string PLANNING_GROUP_ARM1_3 = "arm1_3";
 static const std::string PLANNING_GROUP_ARM1_2_3 = "arm1_2_3";
 static const std::string PLANNING_GROUP_ARM1_2_3_4 = "arm1_2_3_4";
+static const std::string PLANNING_GROUP_ARM1_4 = "arm1_4";
 
 moveit::planning_interface::MoveGroupInterface* move_group_arm1_2;
 moveit::planning_interface::MoveGroupInterface* move_group_arm2_3;
 moveit::planning_interface::MoveGroupInterface* move_group_arm1_3;
 moveit::planning_interface::MoveGroupInterface* move_group_arm1_2_3;
 moveit::planning_interface::MoveGroupInterface* move_group_arm1_2_3_4;
+moveit::planning_interface::MoveGroupInterface* move_group_arm1_4;
 
 // Pointers to move groups
 const moveit::core::JointModelGroup* joint_model_arm1_2;
@@ -70,6 +72,7 @@ const moveit::core::JointModelGroup* joint_model_arm2_3;
 const moveit::core::JointModelGroup* joint_model_arm1_3;
 const moveit::core::JointModelGroup* joint_model_arm1_2_3;
 const moveit::core::JointModelGroup* joint_model_arm1_2_3_4;
+const moveit::core::JointModelGroup* joint_model_arm1_4;
 
 // Visualization
 moveit_visual_tools::MoveItVisualTools* visual_tools;
@@ -112,8 +115,8 @@ void plan_execute_arm_move(moveit::planning_interface::MoveGroupInterface* move_
   // Create plan object
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
-  move_group->setMaxVelocityScalingFactor(0.02);
-  move_group->setMaxAccelerationScalingFactor(0.02);
+  move_group->setMaxVelocityScalingFactor(0.1);
+  move_group->setMaxAccelerationScalingFactor(0.1);
   
   // Plan and execute on appropriate arm
   bool success;
@@ -142,6 +145,7 @@ int main(int argc, char** argv)
   move_group_arm1_3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_3);
   move_group_arm1_2_3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_2_3);
   move_group_arm1_2_3_4 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_2_3_4);
+  move_group_arm1_4 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_4);
 
   // Set up planning scene to add/remove collision objects in world
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
@@ -152,6 +156,7 @@ int main(int argc, char** argv)
   joint_model_arm1_3 = move_group_arm1_3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_3);
   joint_model_arm1_2_3 = move_group_arm1_2_3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_2_3);
   joint_model_arm1_2_3 = move_group_arm1_2_3_4->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_2_3_4);
+  joint_model_arm1_2_3 = move_group_arm1_4->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_4);
 
   //****************************************************************************
   // Set up visualization
@@ -170,14 +175,42 @@ int main(int argc, char** argv)
 
   // User input to start demo
   visual_tools->prompt("Press 'next' in the RvizVisualToolsGui window to begin");
-  move_group_arm1_2_3_4->setNamedTarget("rest");
-  plan_execute_arm_move(move_group_arm1_2_3_4);
+  // move_group_arm1_2_3_4->setNamedTarget("rest");
+  // plan_execute_arm_move(move_group_arm1_2_3_4);
 
-  std::vector<double> joint_group_positions = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  move_group_arm1_2_3_4->setJointValueTarget(joint_group_positions);
-  plan_execute_arm_move(move_group_arm1_2_3_4);
+  // Load list of moves from ROS Parameter Server
+  std::vector<std::string> moves_list;
+  node_handle.getParam("/cage_moves", moves_list);
+  move_group_arm1_4->setNamedTarget("rest");
+  plan_execute_arm_move(move_group_arm1_4);
 
+  for (std::vector<std::string>::iterator it = std::begin(moves_list); it != std::end(moves_list); ++it)
+  {
+    // String parsing
+    std::string move_name = *it;
+    std::string move_group = move_name.substr(0, move_name.find("/"));
+    std::string pose_name = move_name.substr(move_name.find("/")+1);
+    // ROS_INFO("Move found: %s, control_group: %s, pose_name: %s", move_name.c_str(), control_group.c_str(), pose_name.c_str());
 
+    // Get pose data
+    std::vector<double> pose_data;
+    node_handle.getParam("/"+move_name, pose_data);
+
+    // Do appropriate move
+    if(move_group=="arm1_2_3_4"){
+      std::vector<double> joint_group_positions = pose_data;
+      move_group_arm1_2_3_4->setJointValueTarget(joint_group_positions);
+      plan_execute_arm_move(move_group_arm1_2_3_4);
+    }
+    if(move_group=="arm1_4"){
+      std::vector<double> joint_group_positions = pose_data;
+      move_group_arm1_4->setJointValueTarget(joint_group_positions);
+      plan_execute_arm_move(move_group_arm1_4);
+    }
+  }
+
+  move_group_arm1_4->setNamedTarget("rest");
+  plan_execute_arm_move(move_group_arm1_4);
   ros::shutdown();
   return 0;
 }
