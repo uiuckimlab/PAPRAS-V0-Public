@@ -1,6 +1,6 @@
 robot1: 1
-robot2: 3
-robot3: 2
+robot2: 2
+robot3: 3
 robot4: 4
 arm:
   Return_Delay_Time: 25
