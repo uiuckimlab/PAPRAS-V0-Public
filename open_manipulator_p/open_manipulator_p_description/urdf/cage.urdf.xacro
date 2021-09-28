@@ -10,28 +10,28 @@
   <!-- Import Transmission -->
   <xacro:include filename="$(find open_manipulator_p_description)/urdf/cage.transmission.xacro"/>
 
-  <xacro:arg name="robot1_base_x" default="0.08141"/>
+  <xacro:arg name="robot1_base_x" default="0.10939"/>
   <xacro:arg name="robot1_base_y" default="0.04503"/>
   <xacro:arg name="robot1_base_z" default="1.5926"/>
   <xacro:arg name="robot1_base_roll" default="$(eval ${pi*1.0})"/>
   <xacro:arg name="robot1_base_pitch" default="$(eval ${-pi*0.5})"/>
   <xacro:arg name="robot1_base_yaw" default="0.0"/>
 
-  <xacro:arg name="robot2_base_x" default="0.08141"/>
+  <xacro:arg name="robot2_base_x" default="0.10939"/>
   <xacro:arg name="robot2_base_y" default="1.35423"/>
   <xacro:arg name="robot2_base_z" default="1.5926"/>
   <xacro:arg name="robot2_base_roll" default="$(eval ${pi*1.0})"/>
   <xacro:arg name="robot2_base_pitch" default="$(eval ${-pi*0.5})"/>
   <xacro:arg name="robot2_base_yaw" default="0.0"/>
 
-  <xacro:arg name="robot3_base_x" default="1.13779"/>
+  <xacro:arg name="robot3_base_x" default="1.10981"/>
   <xacro:arg name="robot3_base_y" default="1.35418"/>
   <xacro:arg name="robot3_base_z" default="1.5926"/>
   <xacro:arg name="robot3_base_roll" default="0.0"/>
   <xacro:arg name="robot3_base_pitch" default="$(eval ${-pi*0.5})"/>
   <xacro:arg name="robot3_base_yaw" default="0.0"/>
 
-  <xacro:arg name="robot4_base_x" default="1.13779"/>
+  <xacro:arg name="robot4_base_x" default="1.10981"/>
   <xacro:arg name="robot4_base_y" default="0.04498"/>
   <xacro:arg name="robot4_base_z" default="1.5926"/>
   <xacro:arg name="robot4_base_roll" default="0.0"/>
