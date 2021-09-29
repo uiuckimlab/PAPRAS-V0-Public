@@ -40,7 +40,7 @@ def generate(config, n_robots = 3, n_joints = 6):
 
 if __name__ == "__main__":
     demo = 'coffee'
-    repo_path = os.path.expanduser('~/catkin_ws/src/PAPRAS')
+    repo_path = os.path.expanduser('~/catkin_kaz/src/PAPRAS')
 
     if demo == 'cage':
         read_path = repo_path + '/papras/config/cage_arm_config.yaml'
