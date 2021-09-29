@@ -9,7 +9,7 @@ RUN apt update && apt-get install -y \
     python3-rosdep \
     python3-rosinstall \
     python3-rosinstall-generator \
-    python3-wstool build-essential \ 
+    python3-wstool build-essential \
     git \
     xauth \
     setserial \
@@ -21,7 +21,7 @@ RUN apt update && apt-get install -y \
     ros-noetic-joint-trajectory-controller \
     ros-noetic-effort-controllers \
     ros-noetic-realsense2-camera \
-    && apt-get clean 
+    && apt-get clean
 
 # install papras dependencies packages
 RUN mkdir -p /opt/catkin_ws/src && cd /opt/catkin_ws/src \
