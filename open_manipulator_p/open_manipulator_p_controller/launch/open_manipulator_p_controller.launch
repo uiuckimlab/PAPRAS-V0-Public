@@ -1,7 +1,7 @@
 ﻿
 <launch>
   <arg name="usb_port"     default="/dev/ttyUSB0"/>
-  <arg name="baud_rate"    default="2000000"/>
+  <arg name="baud_rate"    default="1000000"/>
   <arg name="control_period"         default="0.010"/>
   <arg name="use_platform"           default="true"/>
   <arg name="use_sim"           default="false"/>
