@@ -10,6 +10,8 @@
     <include file="$(find papras)/launch/system_urdf.launch">
       <arg name="with_gripper" value="$(arg with_gripper)"/>
       <arg name="use_sim_time" value="true"/>
+      <arg name="urdf_upload" value="3arm_moveit_upload.launch"/>
+      <arg name="gui" value="false"/>
     </include>
   </group>
 

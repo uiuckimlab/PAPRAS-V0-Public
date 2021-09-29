@@ -5,7 +5,7 @@
   <arg name="use_sim_time" default="true"/>
   <arg name="with_gripper" default="false"/>
   <arg name="use_platform" default="false"/>
-  <arg name="urdf_upload" default="3arm_moveit_upload"/>
+  <arg name="urdf_upload" default="3arm_moveit_upload.launch"/>
 
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->

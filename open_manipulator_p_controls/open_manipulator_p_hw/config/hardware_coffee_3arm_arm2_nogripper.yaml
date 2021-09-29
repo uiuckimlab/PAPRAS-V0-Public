@@ -4,24 +4,24 @@ robot1/joint1:
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot1/joint2:
   ID: 2
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
-robot1/joint3: 
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
+robot1/joint3:
   ID: 3
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
   Homing_Offset: -125480
 robot1/joint4:
   ID: 4
@@ -29,24 +29,24 @@ robot1/joint4:
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot1/joint5:
   ID: 5
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot1/joint6:
   ID: 6
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot1/gripper:
   ID: 111
   Return_Delay_Time: 25
@@ -54,108 +54,113 @@ robot1/gripper:
   Velocity_Limit: 2900
   Profile_Acceleration: 300
   Profile_Velocity: 150
-
 robot2/joint1:
-  ID: 7
+  ID: 25
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot2/joint2:
-  ID: 8
+  ID: 26
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
-robot2/joint3: 
-  ID: 9
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
+robot2/joint3:
+  ID: 27
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
   Homing_Offset: -125480
 robot2/joint4:
-  ID: 10
+  ID: 28
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot2/joint5:
-  ID: 11
+  ID: 29
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot2/joint6:
-  ID: 12
+  ID: 30
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
-
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
+# robot2/gripper:
+#   ID: 151
+#   Return_Delay_Time: 25
+#   Acceleration_Limit: 9982
+#   Velocity_Limit: 2900
+#   Profile_Acceleration: 300
+#   Profile_Velocity: 150
 robot3/joint1:
-  ID: 13
+  ID: 19
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot3/joint2:
-  ID: 14
+  ID: 20
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
-robot3/joint3: 
-  ID: 15
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
+robot3/joint3:
+  ID: 21
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
   Homing_Offset: -125480
 robot3/joint4:
-  ID: 16
+  ID: 22
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot3/joint5:
-  ID: 17
+  ID: 23
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot3/joint6:
-  ID: 18
+  ID: 24
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 200
-  Profile_Velocity: 100
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
 robot3/gripper:
-  ID: 131
+  ID: 141
   Return_Delay_Time: 25
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
