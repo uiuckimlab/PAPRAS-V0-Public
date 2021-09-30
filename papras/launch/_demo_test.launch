@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<launch>
+  
+  <!-- startup move_group related -->
+  <group ns="2gripper">
+    <include file="$(find cage_config_2gripper)/launch/move_group.launch"/>
+  </group>
+
+  <group ns="cage">
+    <include file="$(find cage_config)/launch/move_group.launch"/>
+  </group>
+
+</launch>

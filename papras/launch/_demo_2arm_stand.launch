@@ -62,9 +62,6 @@
   <include file="$(find moveit_2arm_stand_config)/launch/move_group.launch">
     <arg name="pipeline" value="ompl"/>
   </include>
-  <!-- <include file="$(find moveit_2arm_stand_config)/launch/moveit_rviz.launch">
-    <arg name="rviz_config" value="$(find moveit_2arm_stand_config)/launch/moveit.rviz"/>
-  </include> -->
 
 </launch>
 
