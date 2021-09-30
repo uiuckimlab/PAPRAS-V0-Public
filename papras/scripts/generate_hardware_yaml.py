@@ -39,6 +39,7 @@ def generate(config, n_robots = 3, n_joints = 6):
     return actuator_list
 
 if __name__ == "__main__":
+
     demo = 'coffee'
     repo_path = os.path.expanduser('~/catkin_kaz/src/PAPRAS')
 
@@ -50,7 +51,6 @@ if __name__ == "__main__":
         read_path = repo_path + '/papras/config/coffee_arm_config.yaml'
         write_path = repo_path + '/open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_coffee_3arm_arm2_nogripper.yaml'
         n_robots = 3
-
 
     with open(read_path, 'r') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)

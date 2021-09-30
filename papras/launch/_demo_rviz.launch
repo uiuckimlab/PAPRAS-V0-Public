@@ -1,0 +1,7 @@
+<launch>
+
+  <include file="$(find moveit_2arm_stand_config)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find moveit_2arm_stand_config)/launch/moveit.rviz"/>
+  </include>
+
+</launch>
