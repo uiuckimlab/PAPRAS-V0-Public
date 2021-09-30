@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <launch>
   <arg name="sim" default="false"/>
-  <arg name="usb_port" default="/dev/ttyUSB0" />
+  <arg name="usb_port" default="/dev/ttyUSB1" />
   <arg name="with_gripper" default="true"/>
   <arg name="pipeline" default="ompl"/>
 
@@ -10,15 +10,18 @@
     <include file="$(find papras)/launch/system_urdf.launch">
       <arg name="with_gripper" value="$(arg with_gripper)"/>
       <arg name="use_sim_time" value="true"/>
+      <arg name="urdf_upload" value="3arm_moveit_upload.launch"/>
+      <arg name="gui" value="true"/>
     </include>
   </group>
 
   <!-- startup ros_control for real robot -->
   <group unless="$(arg sim)">
     <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
-      <arg name="usb_port" value="/dev/ttyUSB0"/>
+      <arg name="usb_port" value="$(arg usb_port)"/>
       <arg name="with_gripper" value="$(arg with_gripper)"/>
       <arg name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_coffee_3arm_arm2_nogripper.yaml"/>
+      <arg name="baud_rate" value="1000000" />
     </include>
   </group>
 
@@ -27,7 +30,7 @@
 
   <!-- joint_trajectory_controller -->
   <group unless="$(arg sim)">
-    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller.yaml" command="load"/>
+    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_coffee.yaml" command="load"/>
   </group>
   <group if="$(arg sim)">
     <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
