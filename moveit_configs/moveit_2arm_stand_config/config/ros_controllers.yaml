@@ -15,7 +15,7 @@ hardware_interface:
     - robotleft/joint4
     - robotleft/joint5
     - robotleft/joint6
-    - robotleft/gripper
+    # - robotleft/gripper
     - robotright/joint1
     - robotright/joint2
     - robotright/joint3
@@ -52,12 +52,12 @@ controller_list:
       - robotright/joint4
       - robotright/joint5
       - robotright/joint6
-  - name: left_gripper_controller
-    action_ns: follow_joint_trajectory
-    default: True
-    type: FollowJointTrajectory
-    joints:
-      - robotleft/gripper
+  # - name: left_gripper_controller
+  #   action_ns: follow_joint_trajectory
+  #   default: True
+  #   type: FollowJointTrajectory
+  #   joints:
+  #     - robotleft/gripper
   - name: right_gripper_controller
     action_ns: follow_joint_trajectory
     default: True
