@@ -38,13 +38,13 @@ def generate(config, n_robots = 3, n_joints = 6):
     return actuator_list
 
 if __name__ == "__main__":
-    read_path = '../config/cage_arm_config.yaml'
-    write_path = '../../open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_cage_2gripper.yaml'
+    read_path = '../config/stand_arm_config.yaml'
+    write_path = '../../open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_stand.yaml'
 
     with open(read_path, 'r') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
-    actuator_list = generate(config, n_robots=4)
+    actuator_list = generate(config, n_robots=2)
 
     with open(write_path, 'w') as file:
         yaml.dump(actuator_list, file, default_flow_style=False, sort_keys=False)

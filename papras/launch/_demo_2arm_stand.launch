@@ -19,6 +19,20 @@
       <arg name="paused" value="$(arg paused)"/>
       <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     </include>
+
+     <!-- We do not have a robot connected, so publish fake joint states -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+    </node>
+  </group>
+
+  <!-- startup ros_control for real robot -->
+  <group unless="$(arg sim)">
+    <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
+      <arg name="usb_port" value="/dev/ttyUSB0"/>
+      <arg name="with_gripper" value="$(arg with_gripper)"/>
+      <arg name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_stand.yaml"/>
+    </include>
   </group>
 
   <include file="$(find open_manipulator_p_description)/launch/2arm_stand_upload.launch">
@@ -29,16 +43,13 @@
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args=" -urdf -param /robot_description -model 2arm_stand"/>
 
-  <!-- We do not have a robot connected, so publish fake joint states -->
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
-  </node>
+ 
 
   <!-- controller utils -->
   <include file="$(find open_manipulator_p_hw)/launch/controller_utils.launch"/>
 
   <!-- joint_trajectory_controller -->
-  <rosparam file="$(find open_manipulator_p_controllers)/config/2arm_stand_joint_controller_gazebo.yaml" command="load"/>
+  <rosparam file="$(find open_manipulator_p_controllers)/config/2arm_stand_joint_controller.yaml" command="load"/>
 
   <node name="left_arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn left_arm_controller"/>
   <node name="right_arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn right_arm_controller"/>
@@ -49,12 +60,12 @@
   </group>
 
   <!-- startup move_group related -->
-  <include file="$(find moveit_2arm_stand_config)/launch/move_group.launch">
+  <!-- <include file="$(find moveit_2arm_stand_config)/launch/move_group.launch">
     <arg name="pipeline" value="ompl"/>
   </include>
   <include file="$(find moveit_2arm_stand_config)/launch/moveit_rviz.launch">
     <arg name="rviz_config" value="$(find moveit_2arm_stand_config)/launch/moveit.rviz"/>
-  </include>
+  </include> -->
 
 </launch>
 

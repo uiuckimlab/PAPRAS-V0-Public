@@ -1,0 +1,17 @@
+robot1: 2
+robot2: 3
+
+arm:
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 600
+  Profile_Velocity: 300
+  Homing_Offset: -125480
+gripper:
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 300
+  Profile_Velocity: 150
