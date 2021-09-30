@@ -5,7 +5,7 @@
   <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="false"/>
 
-  <arg name="with_gripper" default="true"/>
+  <arg name="with_gripper" default="false"/>
   <arg name="sim" default="false"/>
   <arg name="use_rviz" default="true"/>
   <arg name="cmd_op" default="true"/>  
@@ -55,7 +55,7 @@
 
   <group if="$(arg with_gripper)">
     <!-- <node name="left_gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn left_gripper_controller"/> -->
-    <node name="right_gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn right_gripper_controller"/>
+    <!-- <node name="right_gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn right_gripper_controller"/> -->
   </group>
 
   <!-- startup move_group related -->

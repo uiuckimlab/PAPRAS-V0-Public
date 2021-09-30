@@ -22,7 +22,7 @@ hardware_interface:
     - robotright/joint4
     - robotright/joint5
     - robotright/joint6
-    - robotright/gripper
+    # - robotright/gripper
   sim_control_mode: 1  # 0: position, 1: velocity
 # Publish all joint states
 # Creates the /joint_states topic necessary in ROS
@@ -58,9 +58,9 @@ controller_list:
   #   type: FollowJointTrajectory
   #   joints:
   #     - robotleft/gripper
-  - name: right_gripper_controller
-    action_ns: follow_joint_trajectory
-    default: True
-    type: FollowJointTrajectory
-    joints:
-      - robotright/gripper
+  # - name: right_gripper_controller
+  #   action_ns: follow_joint_trajectory
+  #   default: True
+  #   type: FollowJointTrajectory
+  #   joints:
+  #     - robotright/gripper
