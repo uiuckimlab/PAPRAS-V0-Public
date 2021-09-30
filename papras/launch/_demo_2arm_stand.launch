@@ -5,7 +5,7 @@
   <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="false"/>
 
-  <arg name="with_gripper" default="true"/>
+  <arg name="with_gripper" default="false"/>
   <arg name="sim" default="false"/>
   <arg name="use_rviz" default="true"/>
   <arg name="cmd_op" default="true"/>  
