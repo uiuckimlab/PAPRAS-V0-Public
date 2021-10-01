@@ -19,8 +19,8 @@
 
 // The circle constant tau = 2*pi. One tau is one rotation in radians.
 const double tau = 2 * M_PI;
-#define VEL_SCALE 0.05
-#define ACCEL_SCALE 0.05
+#define VEL_SCALE 0.1
+#define ACCEL_SCALE 0.1
 #define PLANNING_TIME 1
 #define PLAN_ATTEMPTS 10
 
