@@ -195,7 +195,7 @@ void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z
   // }
   int ik_attempts = 1;
   while (!success) {
-    if (ik_attempts > 10) break;
+    if (ik_attempts > 100) break;
     success = (**current_move_group).setJointValueTarget(goal_pose, (**current_move_group).getEndEffectorLink());
     ROS_INFO("IK Solver %s", success ? "PASSED" : "FAILED");
     ik_attempts++;
@@ -437,7 +437,10 @@ int main(int argc, char** argv)
       do_arm_pose_move(pose_data.at(0), pose_data.at(1), pose_data.at(2), pose_data.at(3), pose_data.at(4), pose_data.at(5), std::stoi(control_id), pose_name);
     } else if (control_name == "gripper") {
       do_gripper_angle_move(pose_data.at(0), std::stoi(control_id));
-    } else {} // Do nothing
+    } else if (control_group == "sleep") {
+      ros::Duration(pose_data.at(0)).sleep();
+    }
+    else {} // Do nothing
   }
 
   //****************************************************************************

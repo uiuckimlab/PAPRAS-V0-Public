@@ -128,7 +128,7 @@ planner_configs:
     dense_delta_fraction: 0.001  # delta fraction for interface detection. default: 0.001
     max_failures: 5000  # maximum consecutive failure limit. default: 5000
 arm1:
-  default_planner_config: SPARS
+  default_planner_config: SPARStwo
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -157,7 +157,7 @@ arm1:
   projection_evaluator: joints(robot1/joint1,robot1/joint2)
   longest_valid_segment_fraction: 0.005
 arm2:
-  default_planner_config: SPARS
+  default_planner_config: SPARStwo
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -186,7 +186,7 @@ arm2:
   projection_evaluator: joints(robot2/joint1,robot2/joint2)
   longest_valid_segment_fraction: 0.005
 arm3:
-  default_planner_config: SPARS
+  default_planner_config: SPARStwo
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -215,7 +215,7 @@ arm3:
   projection_evaluator: joints(robot3/joint1,robot3/joint2)
   longest_valid_segment_fraction: 0.005
 arm1_2:
-  default_planner_config: SPARS
+  default_planner_config: SPARStwo
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -244,7 +244,7 @@ arm1_2:
   projection_evaluator: joints(robot1/joint1,robot1/joint2)
   longest_valid_segment_fraction: 0.005
 arm2_3:
-  default_planner_config: SPARS
+  default_planner_config: SPARStwo
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -273,7 +273,7 @@ arm2_3:
   projection_evaluator: joints(robot2/joint1,robot2/joint2)
   longest_valid_segment_fraction: 0.005
 arm1_3:
-  default_planner_config: SPARS
+  default_planner_config: SPARStwo
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -302,7 +302,7 @@ arm1_3:
   projection_evaluator: joints(robot1/joint1,robot1/joint2)
   longest_valid_segment_fraction: 0.005
 arm1_2_3:
-  default_planner_config: SPARS
+  default_planner_config: SPARStwo
   planner_configs:
     - AnytimePathShortening
     - SBL

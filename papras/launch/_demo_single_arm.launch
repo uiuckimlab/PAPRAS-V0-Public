@@ -5,7 +5,7 @@
   <arg name="use_sim" default="false"/>
   <arg name="use_rviz" default="true"/>
   <arg name="usb_port" default="/dev/ttyUSB0"/>
-  <arg name="arm_id" default="4"/>
+  <arg name="arm_id" default="1"/>
   <arg name="cmd_op" default="false"/>
 
   <arg name="gui" default="true"/>
