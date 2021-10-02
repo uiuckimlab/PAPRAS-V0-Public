@@ -4,6 +4,7 @@
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="true"/>
   <arg name="pipeline" default="ompl"/>
+  <arg name="nuc_id" default="2"/>
 
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">
@@ -20,7 +21,7 @@
     <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
       <arg name="usb_port" value="$(arg usb_port)"/>
       <arg name="with_gripper" value="$(arg with_gripper)"/>
-      <arg name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_stand_nuc2.yaml"/>
+      <arg name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_stand_nuc$(arg nuc_id).yaml"/>
       <arg name="baud_rate" value="1000000" />
     </include>
   </group>
@@ -39,9 +40,9 @@
   <include file="$(find moveit_2arm_stand_config)/launch/move_group.launch">
     <arg name="pipeline" value="$(arg pipeline)"/>
   </include>
-  <include file="$(find moveit_2arm_stand_config)/launch/moveit_rviz.launch">
+  <!-- <include file="$(find moveit_2arm_stand_config)/launch/moveit_rviz.launch">
     <arg name="rviz_config" value="$(find moveit_2arm_stand_config)/launch/moveit.rviz"/>
-  </include>
+  </include> -->
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
 </launch>

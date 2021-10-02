@@ -49,9 +49,9 @@
   <include file="$(find cage_config_2gripper)/launch/move_group.launch">
     <arg name="pipeline" value="$(arg pipeline)"/>
   </include>
-  <include file="$(find cage_config_2gripper)/launch/moveit_rviz.launch">
+  <!-- <include file="$(find cage_config_2gripper)/launch/moveit_rviz.launch">
     <arg name="rviz_config" value="$(find cage_config_2gripper)/launch/moveit.rviz"/>
-  </include>
+  </include> -->
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
 </launch>

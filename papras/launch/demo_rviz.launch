@@ -1,0 +1,24 @@
+<launch>
+  <arg name="cage" default="false"/>
+  <arg name="stand" default="false"/>
+  <arg name="coffee" default="false"/>
+
+  <group if="$(arg coffee)">
+    <include file="$(find moveit_coffee_3arm_arm2_nogripper)/launch/moveit_rviz.launch">
+      <arg name="rviz_config" value="$(find moveit_coffee_3arm_arm2_nogripper)/launch/moveit.rviz"/>
+    </include>
+  </group>
+
+  <group if="$(arg cage)">
+    <include file="$(find cage_config_2gripper)/launch/moveit_rviz.launch">
+      <arg name="rviz_config" value="$(find cage_config_2gripper)/launch/moveit.rviz"/>
+    </include>
+  </group>
+
+  <group if="$(arg stand)">
+    <include file="$(find moveit_2arm_stand_config)/launch/moveit_rviz.launch">
+      <arg name="rviz_config" value="$(find moveit_2arm_stand_config)/launch/moveit.rviz"/>
+    </include>
+  </group>
+
+</launch>
