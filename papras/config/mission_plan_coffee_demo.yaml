@@ -5,51 +5,48 @@ coffee_demo_moves:
   - gripper1/kettle_close
   - arm1/kettle_levitate
   - arm1/kettle_inward
-  # - arm1/kettle_lift
   - arm1/kettle_move2dripper
   - arm1/kettle_pour
-  # - sleep/kettle_pour
-  # - arm1/kettle_move2dripper
-  # - sleep/kettle_pour
-  # - arm1/kettle_pour
-  # - sleep/kettle_pour
+  - sleep/kettle_pour
   - arm1/kettle_move2dripper
-  # - arm1/kettle_lift
+  - sleep/kettle_pour
+  - arm1/kettle_pour
+  - sleep/kettle_pour
+  - arm1/kettle_move2dripper
   - arm1/kettle_inward
   - arm1/kettle_levitate
   - arm1/kettle_grab
-  # - gripper1/kettle_open
-  # - arm1/kettle_init
-  # - gripper3/cup_open
-  # - arm3/cup_grab
-  # - gripper3/cup_close
-  # - arm3/cup_lift
-  # - arm3/cup_place
-  # - gripper3/cup_open
-  # - arm3/cup_back
-  # - arm3/raise
-  # - arm3/dripper_init
-  # - gripper3/dripper_open
-  # - arm3/dripper_grab
-  # - gripper3/dripper_close
-  # - arm3/dripper_lift_small
-  # - arm3/dripper_pull2side
-  # - arm3/dripper_lift_full
-  # - arm3/dripper_move
-  # - arm3/dripper_half_pour
-  # - arm3/dripper_pour
-  # - sleep/dripper_pour
-  # - arm3/dripper_move
-  # - arm3/dripper_exit
-  # - arm3/move_base
-  # - gripper3/dripper_open
-  # - arm3/move_back
+  - gripper1/kettle_open
+  - arm1/kettle_init
+  - gripper3/cup_open
+  - arm3/cup_grab
+  - gripper3/cup_close
+  - arm3/cup_lift
+  - arm3/cup_place
+  - gripper3/cup_open
+  - arm3/cup_back
+  - arm3/raise
+  - arm3/dripper_init
+  - gripper3/dripper_open
+  - arm3/dripper_grab
+  - gripper3/dripper_close
+  - arm3/dripper_lift_small
+  - arm3/dripper_pull2side
+  - arm3/dripper_lift_full
+  - arm3/dripper_move
+  - arm3/dripper_half_pour
+  - arm3/dripper_pour
+  - sleep/dripper_pour
+  - arm3/dripper_move
+  - arm3/dripper_exit
+  - arm3/move_base
+  - gripper3/dripper_open
+  - arm3/move_back
 arm1:
   kettle_init: [0.346, 0.010, 0.291, 1.57, 0.035, 0.029]
   kettle_grab: [0.483, 0.017, 0.290, 1.57, 0.120, 0.032]
   kettle_levitate: [0.483, 0.017, 0.360, 1.57, 0.120, 0.032]
   kettle_inward: [0.233, 0.017, 0.310, 1.57, 0.120, 0.032]
-  kettle_lift: [0.483, -0.017, 0.513, 1.57, -0.051, -0.025]
   kettle_move2dripper: [-0.065, -0.396, 0.568, 1.57, -0.041, -1.830]
   kettle_pour: [-0.095, -0.45, 0.555, 2.3, -0.024, -1.896]
 gripper1:
