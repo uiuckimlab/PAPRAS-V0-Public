@@ -115,8 +115,8 @@ void plan_execute_arm_move(moveit::planning_interface::MoveGroupInterface* move_
   // Create plan object
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
-  move_group->setMaxVelocityScalingFactor(0.07);
-  move_group->setMaxAccelerationScalingFactor(0.07);
+  move_group->setMaxVelocityScalingFactor(0.05);
+  move_group->setMaxAccelerationScalingFactor(0.05);
   move_group->setPlanningTime(1);
   move_group->setNumPlanningAttempts(10);
   
