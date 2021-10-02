@@ -3,13 +3,18 @@ coffee_demo_moves:
   - gripper1/kettle_open
   - arm1/kettle_grab
   - gripper1/kettle_close
-  - arm1/kettle_lift
+  - arm1/kettle_levitate
+  - arm1/kettle_inward
   - arm1/kettle_move2dripper
   - arm1/kettle_pour
+  - sleep/kettle_pour
   - arm1/kettle_move2dripper
+  - sleep/kettle_pour
   - arm1/kettle_pour
+  - sleep/kettle_pour
   - arm1/kettle_move2dripper
-  - arm1/kettle_lift
+  - arm1/kettle_inward
+  - arm1/kettle_levitate
   - arm1/kettle_grab
   - gripper1/kettle_open
   - arm1/kettle_init
@@ -19,6 +24,7 @@ coffee_demo_moves:
   - arm3/cup_lift
   - arm3/cup_place
   - gripper3/cup_open
+  - arm3/cup_back
   - arm3/raise
   - arm3/dripper_init
   - gripper3/dripper_open
@@ -28,18 +34,21 @@ coffee_demo_moves:
   - arm3/dripper_pull2side
   - arm3/dripper_lift_full
   - arm3/dripper_move
-  # - arm3/dripper_pre_pour
   - arm3/dripper_half_pour
   - arm3/dripper_pour
+  - sleep/dripper_pour
   - arm3/dripper_move
+  - arm3/dripper_exit
   - arm3/move_base
   - gripper3/dripper_open
+  - arm3/move_back
 arm1:
   kettle_init: [0.346, 0.010, 0.291, 1.57, 0.035, 0.029]
-  kettle_grab: [0.480, 0.015, 0.270, 1.57, 0.122, 0.032]
-  kettle_lift: [0.480, -0.015, 0.513, 1.57, -0.051, -0.025]
-  kettle_move2dripper: [-0.095, -0.396, 0.568, 1.57, -0.041, -1.830]
-  kettle_pour: [-0.110, -0.44, 0.555, 2.3, -0.024, -1.896]
+  kettle_grab: [0.483, 0.017, 0.290, 1.57, 0.120, 0.032]
+  kettle_levitate: [0.483, 0.017, 0.360, 1.57, 0.120, 0.032]
+  kettle_inward: [0.233, 0.017, 0.310, 1.57, 0.120, 0.032]
+  kettle_move2dripper: [-0.065, -0.396, 0.568, 1.57, -0.041, -1.830]
+  kettle_pour: [-0.095, -0.45, 0.555, 2.3, -0.024, -1.896]
 gripper1:
   kettle_open: [0.5]
   kettle_close: [1.0]
@@ -47,6 +56,7 @@ arm3:
   cup_grab: [0.482, 0.0, 0.15, 0.0, 0.0, 0.0]
   cup_lift: [0.33, -0.37, 0.230, 0, 0, -0.859]
   cup_place: [0.33, -0.37, 0.15, 0, 0, -0.881]
+  cup_back: [0.28, -0.314, 0.15, 0, 0, -0.881]
   raise: [0.117, -0.239, 0.172, 0, 0.762, -1.114]  
   dripper_init: [0.044, -0.310, 0.197, 0.468, 0.036, -1.431]
   dripper_grab: [0.058, -0.373, 0.192, 0.467, -0.036, -1.412]
@@ -54,13 +64,16 @@ arm3:
   dripper_pull2side: [0.216, -0.289, 0.186, 0.287, -0.060, -0.928]
   dripper_lift_full: [0.230, -0.339, 0.344, 0.287, -0.085, -0.974]
   dripper_move: [0.439, -0.18, 0.385, 0.429, -0.034, -0.461]
-  # dripper_pre_pour: [0.381, -0.321, 0.395, 0.429, -0.034, -0.461]
-  dripper_half_pour: [0.381, -0.321, 0.355, 1.899, 0.290, -0.695]
-  dripper_pour: [0.343, -0.373, 0.372, 2.318, 0.224, -0.824]
-  move_base: [0.445, -0.143, 0.194, 0.290, -0.077, -0.312]
-  # move_base: [0.500, 0.0, 0.194, 0.290, -0.077, 0.0]
+  dripper_half_pour: [0.381, -0.326, 0.355, 1.899, 0.290, -0.695]
+  dripper_pour: [0.338, -0.378, 0.372, 2.318, 0.224, -0.824]
+  dripper_exit: [0.500, 0.0, 0.385, 0.290, -0.077, 0.0]
+  move_base: [0.500, 0.0, 0.194, 0.290, -0.077, 0.0]
+  move_back: [0.450, 0.0, 0.194, 0.290, -0.077, 0.0]
 gripper3:
   dripper_open: [0.85]
   dripper_close: [1.09]
   cup_open: [0.0]
   cup_close: [0.56]
+sleep:
+  kettle_pour: [3]
+  dripper_pour: [2]

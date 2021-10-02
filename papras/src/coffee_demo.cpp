@@ -19,6 +19,10 @@
 
 // The circle constant tau = 2*pi. One tau is one rotation in radians.
 const double tau = 2 * M_PI;
+#define VEL_SCALE 0.1
+#define ACCEL_SCALE 0.1
+#define PLANNING_TIME 1
+#define PLAN_ATTEMPTS 10
 
 //******************************************************************************
 // Set up global frame transforms
@@ -49,14 +53,14 @@ tf2::Transform htm_w_to_3(rot_w_to_3, tra_w_to_3);
 static const std::string PLANNING_GROUP_ARM1 = "arm1";
 static const std::string PLANNING_GROUP_GRIPPER1 = "gripper1";
 static const std::string PLANNING_GROUP_ARM2 = "arm2";
-static const std::string PLANNING_GROUP_GRIPPER2 = "gripper2";
+// static const std::string PLANNING_GROUP_GRIPPER2 = "gripper2";
 static const std::string PLANNING_GROUP_ARM3 = "arm3";
 static const std::string PLANNING_GROUP_GRIPPER3 = "gripper3";
 
 moveit::planning_interface::MoveGroupInterface* move_group_arm1;
 moveit::planning_interface::MoveGroupInterface* move_group_gripper1;
 moveit::planning_interface::MoveGroupInterface* move_group_arm2;
-moveit::planning_interface::MoveGroupInterface* move_group_gripper2;
+// moveit::planning_interface::MoveGroupInterface* move_group_gripper2;
 moveit::planning_interface::MoveGroupInterface* move_group_arm3;
 moveit::planning_interface::MoveGroupInterface* move_group_gripper3;
 
@@ -64,7 +68,7 @@ moveit::planning_interface::MoveGroupInterface* move_group_gripper3;
 const moveit::core::JointModelGroup* joint_model_arm1;
 const moveit::core::JointModelGroup* joint_model_gripper1;
 const moveit::core::JointModelGroup* joint_model_arm2;
-const moveit::core::JointModelGroup* joint_model_gripper2;
+// const moveit::core::JointModelGroup* joint_model_gripper2;
 const moveit::core::JointModelGroup* joint_model_arm3;
 const moveit::core::JointModelGroup* joint_model_gripper3;
 
@@ -148,7 +152,10 @@ void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z
   }
   // Set planning pipeline id to chomp
   (**current_move_group).setPlanningPipelineId("ompl");
-  (**current_move_group).setPlanningTime(1.0);
+  (**current_move_group).setMaxVelocityScalingFactor(VEL_SCALE);
+  (**current_move_group).setMaxAccelerationScalingFactor(ACCEL_SCALE);
+  (**current_move_group).setPlanningTime(PLANNING_TIME);
+  (**current_move_group).setNumPlanningAttempts(PLAN_ATTEMPTS);
   
   // Create goal pose in world frame
   geometry_msgs::Pose goal_pose = pose_transform(x, y, z, roll, pitch, yaw, arm);
@@ -188,7 +195,7 @@ void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z
   // }
   int ik_attempts = 1;
   while (!success) {
-    if (ik_attempts > 10) break;
+    if (ik_attempts > 100) break;
     success = (**current_move_group).setJointValueTarget(goal_pose, (**current_move_group).getEndEffectorLink());
     ROS_INFO("IK Solver %s", success ? "PASSED" : "FAILED");
     ik_attempts++;
@@ -225,7 +232,10 @@ void do_arm_named_move(const int arm, const std::string pose_name)
   }
   // Set planning pipeline id to chomp
   (**current_move_group).setPlanningPipelineId("ompl");
-  (**current_move_group).setPlanningTime(1.0);
+  (**current_move_group).setMaxVelocityScalingFactor(VEL_SCALE);
+  (**current_move_group).setMaxAccelerationScalingFactor(ACCEL_SCALE);
+  (**current_move_group).setPlanningTime(PLANNING_TIME);
+  (**current_move_group).setNumPlanningAttempts(PLAN_ATTEMPTS);
 
   // Set joint target for the current move group
   (**current_move_group).setNamedTarget(pose_name);
@@ -265,16 +275,20 @@ void do_gripper_angle_move(const tf2Scalar& angle, const int gripper)
       current_move_group = &move_group_gripper1;
       current_joint_model = &joint_model_gripper1;
       break;
-    case 2:
-      current_move_group = &move_group_gripper2;
-      current_joint_model = &joint_model_gripper2;
-      break;
+    // case 2:
+    //   current_move_group = &move_group_gripper2;
+    //   current_joint_model = &joint_model_gripper2;
+    //   break;
     case 3:
       current_move_group = &move_group_gripper3;
       current_joint_model = &joint_model_gripper3;
   }
   // Set planning pipeline id to ompl
   (**current_move_group).setPlanningPipelineId("ompl");
+  (**current_move_group).setMaxVelocityScalingFactor(VEL_SCALE);
+  (**current_move_group).setMaxAccelerationScalingFactor(ACCEL_SCALE);
+  (**current_move_group).setPlanningTime(PLANNING_TIME);
+  (**current_move_group).setNumPlanningAttempts(PLAN_ATTEMPTS);
   
   // Create vector for target angle
   std::vector<double> target_angle{ angle, angle };
@@ -299,16 +313,21 @@ void do_gripper_named_move(const int gripper, const std::string pose_name)
       current_move_group = &move_group_gripper1;
       current_joint_model = &joint_model_gripper1;
       break;
-    case 2:
-      current_move_group = &move_group_gripper2;
-      current_joint_model = &joint_model_gripper2;
-      break;
+    // case 2:
+    //   current_move_group = &move_group_gripper2;
+    //   current_joint_model = &joint_model_gripper2;
+    //   break;
     case 3:
       current_move_group = &move_group_gripper3;
       current_joint_model = &joint_model_gripper3;
   }
   // Set planning pipeline id to ompl
   (**current_move_group).setPlanningPipelineId("ompl");
+  (**current_move_group).setMaxVelocityScalingFactor(VEL_SCALE);
+  (**current_move_group).setMaxAccelerationScalingFactor(ACCEL_SCALE);
+  (**current_move_group).setPlanningTime(PLANNING_TIME);
+  (**current_move_group).setNumPlanningAttempts(PLAN_ATTEMPTS);
+  
   
   // Set joint target for current move group
   (**current_move_group).setNamedTarget(pose_name);
@@ -336,7 +355,7 @@ int main(int argc, char** argv)
   move_group_arm1 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1);
   move_group_gripper1 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER1);
   move_group_arm2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM2);
-  move_group_gripper2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER2);
+  // move_group_gripper2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER2);
   move_group_arm3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM3);
   move_group_gripper3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER3);
 
@@ -347,9 +366,9 @@ int main(int argc, char** argv)
   joint_model_arm1 = move_group_arm1->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1);
   joint_model_gripper1 = move_group_gripper1->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER1);
   joint_model_arm2 = move_group_arm2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM2);
-  joint_model_gripper2 = move_group_gripper2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER2);
+  // joint_model_gripper2 = move_group_gripper2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER2);
   joint_model_arm3 = move_group_arm3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM3);
-  joint_model_gripper3 = move_group_gripper2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER3);
+  joint_model_gripper3 = move_group_gripper3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER3);
 
   // Print reference information
   ROS_INFO("Arm 1 planning frame: %s", move_group_arm1->getPlanningFrame().c_str());
@@ -418,7 +437,10 @@ int main(int argc, char** argv)
       do_arm_pose_move(pose_data.at(0), pose_data.at(1), pose_data.at(2), pose_data.at(3), pose_data.at(4), pose_data.at(5), std::stoi(control_id), pose_name);
     } else if (control_name == "gripper") {
       do_gripper_angle_move(pose_data.at(0), std::stoi(control_id));
-    } else {} // Do nothing
+    } else if (control_group == "sleep") {
+      ros::Duration(pose_data.at(0)).sleep();
+    }
+    else {} // Do nothing
   }
 
   //****************************************************************************
