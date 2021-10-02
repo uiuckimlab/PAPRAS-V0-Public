@@ -32,8 +32,8 @@ const double tau = 2 * M_PI;
 #define ACCEL_SCALE 0.1
 #define PLANNING_TIME 1
 #define PLAN_ATTEMPTS 10
-#define USE_CACHE 0
-#define CACHE_FILE "./../config/_coffee_demo_cache.yaml"
+#define USE_CACHE 1
+#define CACHE_FILE "/home/sankalp/manipulator_p_workspace/catkin_ws/src/PAPRAS/papras/config/_coffee_demo_cache.yaml" /* CHANGE */ 
 
 namespace YAML {
   template<>
@@ -269,15 +269,15 @@ void plan_execute_arm_move(const int arm,
     if(success){
       trajectory_cache[from_to] = my_plan;
     }
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->publishTrajectoryLine(my_plan.trajectory_, (**joint_model).getLinkModel((**move_group).getEndEffectorLink()), *joint_model);
+    visual_tools->trigger();
   }else{
     my_plan = trajectory_cache[from_to];
     ROS_INFO("%s\n","INSIDE CACHE");
+    success = true;
   }
   
-  ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-  
-  visual_tools->publishTrajectoryLine(my_plan.trajectory_, (**joint_model).getLinkModel((**move_group).getEndEffectorLink()), *joint_model);
-  visual_tools->trigger();
   if (success) {
     visual_tools->prompt("Press 'next' to execute plan");
     (**move_group).execute(my_plan);
@@ -338,6 +338,9 @@ void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z
   // constraints.position_constraints.push_back(eef_height);
   // (**current_move_group).setPathConstraints(constraints);
 
+  if(!USE_CACHE || trajectory_cache.find(from_to) == std::end(trajectory_cache)){
+      plan_execute_arm_move(arm, current_move_group, current_joint_model,from_to, trajectory_cache);
+  }
 
   // Set joint target from IK for current move group
   bool success;
