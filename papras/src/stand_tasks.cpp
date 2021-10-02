@@ -35,7 +35,7 @@ void plan_execute_arm_move(moveit::planning_interface::MoveGroupInterface* move_
 
   move_group->setMaxVelocityScalingFactor(0.1);
   move_group->setMaxAccelerationScalingFactor(0.1);
-  move_group->setPlanningTime(1);
+  move_group->setPlanningTime(0.1);
   move_group->setNumPlanningAttempts(10);
   
   // Plan and execute on appropriate arm
