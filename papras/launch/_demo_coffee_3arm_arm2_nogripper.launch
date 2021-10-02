@@ -10,7 +10,7 @@
     <include file="$(find papras)/launch/system_urdf.launch">
       <arg name="with_gripper" value="$(arg with_gripper)"/>
       <arg name="use_sim_time" value="true"/>
-      <arg name="urdf_upload" value="3arm_moveit_upload.launch"/>
+      <arg name="urdf_upload" value="coffee_3arm_arm2_nogripper_upload.launch"/>
       <arg name="gui" value="true"/>
     </include>
   </group>
@@ -33,7 +33,7 @@
     <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_coffee.yaml" command="load"/>
   </group>
   <group if="$(arg sim)">
-    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
+    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_coffee_gazebo.yaml" command="load"/>
   </group>
 
   <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>

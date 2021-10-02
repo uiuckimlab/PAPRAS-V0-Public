@@ -5,10 +5,10 @@
   <xacro:include filename="$(find open_manipulator_p_description)/urdf/materials.xacro"/>
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/3arm_moveit_with_gripper.gazebo.xacro"/>
+  <xacro:include filename="$(find open_manipulator_p_description)/urdf/coffee_3arm_arm2_nogripper.gazebo.xacro"/>
 
   <!-- Import Transmission -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/3arm_moveit_with_gripper.transmission.xacro"/>
+  <xacro:include filename="$(find open_manipulator_p_description)/urdf/coffee_3arm_arm2_nogripper.transmission.xacro"/>
 
   <xacro:arg name="robot1_base_x" default="-0.3795"/>
   <xacro:arg name="robot1_base_y" default="0.0435"/>
