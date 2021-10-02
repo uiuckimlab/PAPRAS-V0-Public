@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: open_manipulator_p_description
+    relative_path: urdf/coffee_arm3.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/open_manipulator_p.srdf
+  CONFIG:
+    author_name: Kazuki Shin
+    author_email: kazukis2@illinois.edu
+    generated_timestamp: 1632760013

@@ -4,7 +4,7 @@
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="true"/>
   <arg name="pipeline" default="ompl"/>
-  <arg name="gazebo_gui" default="true"/>
+  <arg name="gazebo_gui" default="false"/>
 
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">

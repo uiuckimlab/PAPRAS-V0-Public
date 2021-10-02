@@ -96,12 +96,13 @@ include_directories(
   ${EIGEN3_INCLUDE_DIRS}
 )
 
+
 add_executable(coffee_demo src/coffee_demo.cpp)
-target_link_libraries(coffee_demo ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(coffee_demo ${catkin_LIBRARIES} ${Boost_LIBRARIES} yaml-cpp)
 install(TARGETS coffee_demo DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(cage_tasks src/cage_tasks.cpp)
-target_link_libraries(cage_tasks ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(cage_tasks ${catkin_LIBRARIES} ${Boost_LIBRARIES} yaml-cpp)
 install(TARGETS cage_tasks DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(test_multi src/test_multi.cpp)

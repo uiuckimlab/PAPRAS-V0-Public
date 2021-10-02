@@ -3,7 +3,6 @@
 
 #include <moveit_msgs/DisplayRobotState.h>
 #include <moveit_msgs/DisplayTrajectory.h>
-
 #include <moveit_msgs/AttachedCollisionObject.h>
 #include <moveit_msgs/CollisionObject.h>
 
@@ -13,16 +12,92 @@
 #include <tf2/LinearMath/Transform.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Vector3.h>
-
+#include <unordered_map>
 // For quaternions
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
+// for cacheing
+#include <unordered_map>
+#include <fstream> 
+#include <sstream>
+#include <cstdint>
+#include <yaml-cpp/yaml.h>
+
+
+
 // The circle constant tau = 2*pi. One tau is one rotation in radians.
 const double tau = 2 * M_PI;
+
 #define VEL_SCALE 0.1
 #define ACCEL_SCALE 0.1
 #define PLANNING_TIME 1
 #define PLAN_ATTEMPTS 10
+#define USE_CACHE 0
+#define CACHE_FILE "./../config/_coffee_demo_cache.yaml"
+
+namespace YAML {
+  template<>
+  struct convert<ros::Duration> {
+    static bool decode(const Node & node, ros::Duration & result){
+      	std::int32_t seconds;
+	      std::int32_t nanoseconds;
+	      if (!convert<std::int32_t>::decode(node["secs"],  seconds    )) return false;
+	      if (!convert<std::int32_t>::decode(node["nsecs"], nanoseconds)) return false;
+	        result = ros::Duration(seconds, nanoseconds);
+	      return true;
+    }
+  };
+
+  template<>
+  struct convert<ros::Time> {
+    static bool decode(const Node & node, ros::Time & result){
+      std::int32_t seconds;
+      std::int32_t nanoseconds;
+      if (!convert<std::int32_t>::decode(node["secs"],  seconds)) return false;
+      if (!convert<std::int32_t>::decode(node["nsecs"], nanoseconds)) return false;
+      result = ros::Time(seconds, nanoseconds);
+      return true;
+    }
+  };
+
+  template<>
+  struct convert<ros::Header> {
+    static bool decode(const Node & node, std_msgs::Header & result){
+      if (!convert<unsigned int>::decode(node["seq"], result.seq)) return false;
+      if (!convert<std::string >::decode(node["frame_id"], result.frame_id)) return false;
+      if (!convert<ros::Time>::decode(node["stamp"], result.stamp)) return false;
+      return true;
+    }
+  };
+
+
+
+  template<>
+  struct convert<trajectory_msgs::JointTrajectoryPoint> {
+    static bool decode(const Node & node, trajectory_msgs::JointTrajectoryPoint & result){
+      	if (!convert<std::vector<double>>::decode(node["positions"], result.positions)) return false;
+        if (!convert<std::vector<double>>::decode(node["velocities"], result.velocities)) return false;
+        if (!convert<std::vector<double>>::decode(node["accelerations"], result.accelerations)) return false;
+        if (!convert<std::vector<double>>::decode(node["effort"], result.effort)) return false;
+        if (!convert<ros::Duration>::decode(node["time_from_start"], result.time_from_start)) return false;
+        return true;
+    }
+  };
+
+  template<>
+  struct convert<trajectory_msgs::JointTrajectory> {
+    
+    static bool decode(const Node& node, trajectory_msgs::JointTrajectory & result) {
+	    using TrajectoryPoints = std::vector<trajectory_msgs::JointTrajectoryPoint>;
+      using JointNames       = std::vector<std::string>;
+
+      if (!convert<ros::Header>::decode(node["header"], result.header)) return false;
+      if (!convert<JointNames>::decode(node["joint_names"], result.joint_names)) return false;
+      if (!convert<TrajectoryPoints>::decode(node["points"], result.points)) return false;
+      return true;
+    }
+  };
+}
 
 //******************************************************************************
 // Set up global frame transforms
@@ -79,6 +154,68 @@ const moveit::core::JointModelGroup** current_joint_model;
 // Visualization
 moveit_visual_tools::MoveItVisualTools* visual_tools;
 
+std::stringstream convert_plan_to_cache(moveit::planning_interface::MoveGroupInterface::Plan plan){
+    std::stringstream ss;
+    ss << "  plan_time: " << plan.planning_time_ << " \n";
+    trajectory_msgs::JointTrajectory trajectory = plan.trajectory_.joint_trajectory;
+    ss << "  joint_trajectory: \n    header: \n      seq: 0\n      stamp: \n        secs: 0\n        nsecs: 0\n      frame_id: /world\n";
+    ss << "    joint_names: ['";
+    std::vector<std::string> jns = trajectory.joint_names;
+    for (int ii = 0; ii < jns.size()-1; ii++) ss << jns[ii] << "', '";
+    ss << jns.back() << "']\n";
+ 
+    ss << "    points: \n";
+
+  for (int i = 0; i < trajectory.points.size(); i++){
+    trajectory_msgs::JointTrajectoryPoint jtp = trajectory.points[i];
+
+    ss << "      - \n";
+    ss << "        positions: [";
+    for (int ii = 0; ii < jtp.positions.size()-1; ii++) ss << jtp.positions[ii] << ", ";
+    ss << jtp.positions.back() << "]\n";
+
+    ss << "        velocities: [";
+    for (int ii = 0; ii < jtp.velocities.size()-1; ii++) ss << jtp.velocities[ii] << ", ";
+    ss << jtp.velocities.back() << "]\n";
+
+    ss << "        accelerations: [";
+    for (int ii = 0; ii < jtp.accelerations.size()-1; ii++) ss << jtp.accelerations[ii] << ", ";
+    ss << jtp.accelerations.back() << "]\n";
+
+    ss << "        effort: []\n";
+    ss << "        time_from_start: \n";
+    ss << "          secs: " << jtp.time_from_start.sec << "\n";
+    ss << "          nsecs: " << jtp.time_from_start.nsec << "\n";
+  }
+  
+  sensor_msgs::JointState js = plan.start_state_.joint_state;
+  ss << "  joint_state: \n    header: \n      seq: 0\n      stamp: \n        secs: 0\n        nsecs: 0\n      frame_id: /world\n";
+  ss << "    name: ['";
+  std::vector<std::string> js_name = js.name;
+  for(int i =0; i < js_name.size()-1; i++){
+    ss << js_name[i] <<"', '"; 
+  }
+  ss << js_name.back() << "']\n";
+  ss << "    position: [";
+  std::vector<double> pos_js = js.position;
+  for(int i =0; i < pos_js.size()-1; i++){
+    ss << pos_js[i] << ", ";
+  }
+  ss << pos_js.back() << "]\n";
+  ss << "    velocity: [";
+  std::vector<double> vel_js = js.velocity;
+  for(int i =0; i < vel_js.size()-1; i++){
+    ss << vel_js[i] << ", ";
+  }
+  ss << vel_js.back() << "]\n";
+  
+
+  return ss;
+}
+
+
+
+
 geometry_msgs::Pose pose_transform(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z,
                                    const tf2Scalar& roll, const tf2Scalar& pitch, const tf2Scalar& yaw,
                                    const int arm)
@@ -112,17 +249,33 @@ geometry_msgs::Pose pose_transform(const tf2Scalar& x, const tf2Scalar& y, const
   return pose_out;
 }
 
+// unordered_map can be x to y
+
+
 void plan_execute_arm_move(const int arm,
                            moveit::planning_interface::MoveGroupInterface** move_group,
-                           const moveit::core::JointModelGroup** joint_model)
+                           const moveit::core::JointModelGroup** joint_model,
+                           std::string from_to, 
+                           std::unordered_map<std::string,moveit::planning_interface::MoveGroupInterface::Plan> &trajectory_cache
+                           )
 {
   // Create plan object
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
   
   // Plan and execute on appropriate arm
   bool success;
-  success = ((**move_group).plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  if(!USE_CACHE || trajectory_cache.find(from_to) == std::end(trajectory_cache)){
+    success = ((**move_group).plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    if(success){
+      trajectory_cache[from_to] = my_plan;
+    }
+  }else{
+    my_plan = trajectory_cache[from_to];
+    ROS_INFO("%s\n","INSIDE CACHE");
+  }
+  
   ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+  
   visual_tools->publishTrajectoryLine(my_plan.trajectory_, (**joint_model).getLinkModel((**move_group).getEndEffectorLink()), *joint_model);
   visual_tools->trigger();
   if (success) {
@@ -133,7 +286,8 @@ void plan_execute_arm_move(const int arm,
 
 void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z,
                       const tf2Scalar& roll, const tf2Scalar& pitch, const tf2Scalar& yaw,
-                      const int arm, const std::string pose_name)
+                      const int arm, const std::string pose_name, std::string from_to, std::unordered_map<std::string,moveit::planning_interface::MoveGroupInterface::Plan> & trajectory_cache
+)
 {
   // Assign double pointers for current move group
   switch (arm)
@@ -207,14 +361,15 @@ void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z
   visual_tools->publishAxisLabeled(goal_pose, pose_name);
 
   // Plan and execute move
-  plan_execute_arm_move(arm, current_move_group, current_joint_model);
+  plan_execute_arm_move(arm, current_move_group, current_joint_model,from_to, trajectory_cache);
 
   // Clear constraints
   // (**current_move_group).clearPathConstraints();
 }
 
-void do_arm_named_move(const int arm, const std::string pose_name)
+void do_arm_named_move(const int arm, const std::string pose_name, std::string from_to, std::unordered_map<std::string,moveit::planning_interface::MoveGroupInterface::Plan> & trajectory_cache)
 {
+
   // Assign double pointers for current move group
   switch (arm)
   {
@@ -245,7 +400,7 @@ void do_arm_named_move(const int arm, const std::string pose_name)
   visual_tools->deleteAllMarkers();
 
   // Plan and execute move
-  plan_execute_arm_move(arm, current_move_group, current_joint_model);
+  plan_execute_arm_move(arm, current_move_group, current_joint_model,from_to,trajectory_cache);
 }
 
 void plan_execute_gripper_move(const int gripper,
@@ -343,11 +498,30 @@ void do_gripper_named_move(const int gripper, const std::string pose_name)
 int main(int argc, char** argv)
 {
   // Setup node and start AsyncSpinner
+  std::unordered_map<std::string,moveit::planning_interface::MoveGroupInterface::Plan> trajectory_cache;
   const std::string node_name = "coffee_demo";
   ros::init(argc, argv, node_name);
   ros::NodeHandle node_handle;
   ros::AsyncSpinner spinner(1);
   spinner.start();
+
+  if(USE_CACHE){
+    YAML::Node root = YAML::LoadFile(CACHE_FILE);
+    for (YAML::const_iterator it=root.begin();it!=root.end();++it) {
+      std::string name = it->first.as<std::string>();
+      moveit::planning_interface::MoveGroupInterface::Plan my_cached_plan;
+      YAML::Node node = it->second;
+      my_cached_plan.planning_time_ = node["plan_time"].as<double>();
+      
+      trajectory_msgs::JointTrajectory trajectory = node["joint_trajectory"].as<trajectory_msgs::JointTrajectory>();
+      my_cached_plan.trajectory_.joint_trajectory = trajectory;
+
+      trajectory_cache[name] = my_cached_plan;
+  
+     // ROS_INFO("%s\n",name.c_str());
+    }
+    //ROS_INFO("HERE");
+  }
 
   //****************************************************************************
   // Set up planning interface
@@ -395,8 +569,8 @@ int main(int argc, char** argv)
 
   // User input to start demo
   visual_tools->prompt("Press 'next' in the RvizVisualToolsGui window to begin");
-  do_arm_named_move(1, "rest");
-  do_arm_named_move(3, "rest");
+  do_arm_named_move(1, "rest","rest1",trajectory_cache);
+  do_arm_named_move(3, "rest","rest2",trajectory_cache);
 
   //****************************************************************************
   /* Coffee Demo
@@ -426,6 +600,13 @@ int main(int argc, char** argv)
     std::string control_name = control_group.substr(0, control_group.length()-1);
     std::string control_id = control_group.substr(control_group.length()-1);
     std::string pose_name = move_name.substr(move_name.find("/")+1);
+
+    std::string from_to = move_name + "_to_";
+    if(it +1 != std::end(moves_list)){
+      from_to += (*(it+1));
+    }else {
+      from_to += "end";
+    }
     // ROS_INFO("Move found: %s, control_group: %s, pose_name: %s", move_name.c_str(), control_group.c_str(), pose_name.c_str());
 
     // Get pose data
@@ -434,7 +615,7 @@ int main(int argc, char** argv)
 
     // Do appropriate move
     if (control_name == "arm") {
-      do_arm_pose_move(pose_data.at(0), pose_data.at(1), pose_data.at(2), pose_data.at(3), pose_data.at(4), pose_data.at(5), std::stoi(control_id), pose_name);
+      do_arm_pose_move(pose_data.at(0), pose_data.at(1), pose_data.at(2), pose_data.at(3), pose_data.at(4), pose_data.at(5), std::stoi(control_id), pose_name, from_to, trajectory_cache);
     } else if (control_name == "gripper") {
       do_gripper_angle_move(pose_data.at(0), std::stoi(control_id));
     } else if (control_group == "sleep") {
@@ -445,8 +626,24 @@ int main(int argc, char** argv)
 
   //****************************************************************************
   // Exit
-  do_arm_named_move(1, "rest");
-  do_arm_named_move(3, "rest");
+  do_arm_named_move(1, "rest","rest3",trajectory_cache);
+  do_arm_named_move(3, "rest","rest4",trajectory_cache);
+
+  if(!USE_CACHE){
+    std::ofstream os(CACHE_FILE);
+    // YAML::Node node;
+    for(std::unordered_map<std::string,moveit::planning_interface::MoveGroupInterface::Plan>::iterator it = std::begin(trajectory_cache); it != std::end(trajectory_cache); it++){
+      // chatter_pub.publish((it->second));
+      // ROS_INFO((it->second));
+      os << it->first <<":\n";
+      std::stringstream ss = convert_plan_to_cache(it->second);
+      std::string value = ss.str();
+      os << value;
+      // os << ss.rdbuf;
+    }
+  }
+
+  // Write to a yaml file with helper functions.
   ros::shutdown();
   return 0;
 }
