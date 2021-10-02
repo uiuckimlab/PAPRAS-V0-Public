@@ -104,6 +104,10 @@ add_executable(cage_tasks src/cage_tasks.cpp)
 target_link_libraries(cage_tasks ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS cage_tasks DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(stand_tasks src/stand_tasks.cpp)
+target_link_libraries(stand_tasks ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS stand_tasks DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 add_executable(test_multi src/test_multi.cpp)
 target_link_libraries(test_multi ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS test_multi DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

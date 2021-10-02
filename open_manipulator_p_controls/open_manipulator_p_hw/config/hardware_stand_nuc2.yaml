@@ -1,0 +1,112 @@
+robotleft/joint1:
+  ID: 43
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+robotleft/joint2:
+  ID: 44
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+robotleft/joint3:
+  ID: 45
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+  Homing_Offset: -125480
+robotleft/joint4:
+  ID: 46
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+robotleft/joint5:
+  ID: 47
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+robotleft/joint6:
+  ID: 48
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+# robotleft/gripper:
+#   ID: 181
+#   Return_Delay_Time: 25
+#   Acceleration_Limit: 9982
+#   Velocity_Limit: 2900
+#   Profile_Acceleration: 3000
+#   Profile_Velocity: 1500
+robotright/joint1:
+  ID: 37
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+robotright/joint2:
+  ID: 38
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+robotright/joint3:
+  ID: 39
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+  Homing_Offset: -125480
+robotright/joint4:
+  ID: 40
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+robotright/joint5:
+  ID: 41
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+robotright/joint6:
+  ID: 42
+  Return_Delay_Time: 25
+  Operating_Mode: 3
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 3000
+  Profile_Velocity: 1500
+# robotright/gripper:
+#   ID: 171
+#   Return_Delay_Time: 25
+#   Acceleration_Limit: 9982
+#   Velocity_Limit: 2900
+#   Profile_Acceleration: 3000
+#   Profile_Velocity: 1500

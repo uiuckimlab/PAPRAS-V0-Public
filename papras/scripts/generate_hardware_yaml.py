@@ -40,8 +40,8 @@ def generate(config, n_robots = 3, n_joints = 6):
 
 if __name__ == "__main__":
 
-    demo = 'coffee'
-    repo_path = os.path.expanduser('~/catkin_kaz/src/PAPRAS')
+    demo = 'stand'
+    repo_path = os.path.expanduser('~/catkin_ws/src/PAPRAS')
 
     if demo == 'cage':
         read_path = repo_path + '/papras/config/cage_arm_config.yaml'
@@ -51,6 +51,10 @@ if __name__ == "__main__":
         read_path = repo_path + '/papras/config/coffee_arm_config.yaml'
         write_path = repo_path + '/open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_coffee_3arm_arm2_nogripper.yaml'
         n_robots = 3
+    if demo == 'stand':
+        read_path = repo_path + '/papras/config/stand_arm_config.yaml'
+        write_path = repo_path + '/open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_stand_nuc3.yaml'
+        n_robots = 2
 
     with open(read_path, 'r') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
