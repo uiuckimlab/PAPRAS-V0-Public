@@ -1,5 +1,5 @@
-robot1: 2
-robot2: 3
+robot1: 6
+robot2: 7
 
 arm:
   Return_Delay_Time: 25
