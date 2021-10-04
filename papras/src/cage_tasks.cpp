@@ -23,102 +23,37 @@
 #define EEF3 "robot3/end_effector_link"
 #define EEF4 "robot4/end_effector_link"
 
+// Planning parameters
+#define VEL_SCALE 0.1
+#define ACCEL_SCALE 0.1
+#define PLANNING_TIME 1.0
+#define NUM_PLANS 10
+
 // The circle constant tau = 2*pi. One tau is one rotation in radians.
 const double tau = 2 * M_PI;
 
 //******************************************************************************
-// Set up global frame transforms
-// World to Arm 1 HTM
-tf2::Matrix3x3 rot_w_to_1( 0, -1,  0,
-                           1,  0,  0,
-                           0,  0,  1); // pi/2 around z
-tf2::Vector3 tra_w_to_1(-0.3795, 0.0435, 0.686);
-tf2::Transform htm_w_to_1(rot_w_to_1, tra_w_to_1);
-
-// World to Arm 2 HTM
-tf2::Matrix3x3 rot_w_to_2(-1,  0,  0,
-                           0, -1,  0,
-                           0,  0,  1); // pi around z
-tf2::Vector3 tra_w_to_2(-0.3835, -0.5545, 0.686);
-tf2::Transform htm_w_to_2(rot_w_to_2, tra_w_to_2);
-
-// World to Arm 3 HTM
-tf2::Matrix3x3 rot_w_to_3( 0,  1,  0,
-                          -1,  0,  0,
-                           0,  0,  1); // -pi/2 around z
-tf2::Vector3 tra_w_to_3(0.3735, -0.2535, 0.686);
-tf2::Transform htm_w_to_3(rot_w_to_3, tra_w_to_3);
-
-//******************************************************************************
 // Declare global objects
 // Create move group planning interfaces
-static const std::string PLANNING_GROUP_ARM1_2 = "arm1_2";
-static const std::string PLANNING_GROUP_ARM2_3 = "arm2_3";
-static const std::string PLANNING_GROUP_ARM1_3 = "arm1_3";
-static const std::string PLANNING_GROUP_ARM1_2_3 = "arm1_2_3";
 static const std::string PLANNING_GROUP_ARM1_2_3_4 = "arm1_2_3_4";
-static const std::string PLANNING_GROUP_ARM1_4 = "arm1_4";
 
-moveit::planning_interface::MoveGroupInterface* move_group_arm1_2;
-moveit::planning_interface::MoveGroupInterface* move_group_arm2_3;
-moveit::planning_interface::MoveGroupInterface* move_group_arm1_3;
-moveit::planning_interface::MoveGroupInterface* move_group_arm1_2_3;
 moveit::planning_interface::MoveGroupInterface* move_group_arm1_2_3_4;
-moveit::planning_interface::MoveGroupInterface* move_group_arm1_4;
 
 // Pointers to move groups
-const moveit::core::JointModelGroup* joint_model_arm1_2;
-const moveit::core::JointModelGroup* joint_model_arm2_3;
-const moveit::core::JointModelGroup* joint_model_arm1_3;
-const moveit::core::JointModelGroup* joint_model_arm1_2_3;
 const moveit::core::JointModelGroup* joint_model_arm1_2_3_4;
-const moveit::core::JointModelGroup* joint_model_arm1_4;
 
 // Visualization
 moveit_visual_tools::MoveItVisualTools* visual_tools;
-
-geometry_msgs::Pose pose_transform(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z,
-                                   const tf2Scalar& roll, const tf2Scalar& pitch, const tf2Scalar& yaw,
-                                   const int arm)
-{
-  // Create HTM for goal in robot frame
-  tf2::Vector3 tra(x, y, z);
-  tf2::Quaternion quat;
-  quat.setRPY(roll, pitch, yaw);
-  tf2::Matrix3x3 rot(quat);
-  tf2::Transform htm(rot, tra);
-
-  // Select appropriate HTM from world frame to robot frame
-  tf2::Transform world_htm;
-  switch(arm)
-  {
-    case 1:
-      world_htm = htm_w_to_1;
-      break;
-    case 2:
-      world_htm = htm_w_to_2;
-      break;
-    case 3:
-      world_htm = htm_w_to_3;
-      break;
-  }
-
-  // Compute HTM from world frame to goal and return geometry_msgs::Pose
-  tf2::Transform htm_out = world_htm * htm;
-  geometry_msgs::Pose pose_out;
-  tf2::toMsg(htm_out, pose_out);
-  return pose_out;
-}
 
 void plan_execute_arm_move(moveit::planning_interface::MoveGroupInterface* move_group)
 {
   // Create plan object
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
-  move_group->setMaxVelocityScalingFactor(0.05);
-  move_group->setMaxAccelerationScalingFactor(0.05);
-  move_group->setPlanningTime(1);
-  move_group->setNumPlanningAttempts(10);
+  move_group->setMaxVelocityScalingFactor(VEL_SCALE);
+  move_group->setMaxAccelerationScalingFactor(ACCEL_SCALE);
+  move_group->setPlanningTime(PLANNING_TIME);
+  move_group->setNumPlanningAttempts(NUM_PLANS);
   
   // Plan and execute on appropriate arm
   bool success;
@@ -142,23 +77,13 @@ int main(int argc, char** argv)
   //****************************************************************************
   // Set up planning interface
   // Set up move group planning interfaces
-  move_group_arm1_2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_2);
-  move_group_arm2_3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM2_3);
-  move_group_arm1_3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_3);
-  move_group_arm1_2_3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_2_3);
   move_group_arm1_2_3_4 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_2_3_4);
-  move_group_arm1_4 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_4);
 
   // Set up planning scene to add/remove collision objects in world
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
   // Create pointers to planning groups
-  joint_model_arm1_2 = move_group_arm1_2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_2);
-  joint_model_arm2_3 = move_group_arm2_3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM2_3);
-  joint_model_arm1_3 = move_group_arm1_3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_3);
-  joint_model_arm1_2_3 = move_group_arm1_2_3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_2_3);
-  joint_model_arm1_2_3 = move_group_arm1_2_3_4->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_2_3_4);
-  joint_model_arm1_2_3 = move_group_arm1_4->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_4);
+  joint_model_arm1_2_3_4 = move_group_arm1_2_3_4->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_2_3_4);
 
   //****************************************************************************
   // Set up visualization
@@ -171,9 +96,36 @@ int main(int argc, char** argv)
 
   // Batch publish RViz commands
   Eigen::Isometry3d text_pose = Eigen::Isometry3d::Identity();
-  text_pose.translation().z() = 1.0;
-  visual_tools->publishText(text_pose, "Coffee Demo", rvt::WHITE, rvt::XLARGE);
+  text_pose.translation().x() = 0.61;
+  text_pose.translation().y() = 0.70;
+  text_pose.translation().z() = 1.50;
+  visual_tools->publishText(text_pose, "Cage Demo", rvt::WHITE, rvt::XLARGE);
   visual_tools->trigger();
+
+  // Add collision object to represent dummy (mannequin)
+  moveit_msgs::CollisionObject collision_object;
+  collision_object.header.frame_id = move_group_arm1_2_3_4->getPlanningFrame();
+  
+  shape_msgs::SolidPrimitive primitive;
+  primitive.type = primitive.BOX;
+  primitive.dimensions[primitive.BOX_X] = 0.25;
+  primitive.dimensions[primitive.BOX_Y] = 0.60;
+  primitive.dimensions[primitive.BOX_Z] = 1.90;
+  
+  geometry_msgs::Pose box_pose;
+  box_pose.orientation.w = 1.0;
+  box_pose.position.x = 0.61;
+  box_pose.position.y = 0.70;
+  box_pose.position.z = 0.95;
+
+  collision_object.primitives.push_back(primitive);
+  collision_object.primitive_poses.push_back(box_pose);
+  collision_object.operation = collision_object.ADD;
+
+  std::vector<moveit_msgs::CollisionObject> collision_objects;
+  collision_objects.push_back(collision_object);
+  ROS_INFO("Adding mannequin collision object");
+  planning_scene_interface.addCollisionObjects(collision_objects);
 
   // User input to start demo
   visual_tools->prompt("Press 'next' in the RvizVisualToolsGui window to begin");
@@ -201,11 +153,6 @@ int main(int argc, char** argv)
       std::vector<double> joint_group_positions = pose_data;
       move_group_arm1_2_3_4->setJointValueTarget(joint_group_positions);
       plan_execute_arm_move(move_group_arm1_2_3_4);
-    }
-    if(move_group=="arm1_4"){
-      std::vector<double> joint_group_positions = pose_data;
-      move_group_arm1_4->setJointValueTarget(joint_group_positions);
-      plan_execute_arm_move(move_group_arm1_4);
     }
   }
 
