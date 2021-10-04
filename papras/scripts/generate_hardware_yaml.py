@@ -40,7 +40,7 @@ def generate(config, n_robots = 3, n_joints = 6):
 
 if __name__ == "__main__":
 
-    demo = 'stand'
+    demo = 'coffee'
     repo_path = os.path.expanduser('~/catkin_ws/src/PAPRAS')
 
     if demo == 'cage':

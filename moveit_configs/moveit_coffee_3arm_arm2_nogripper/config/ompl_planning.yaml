@@ -273,7 +273,7 @@ arm2_3:
   projection_evaluator: joints(robot2/joint1,robot2/joint2)
   longest_valid_segment_fraction: 0.005
 arm1_3:
-  default_planner_config: SPARStwo
+  default_planner_config: RRT
   planner_configs:
     - AnytimePathShortening
     - SBL
