@@ -102,30 +102,54 @@ int main(int argc, char** argv)
   visual_tools->publishText(text_pose, "Cage Demo", rvt::WHITE, rvt::XLARGE);
   visual_tools->trigger();
 
-  // Add collision object to represent dummy (mannequin)
-  moveit_msgs::CollisionObject collision_object;
-  collision_object.header.frame_id = move_group_arm1_2_3_4->getPlanningFrame();
+  // Add collision objects to represent dummy - body and head
+  moveit_msgs::CollisionObject body_collision_obj;
+  body_collision_obj.id = "body";
+  body_collision_obj.header.frame_id = move_group_arm1_2_3_4->getPlanningFrame();
   
-  shape_msgs::SolidPrimitive primitive;
-  primitive.type = primitive.BOX;
-  primitive.dimensions[primitive.BOX_X] = 0.25;
-  primitive.dimensions[primitive.BOX_Y] = 0.60;
-  primitive.dimensions[primitive.BOX_Z] = 1.90;
+  shape_msgs::SolidPrimitive body_primitive;
+  body_primitive.type = body_primitive.BOX;
+  body_primitive.dimensions.resize(3);
+  body_primitive.dimensions[body_primitive.BOX_X] = 0.22;
+  body_primitive.dimensions[body_primitive.BOX_Y] = 0.55;
+  body_primitive.dimensions[body_primitive.BOX_Z] = 1.58;
   
-  geometry_msgs::Pose box_pose;
-  box_pose.orientation.w = 1.0;
-  box_pose.position.x = 0.61;
-  box_pose.position.y = 0.70;
-  box_pose.position.z = 0.95;
+  geometry_msgs::Pose body_pose;
+  body_pose.orientation.w = 1.0;
+  body_pose.position.x = 0.61;
+  body_pose.position.y = 0.68;
+  body_pose.position.z = 0.79;
 
-  collision_object.primitives.push_back(primitive);
-  collision_object.primitive_poses.push_back(box_pose);
-  collision_object.operation = collision_object.ADD;
+  body_collision_obj.primitives.push_back(body_primitive);
+  body_collision_obj.primitive_poses.push_back(body_pose);
+  body_collision_obj.operation = body_collision_obj.ADD;
+
+  moveit_msgs::CollisionObject head_collision_obj;
+  head_collision_obj.id = "head";
+  head_collision_obj.header.frame_id = move_group_arm1_2_3_4->getPlanningFrame();
+  
+  shape_msgs::SolidPrimitive head_primitive;
+  head_primitive.type = head_primitive.BOX;
+  head_primitive.dimensions.resize(3);
+  head_primitive.dimensions[head_primitive.BOX_X] = 0.27;
+  head_primitive.dimensions[head_primitive.BOX_Y] = 0.22;
+  head_primitive.dimensions[head_primitive.BOX_Z] = 0.29;
+  
+  geometry_msgs::Pose head_pose;
+  head_pose.orientation.w = 1.0;
+  head_pose.position.x = 0.65;
+  head_pose.position.y = 0.68;
+  head_pose.position.z = 1.73;
+
+  head_collision_obj.primitives.push_back(head_primitive);
+  head_collision_obj.primitive_poses.push_back(head_pose);
+  head_collision_obj.operation = head_collision_obj.ADD;
 
   std::vector<moveit_msgs::CollisionObject> collision_objects;
-  collision_objects.push_back(collision_object);
-  ROS_INFO("Adding mannequin collision object");
+  collision_objects.push_back(body_collision_obj);
+  collision_objects.push_back(head_collision_obj);
   planning_scene_interface.addCollisionObjects(collision_objects);
+  ROS_INFO("Adding mannequin collision object");
 
   // User input to start demo
   visual_tools->prompt("Press 'next' in the RvizVisualToolsGui window to begin");
@@ -158,6 +182,13 @@ int main(int argc, char** argv)
 
   move_group_arm1_2_3_4->setNamedTarget("rest");
   plan_execute_arm_move(move_group_arm1_2_3_4);
+
+  //Remove dummy collision objects
+  std::vector<std::string> object_ids;
+  object_ids.push_back(body_collision_obj.id);
+  object_ids.push_back(head_collision_obj.id);
+  planning_scene_interface.removeCollisionObjects(object_ids);
+
   ros::shutdown();
   return 0;
 }
