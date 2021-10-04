@@ -10,14 +10,7 @@
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="arm1">
-        <joint name="robot1/joint1"/>
-        <joint name="robot1/joint2"/>
-        <joint name="robot1/joint3"/>
-        <joint name="robot1/joint4"/>
-        <joint name="robot1/joint5"/>
-        <joint name="robot1/joint6"/>
-        <joint name="robot1/end_link_fixed"/>
-        <joint name="robot1/end_effector_joint"/>
+        <chain base_link="robot1/link1" tip_link="robot1/end_effector_link"/>
     </group>
     <group name="arm2">
         <joint name="robot2/joint1"/>
@@ -28,14 +21,7 @@
         <joint name="robot2/joint6"/>
     </group>
     <group name="arm3">
-        <joint name="robot3/joint1"/>
-        <joint name="robot3/joint2"/>
-        <joint name="robot3/joint3"/>
-        <joint name="robot3/joint4"/>
-        <joint name="robot3/joint5"/>
-        <joint name="robot3/joint6"/>
-        <joint name="robot3/end_link_fixed"/>
-        <joint name="robot3/end_effector_joint"/>
+        <chain base_link="robot3/link1" tip_link="robot3/end_effector_link"/>
     </group>
     <group name="arm1_2">
         <group name="arm1"/>
