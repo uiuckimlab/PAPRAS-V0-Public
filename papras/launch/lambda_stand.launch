@@ -1,0 +1,9 @@
+<launch>
+
+  <include file="$(find papras)/launch/rviz.launch">
+    <arg name="stand" value="true"/>
+  </include>
+
+  <include file="$(find papras)/launch/stand_tasks.launch"/>
+
+</launch>

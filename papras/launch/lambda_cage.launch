@@ -1,0 +1,9 @@
+<launch>
+
+  <include file="$(find papras)/launch/rviz.launch">
+    <arg name="cage" value="true"/>
+  </include>
+
+  <include file="$(find papras)/launch/cage_tasks.launch"/>
+
+</launch>
