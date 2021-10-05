@@ -16,6 +16,10 @@ coffee_demo_moves:
   - arm1/kettle_pour
   - sleep/kettle_pour
   - arm1/kettle_move2dripper
+  - sleep/kettle_pour
+  - arm1/kettle_pour
+  - sleep/kettle_pour
+  - arm1/kettle_move2dripper
   - gripper3/dripper_open
   - arm1_3/kettle_inward_dripper_grab
   - sleep/dripper_pull
@@ -77,6 +81,6 @@ gripper3:
   cup_open: [0.0]
   cup_close: [0.56]
 sleep:
-  kettle_pour: [1]
-  dripper_pull: [1]
-  dripper_pour: [1]
+  kettle_pour: [3]
+  dripper_pull: [25]
+  dripper_pour: [5]
