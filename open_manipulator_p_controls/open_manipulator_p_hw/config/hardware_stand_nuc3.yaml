@@ -4,24 +4,24 @@ robotleft/joint1:
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
 robotleft/joint2:
   ID: 8
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
 robotleft/joint3:
   ID: 9
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
   Homing_Offset: -125480
 robotleft/joint4:
   ID: 10
@@ -29,55 +29,55 @@ robotleft/joint4:
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
 robotleft/joint5:
   ID: 11
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
 robotleft/joint6:
   ID: 12
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
-# robotleft/gripper:
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
+# robot1/gripper:
 #   ID: 121
 #   Return_Delay_Time: 25
 #   Acceleration_Limit: 9982
 #   Velocity_Limit: 2900
-#   Profile_Acceleration: 3000
-#   Profile_Velocity: 1500
+#   Profile_Acceleration: 9982
+#   Profile_Velocity: 2900
 robotright/joint1:
   ID: 13
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
 robotright/joint2:
   ID: 14
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
 robotright/joint3:
   ID: 15
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
   Homing_Offset: -125480
 robotright/joint4:
   ID: 16
@@ -85,28 +85,28 @@ robotright/joint4:
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
 robotright/joint5:
   ID: 17
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
 robotright/joint6:
   ID: 18
   Return_Delay_Time: 25
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
-# robotright/gripper:
+  Profile_Acceleration: 9982
+  Profile_Velocity: 2900
+# robot2/gripper:
 #   ID: 131
 #   Return_Delay_Time: 25
 #   Acceleration_Limit: 9982
 #   Velocity_Limit: 2900
-#   Profile_Acceleration: 3000
-#   Profile_Velocity: 1500
+#   Profile_Acceleration: 9982
+#   Profile_Velocity: 2900

@@ -1,7 +1,4 @@
 <launch>
-
-  <rosparam file="$(find papras)/config/mission_plan_stand.yaml">
-  </rosparam>
   
   <node name="stand_tasks" pkg="papras" type="stand_tasks" respawn="false" output="screen">
   </node>
