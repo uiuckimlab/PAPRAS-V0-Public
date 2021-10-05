@@ -252,7 +252,7 @@ void Command_Operator::disable_actuator(void){
 void Command_Operator::move_arm(std::vector<double> command){
   std::vector<std::string> joint_name;
   std::vector<double> joint_angle;
-  double path_time = command[6];
+  double path_time = 2; //command[6]; why does this not work lel
   joint_name.push_back("joint1"); joint_angle.push_back(command[0]);
   joint_name.push_back("joint2"); joint_angle.push_back(command[1]);
   joint_name.push_back("joint3"); joint_angle.push_back(command[2]);
