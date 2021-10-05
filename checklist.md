@@ -13,7 +13,7 @@ ssh papras@nuc-3
 cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 ```
 ```
 roslaunch papras _demo_stand.launch nuc_id:=3
@@ -28,7 +28,7 @@ ssh papras@nuc-2
 cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+sourcedevel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 ```
 ```
 roslaunch papras _demo_stand.launch nuc_id:=2
@@ -43,7 +43,7 @@ ssh papras@nuc-4
 cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 ```
 ```
 roslaunch papras _demo_stand.launch nuc_id:=4
@@ -78,7 +78,7 @@ ssh papras@nuc-5
 cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 ```
 ```
 roslaunch papras _demo_kitchen.launch
@@ -110,7 +110,7 @@ ssh papras@nuc-1
 cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 ```
 ```
 roslaunch papras _demo_cage.launch
