@@ -1,0 +1,59 @@
+
+
+# Stand Demo
+
+## Stand 1 (1T)
+`ssh papras@nuc-3`
+*enter pass for setting usb low latency*
+`cd catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s`
+`source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:/13311/`
+`roslaunch papras _demo_stand.launch nuc_id:=3` 
+
+## Stand 2 (1T)
+`ssh papras@nuc-2`
+*enter pass for setting usb low latency*
+`cd catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s`
+`source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:/13311/`
+`roslaunch papras _demo_stand.launch nuc_id:=2` 
+
+## Stand 3 (1T)
+`ssh papras@nuc-4`
+*enter pass for setting usb low latency*
+`cd catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s`
+`source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:/13311/`
+`roslaunch papras _demo_stand.launch nuc_id:=4` 
+
+## Lambda (3T)
+`cd catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make`
+T1 `export ROS_MASTER_URI=http://lambda-dual:/13311/ && roslaunch papras lambda_stand.launch nuc_id:=2`
+T2 `export ROS_MASTER_URI=http://lambda-dual:/13311/ && roslaunch papras lambda_stand.launch nuc_id:=3`
+T3 `export ROS_MASTER_URI=http://lambda-dual:/13311/ && roslaunch papras lambda_stand.launch nuc_id:=4`
+
+*click continue on rviz visual tool*
+
+# Kitchen Demo
+`ssh papras@nuc-5`
+*on nuc*
+*enter pass for setting usb low latency*
+`cd catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s`
+`source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:/13311/`
+`roslaunch papras _demo_kitchen.launch` 
+
+*on lambda*
+`export ROS_MASTER_URI=http://lambda-dual:/13311/ && roslaunch papras lambda_kitchen.launch` 
+
+# Coffee Pour Demo 
+*on lambda, no ssh needed*
+T1 `export ROS_MASTER_URI=http://lambda-dual:/13311/ && roslaunch papras _demo_coffee.launch` 
+T2 `export ROS_MASTER_URI=http://lambda-dual:/13311/ && roslaunch papras lambda_coffee.launch` 
+
+# Cage Demo 
+`ssh papras@nuc-1`
+*on nuc*
+*enter pass for setting usb low latency*
+`cd catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s`
+`source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:/13311/`
+`roslaunch papras _demo_cage.launch` 
+
+*on lambda*
+`export ROS_MASTER_URI=http://lambda-dual:/13311/ && roslaunch papras lambda_cage.launch` 
