@@ -1,9 +1,12 @@
 <launch>
+  <arg name="nuc_id" default="2"/>
 
-  <include file="$(find papras)/launch/rviz.launch">
-    <arg name="stand" value="true"/>
-  </include>
+  <group ns="nuc_$(arg nuc_id)">
+    <include file="$(find papras)/launch/rviz.launch">
+      <arg name="stand" value="true"/>
+    </include>
 
-  <include file="$(find papras)/launch/stand_tasks.launch"/>
+    <include file="$(find papras)/launch/stand_tasks.launch"/>
+  </group>
 
 </launch>
