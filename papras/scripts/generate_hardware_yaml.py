@@ -79,7 +79,7 @@ def generate_stand(config, n_robots = 2, n_joints = 6):
 
 if __name__ == "__main__":
 
-    demo = 'stand'
+    demo = 'cage'
     repo_path = os.path.expanduser('~/catkin_ws/src/PAPRAS')
 
     if demo == 'cage':
