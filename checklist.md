@@ -28,7 +28,7 @@ ssh papras@nuc-2
 cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-sourcedevel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 ```
 ```
 roslaunch papras _demo_stand.launch nuc_id:=2
