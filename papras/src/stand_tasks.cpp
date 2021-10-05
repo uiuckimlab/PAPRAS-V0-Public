@@ -33,10 +33,10 @@ void plan_execute_arm_move(moveit::planning_interface::MoveGroupInterface* move_
   // Create plan object
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
-  move_group->setMaxVelocityScalingFactor(0.1);
-  move_group->setMaxAccelerationScalingFactor(0.1);
+  move_group->setMaxVelocityScalingFactor(0.15);
+  move_group->setMaxAccelerationScalingFactor(0.15);
   move_group->setPlanningTime(0.1);
-  move_group->setNumPlanningAttempts(10);
+  move_group->setNumPlanningAttempts(5);
   
   // Plan and execute on appropriate arm
   bool success;

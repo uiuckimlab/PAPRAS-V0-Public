@@ -1,6 +1,9 @@
 <launch>
   <arg name="nuc_id" default="2"/>
 
+  <rosparam file="$(find papras)/config/mission_plan_stand.yaml">
+  </rosparam>
+
   <group ns="nuc_$(arg nuc_id)">
     <include file="$(find papras)/launch/rviz.launch">
       <arg name="stand" value="true"/>
