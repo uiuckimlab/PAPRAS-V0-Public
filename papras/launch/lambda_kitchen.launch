@@ -1,3 +1,6 @@
 <launch>
+    <rosparam file="$(find papras)/config/mission_plan_kitchen.yaml">
+    </rosparam>
+
     <node name="cmd_op" pkg="papras" type="command_operator" respawn="false" output="screen"/>
 </launch>

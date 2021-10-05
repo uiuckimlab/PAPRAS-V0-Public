@@ -11,9 +11,6 @@
   <arg name="cmd_op" default="true"/>  
   <arg name="arm_id" default="6"/>  
 
-  <rosparam file="$(find papras)/config/mission_plan_kitchen.yaml">
-  </rosparam>
-
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg use_sim)">
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
