@@ -70,6 +70,9 @@ source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:
 
 # Kitchen Demo
 ```
+export ROS_MASTER_URI=http://lambda-dual:11311/ && roscore
+```
+```
 ssh papras@nuc-5
 ```
 *on nuc*
@@ -86,14 +89,17 @@ roslaunch papras _demo_kitchen.launch
 
 *on lambda*
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_kitchen.launch
+sudo -s && source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_kitchen.launch
 ```
 
 # Coffee Pour Demo 
 *on lambda, no ssh needed* \
 T1
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras _demo_coffee.launch
+source ~/.bashrc
+```
+```
+cd ~/catkin_ws && sudo -s && source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras _demo_coffee.launch
 ```
 T2
 ```
@@ -101,6 +107,9 @@ source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:
 ```
 
 # Cage Demo 
+```
+export ROS_MASTER_URI=http://lambda-dual:11311/ && roscore
+```
 ```
 ssh papras@nuc-1
 ```
