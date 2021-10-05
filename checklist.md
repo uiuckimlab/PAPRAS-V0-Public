@@ -89,7 +89,10 @@ roslaunch papras _demo_kitchen.launch
 
 *on lambda*
 ```
-sudo -s && source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_kitchen.launch
+cd ~/catkin_ws && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_kitchen.launch
 ```
 
 # Coffee Pour Demo 
