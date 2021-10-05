@@ -1,6 +1,9 @@
 ```
 export ROS_MASTER_URI=http://lambda-dual:11311/ && roscore
 ```
+```
+Kimlab_2020
+```
 
 # Stand Demo
 
