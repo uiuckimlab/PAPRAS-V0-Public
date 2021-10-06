@@ -102,7 +102,7 @@ source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && ro
 *on lambda, no ssh needed* \
 T1
 ```
-source ~/.bashrc
+sudo setserial /dev/ttyUSB0 low_latency
 ```
 ```
 cd ~/catkin_ws && sudo -s
