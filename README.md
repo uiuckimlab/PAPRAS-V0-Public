@@ -67,4 +67,4 @@ You can start planning now!
 ```
 
 # Credits
-This code was written by Kazuki Shin, Dhrub Mathur and Sankalp Yamsani. The grasp detection code was adapted from 2020 PickNik Inc.
+This code was written by Kazuki Shin, Dhruv Mathur and Sankalp Yamsani. The grasp detection code was adapted from 2020 PickNik Inc.
