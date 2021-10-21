@@ -65,3 +65,6 @@ Loading 'pilz_industrial_motion_planner/MoveGroupSequenceService'...
 
 You can start planning now!
 ```
+
+# Credits
+This code was written by Kazuki Shin, Dhrub Mathur and Sankalp Yamsani. The grasp detection code was adapted from 2020 PickNik Inc.
