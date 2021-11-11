@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: open_manipulator_p_description
+    relative_path: urdf/spot_mount.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/open_manipulator_p.srdf
+  CONFIG:
+    author_name: Dhruv Mathur
+    author_email: dmathur2@illinois.edu
+    generated_timestamp: 1636129650

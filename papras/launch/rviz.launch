@@ -2,6 +2,7 @@
   <arg name="cage" default="false"/>
   <arg name="stand" default="false"/>
   <arg name="coffee" default="false"/>
+  <arg name="spot" default="false"/>
   <arg name="coffee_camera" default="false"/>
 
   <group if="$(arg coffee)">
@@ -25,6 +26,12 @@
   <group if="$(arg stand)">
     <include file="$(find moveit_2arm_stand_config)/launch/moveit_rviz.launch">
       <arg name="rviz_config" value="$(find moveit_2arm_stand_config)/launch/moveit.rviz"/>
+    </include>
+  </group>
+
+  <group if="$(arg spot)">
+    <include file="$(find spot_mount_moveit_config)/launch/moveit_rviz.launch">
+      <arg name="rviz_config" value="$(find spot_mount_moveit_config)/launch/moveit.rviz"/>
     </include>
   </group>
 
