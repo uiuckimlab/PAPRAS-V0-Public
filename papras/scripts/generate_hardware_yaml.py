@@ -23,18 +23,19 @@ def generate(config, n_robots = 3, n_joints = 6):
 
     for robot_id in range(1, n_robots+1):
         arm_id = config["robot"+str(robot_id)]
-        for joint_id in range(1, n_joints+1):
-            arm_info = general_arm_info.copy()
-            arm_info["ID"] = (arm_id-1)*n_joints + joint_id
+        if arm_id > 0: # Skip over empty mounts
+            for joint_id in range(1, n_joints+1):
+                arm_info = general_arm_info.copy()
+                arm_info["ID"] = (arm_id-1)*n_joints + joint_id
 
-            if joint_id == 3:
-                arm_info["Homing_Offset"] = config['arm']['Homing_Offset']
-            
-            actuator_list['robot'+str(robot_id)+'/joint'+str(joint_id)] = arm_info.copy()
+                if joint_id == 3:
+                    arm_info["Homing_Offset"] = config['arm']['Homing_Offset']
+                
+                actuator_list['robot'+str(robot_id)+'/joint'+str(joint_id)] = arm_info.copy()
 
-        gripper_info = general_gripper_info.copy()
-        gripper_info["ID"] = int('1' + str(arm_id) + '1')
-        actuator_list['robot'+str(robot_id)+'/gripper'] = gripper_info
+            gripper_info = general_gripper_info.copy()
+            gripper_info["ID"] = int('1' + str(arm_id) + '1')
+            actuator_list['robot'+str(robot_id)+'/gripper'] = gripper_info
 
     return actuator_list
 
@@ -79,7 +80,7 @@ def generate_stand(config, n_robots = 2, n_joints = 6):
 
 if __name__ == "__main__":
 
-    demo = 'cage'
+    demo = 'coffee_camera'
     repo_path = os.path.expanduser('~/catkin_ws/src/PAPRAS')
 
     if demo == 'cage':
@@ -94,6 +95,11 @@ if __name__ == "__main__":
         read_path = repo_path + '/papras/config/stand_arm_config.yaml'
         write_path = repo_path + '/open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_stand_nuc4.yaml'
         n_robots = 2
+    elif demo == 'coffee_camera':
+        read_path = repo_path + '/papras/config/coffee_camera_config.yaml'
+        write_path = repo_path + '/open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_coffee_camera.yaml'
+        n_robots = 3
+
 
     with open(read_path, 'r') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)

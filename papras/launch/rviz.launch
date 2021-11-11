@@ -2,10 +2,17 @@
   <arg name="cage" default="false"/>
   <arg name="stand" default="false"/>
   <arg name="coffee" default="false"/>
+  <arg name="coffee_camera" default="false"/>
 
   <group if="$(arg coffee)">
     <include file="$(find moveit_coffee_3arm_arm2_nogripper)/launch/moveit_rviz.launch">
       <arg name="rviz_config" value="$(find moveit_coffee_3arm_arm2_nogripper)/launch/moveit.rviz"/>
+    </include>
+  </group>
+
+  <group if="$(arg coffee_camera)">
+    <include file="$(find coffee_camera_moveit_config)/launch/moveit_rviz.launch">
+      <arg name="rviz_config" value="$(find coffee_camera_moveit_config)/launch/moveit.rviz"/>
     </include>
   </group>
 

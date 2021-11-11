@@ -1,0 +1,8 @@
+<launch>
+  <arg name="with_gripper" default="true" />
+
+  <group if="$(arg with_gripper)">
+    <param name="robot_description"
+    command="$(find xacro)/xacro '$(find open_manipulator_p_description)/urdf/coffee_camera.urdf.xacro'"/>
+  </group>
+</launch>
