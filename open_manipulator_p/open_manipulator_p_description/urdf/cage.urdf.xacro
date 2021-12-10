@@ -286,8 +286,10 @@
         <!--<inertia ixx="0.00000938" ixy="0.0" ixz="0.0" iyy="0.00000338" iyz="0.0" izz="0.00000635" />-->
       </inertial>
     </link>
+  </xacro:macro>
 
-     <!-- gripper main fixed joint-->
+  <xacro:macro name="omp_gripper" params="id">
+    <!-- gripper main fixed joint-->
     <joint name="robot${id}/end_link_fixed" type="fixed">
       <parent link="robot${id}/end_link"/>
       <child link="robot${id}/gripper_main_link"/>
@@ -422,6 +424,38 @@
     </link>
   </xacro:macro>
 
+  <xacro:macro name="omp_camera" params="id">
+    <!-- camera link fixed joint -->
+    <joint name="robot${id}/camera_fixed_joint" type="fixed">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/camera_link"/>
+      <origin xyz="0.0592 0.0167 0.04452" rpy="0 0 0" />
+    </joint>
+
+    <!-- Camera Link -->
+    <link name="robot${id}/camera_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://open_manipulator_p_description/meshes/camera_mount.stl"/>
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://open_manipulator_p_description/meshes/camera_mount_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.088"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+  </xacro:macro>
+
   <!-- World with stand-->
   <link name="world"/>
   <joint name="cage_world_fixed" type="fixed">
@@ -446,8 +480,13 @@
   </link>
   <!-- Arms -->
   <xacro:omp_arm id="1"/>
+  <xacro:omp_gripper id="1"/>
+  <xacro:omp_camera id="1"/>
   <xacro:omp_arm id="2"/>
   <xacro:omp_arm id="3"/>
+  <xacro:omp_gripper id="3"/>
   <xacro:omp_arm id="4"/>
+  <xacro:omp_gripper id="4"/>
+  <xacro:omp_camera id="4"/>
 
 </robot>

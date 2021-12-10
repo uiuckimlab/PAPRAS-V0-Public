@@ -7,12 +7,12 @@ arm:
   Operating_Mode: 3
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 5000
+  Profile_Velocity: 2500
   Homing_Offset: -125480
 gripper:
   Return_Delay_Time: 25
   Acceleration_Limit: 9982
   Velocity_Limit: 2900
-  Profile_Acceleration: 3000
-  Profile_Velocity: 1500
+  Profile_Acceleration: 5000
+  Profile_Velocity: 2500

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <launch>
-  <arg name="sim" default="true"/>
+  <arg name="sim" default="false"/>
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="with_gripper" default="true"/>
   <arg name="pipeline" default="ompl"/>
@@ -42,15 +42,7 @@
   <node name="gripper3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper3_controller"/>
 
   <!-- startup move_group related -->
-  <include file="$(find coffee_camera_moveit_config)/launch/move_group.launch">
-    <arg name="publish_monitored_planning_scene" value="true"/>
-    <arg name="allow_trajectory_execution" value="true"/>
-    <arg name="capabilities" value="move_group/ExecuteTaskSolutionCapability" />
-  </include>
-
-  <include file="$(find coffee_camera_moveit_config)/launch/moveit_rviz.launch">
-    <arg name="rviz_config" value="$(find moveit_task_constructor_demo)/config/mtc.rviz" />
-  </include>
+  <include file="$(find coffee_camera_moveit_config)/launch/move_group.launch"/>
   
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
 </launch>

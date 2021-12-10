@@ -1,7 +1,7 @@
 # Simulation settings for using moveit_sim_controllers
 moveit_sim_hw_interface:
   joint_model_group: arm1
-  joint_model_group_pose: init
+  joint_model_group_pose: rest
 # Settings for ros_control_boilerplate control loop
 generic_hw_control_loop:
   loop_hz: 300
@@ -28,6 +28,7 @@ hardware_interface:
     - robot3/joint4
     - robot3/joint5
     - robot3/joint6
+    - robot3/gripper
     - robot4/joint1
     - robot4/joint2
     - robot4/joint3
@@ -98,3 +99,9 @@ controller_list:
     type: FollowJointTrajectory
     joints:
       - robot4/gripper
+  - name: gripper3_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - robot3/gripper

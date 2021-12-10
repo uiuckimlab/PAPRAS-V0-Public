@@ -133,7 +133,7 @@ tf2::Transform htm_w_to_3(rot_w_to_3, tra_w_to_3);
 // Create move group planning interfaces
 static const std::string PLANNING_GROUP_ARM1 = "arm1";
 static const std::string PLANNING_GROUP_GRIPPER1 = "gripper1";
-static const std::string PLANNING_GROUP_ARM2 = "arm2";
+// static const std::string PLANNING_GROUP_ARM2 = "arm2";
 // static const std::string PLANNING_GROUP_GRIPPER2 = "gripper2";
 static const std::string PLANNING_GROUP_ARM3 = "arm3";
 static const std::string PLANNING_GROUP_GRIPPER3 = "gripper3";
@@ -142,7 +142,7 @@ static const std::string PLANNING_GROUP_ARM1_3 = "arm1_3";
 
 moveit::planning_interface::MoveGroupInterface* move_group_arm1;
 moveit::planning_interface::MoveGroupInterface* move_group_gripper1;
-moveit::planning_interface::MoveGroupInterface* move_group_arm2;
+// moveit::planning_interface::MoveGroupInterface* move_group_arm2;
 // moveit::planning_interface::MoveGroupInterface* move_group_gripper2;
 moveit::planning_interface::MoveGroupInterface* move_group_arm3;
 moveit::planning_interface::MoveGroupInterface* move_group_gripper3;
@@ -151,7 +151,7 @@ moveit::planning_interface::MoveGroupInterface* move_group_arm1_3;
 // Pointers to move groups
 const moveit::core::JointModelGroup* joint_model_arm1;
 const moveit::core::JointModelGroup* joint_model_gripper1;
-const moveit::core::JointModelGroup* joint_model_arm2;
+// const moveit::core::JointModelGroup* joint_model_arm2;
 // const moveit::core::JointModelGroup* joint_model_gripper2;
 const moveit::core::JointModelGroup* joint_model_arm3;
 const moveit::core::JointModelGroup* joint_model_gripper3;
@@ -362,10 +362,10 @@ void do_arm_pose_move(const tf2Scalar& x, const tf2Scalar& y, const tf2Scalar& z
       current_move_group = &move_group_arm1;
       current_joint_model = &joint_model_arm1;
       break;
-    case 2:
-      current_move_group = &move_group_arm2;
-      current_joint_model = &joint_model_arm2;
-      break;
+    // case 2:
+    //   current_move_group = &move_group_arm2;
+    //   current_joint_model = &joint_model_arm2;
+    //   break;
     case 3:
       current_move_group = &move_group_arm3;
       current_joint_model = &joint_model_arm3;
@@ -419,10 +419,10 @@ void do_arm_named_move(const int arm, const std::string pose_name, std::string f
       current_move_group = &move_group_arm1;
       current_joint_model = &joint_model_arm1;
       break;
-    case 2:
-      current_move_group = &move_group_arm2;
-      current_joint_model = &joint_model_arm2;
-      break;
+    // case 2:
+    //   current_move_group = &move_group_arm2;
+    //   current_joint_model = &joint_model_arm2;
+    //   break;
     case 3:
       current_move_group = &move_group_arm3;
       current_joint_model = &joint_model_arm3;
@@ -472,7 +472,6 @@ void do_gripper_angle_move(const tf2Scalar& angle, const int gripper)
       current_move_group = &move_group_gripper1;
       current_joint_model = &joint_model_gripper1;
       break;
-    // case 2:
     //   current_move_group = &move_group_gripper2;
     //   current_joint_model = &joint_model_gripper2;
     //   break;
@@ -570,7 +569,7 @@ int main(int argc, char** argv)
   // Set up move group planning interfaces
   move_group_arm1 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1);
   move_group_gripper1 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER1);
-  move_group_arm2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM2);
+  // move_group_arm2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM2);
   // move_group_gripper2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER2);
   move_group_arm3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM3);
   move_group_gripper3 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER3);
@@ -582,7 +581,7 @@ int main(int argc, char** argv)
   // Create pointers to planning groups
   joint_model_arm1 = move_group_arm1->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1);
   joint_model_gripper1 = move_group_gripper1->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER1);
-  joint_model_arm2 = move_group_arm2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM2);
+  // joint_model_arm2 = move_group_arm2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM2);
   // joint_model_gripper2 = move_group_gripper2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER2);
   joint_model_arm3 = move_group_arm3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM3);
   joint_model_gripper3 = move_group_gripper3->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER3);
@@ -591,8 +590,8 @@ int main(int argc, char** argv)
   // Print reference information
   ROS_INFO("Arm 1 planning frame: %s", move_group_arm1->getPlanningFrame().c_str());
   ROS_INFO("Arm 1 end effector link: %s", move_group_arm1->getEndEffectorLink().c_str());
-  ROS_INFO("Arm 2 planning frame: %s", move_group_arm2->getPlanningFrame().c_str());
-  ROS_INFO("Arm 2 end effector link: %s", move_group_arm2->getEndEffectorLink().c_str());
+  // ROS_INFO("Arm 2 planning frame: %s", move_group_arm2->getPlanningFrame().c_str());
+  // ROS_INFO("Arm 2 end effector link: %s", move_group_arm2->getEndEffectorLink().c_str());
   ROS_INFO("Arm 3 planning frame: %s", move_group_arm3->getPlanningFrame().c_str());
   ROS_INFO("Arm 3 end effector link: %s", move_group_arm3->getEndEffectorLink().c_str());
 

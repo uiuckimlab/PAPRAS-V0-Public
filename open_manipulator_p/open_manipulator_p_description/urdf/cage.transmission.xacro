@@ -65,13 +65,13 @@
 
   <!-- Transmission gripper -->
   <xacro:SimpleTransmissionEffort n="gripper" joint="gripper" id="1"/>
-  <xacro:SimpleTransmissionEffort n="gripper" joint="gripper" id="2"/>
+  <!-- <xacro:SimpleTransmissionEffort n="gripper" joint="gripper" id="2"/> -->
   <xacro:SimpleTransmissionEffort n="gripper" joint="gripper" id="3"/>
   <xacro:SimpleTransmissionEffort n="gripper" joint="gripper" id="4"/>
 
   <!-- Transmission gripper_sub -->
   <xacro:SimpleTransmissionEffort n="gripper_sub" joint="gripper_sub" id="1"/>
-  <xacro:SimpleTransmissionEffort n="gripper_sub" joint="gripper_sub" id="2"/>
+  <!-- <xacro:SimpleTransmissionEffort n="gripper_sub" joint="gripper_sub" id="2"/> -->
   <xacro:SimpleTransmissionEffort n="gripper_sub" joint="gripper_sub" id="3"/>
   <xacro:SimpleTransmissionEffort n="gripper_sub" joint="gripper_sub" id="4"/>
 

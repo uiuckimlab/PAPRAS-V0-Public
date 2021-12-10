@@ -24,10 +24,10 @@
 #define EEF4 "robot4/end_effector_link"
 
 // Planning parameters
-#define VEL_SCALE 0.1
-#define ACCEL_SCALE 0.1
+#define VEL_SCALE 0.13
+#define ACCEL_SCALE 0.13
 #define PLANNING_TIME 1.0
-#define NUM_PLANS 10
+#define NUM_PLANS 50
 
 // The circle constant tau = 2*pi. One tau is one rotation in radians.
 const double tau = 2 * M_PI;
@@ -137,7 +137,7 @@ int main(int argc, char** argv)
   
   geometry_msgs::Pose head_pose;
   head_pose.orientation.w = 1.0;
-  head_pose.position.x = 0.65;
+  head_pose.position.x = 0.575;
   head_pose.position.y = 0.68;
   head_pose.position.z = 1.73;
 
@@ -180,14 +180,14 @@ int main(int argc, char** argv)
     }
   }
 
-  move_group_arm1_2_3_4->setNamedTarget("rest");
-  plan_execute_arm_move(move_group_arm1_2_3_4);
+  // move_group_arm1_2_3_4->setNamedTarget("rest");
+  // plan_execute_arm_move(move_group_arm1_2_3_4);
 
   //Remove dummy collision objects
-  std::vector<std::string> object_ids;
-  object_ids.push_back(body_collision_obj.id);
-  object_ids.push_back(head_collision_obj.id);
-  planning_scene_interface.removeCollisionObjects(object_ids);
+  // std::vector<std::string> object_ids;
+  // object_ids.push_back(body_collision_obj.id);
+  // object_ids.push_back(head_collision_obj.id);
+  // planning_scene_interface.removeCollisionObjects(object_ids);
 
   ros::shutdown();
   return 0;

@@ -52,21 +52,28 @@ source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 roslaunch papras _demo_stand.launch nuc_id:=4
 ```
 
+## Stand 4 (1T)
+```
+ssh papras@nuc-6
+```
+*enter pass for setting usb low latency*
+```
+cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+```
+```
+roslaunch papras _demo_stand.launch nuc_id:=6
+```
+
 ## Lambda (3T)
 T1
 ```
 cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_stand.launch nuc_id:=2
-```
-T2
-```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_stand.launch nuc_id:=3
-```
-T3
-```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_stand.launch nuc_id:=4
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_stand.launch
 ```
 
 *click continue on rviz visual tool*
@@ -108,11 +115,35 @@ sudo setserial /dev/ttyUSB0 low_latency
 cd ~/catkin_ws && sudo -s
 ```
 ```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras _demo_coffee.launch
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras _demo_coffee_camera.launch
 ```
 T2
 ```
 source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_coffee.launch
+```
+
+# Spot Demo
+```
+export ROS_MASTER_URI=http://lambda-dual:11311/ && roscore
+```
+```
+ssh papras@nuc-7
+```
+*on nuc* \
+*enter pass for setting usb low latency*
+```
+cd ~/catkin_ws/src/PAPRAS && git checkout dryrun && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+```
+```
+roslaunch papras _demo_spot_mount.launch
+```
+
+*on lambda*
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras lambda_spot.launch
 ```
 
 # Cage Demo 

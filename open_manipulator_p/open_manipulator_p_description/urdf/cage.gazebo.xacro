@@ -64,19 +64,19 @@
 
   <!-- gripper_main_link -->
   <RefLink ref="robot1/gripper_main_link"/>
-  <RefLink ref="robot2/gripper_main_link"/>
+  <!-- <RefLink ref="robot2/gripper_main_link"/> -->
   <RefLink ref="robot3/gripper_main_link"/>
   <RefLink ref="robot4/gripper_main_link"/>
 
   <!-- gripper_link -->
   <RefLink ref="robot1/gripper_link"/>
-  <RefLink ref="robot2/gripper_link"/>
+  <!-- <RefLink ref="robot2/gripper_link"/> -->
   <RefLink ref="robot3/gripper_link"/>
   <RefLink ref="robot4/gripper_link"/>
 
   <!-- gripper_sub_link -->
   <RefLink ref="robot1/gripper_sub_link"/>
-  <RefLink ref="robot2/gripper_sub_link"/>
+  <!-- <RefLink ref="robot2/gripper_sub_link"/> -->
   <RefLink ref="robot3/gripper_sub_link"/>
   <RefLink ref="robot4/gripper_sub_link"/>
 
@@ -84,15 +84,19 @@
   <gazebo reference="robot1/end_effector_link">
     <material>Gazebo/Red</material>
   </gazebo>
-  <gazebo reference="robot2/end_effector_link">
+  <!-- <gazebo reference="robot2/end_effector_link">
     <material>Gazebo/Red</material>
-  </gazebo>
+  </gazebo> -->
   <gazebo reference="robot3/end_effector_link">
     <material>Gazebo/Red</material>
   </gazebo>
   <gazebo reference="robot4/end_effector_link">
     <material>Gazebo/Red</material>
   </gazebo>
+
+  <!-- camera_link -->
+  <gazebo reference="robot1/camera_link"/>
+  <gazebo reference="robot4/camera_link"/>
 
   <!-- ros_control plugin -->
   <gazebo>
@@ -111,15 +115,15 @@
     </plugin>
   </gazebo>
 
-  <gazebo>
-    <!-- loading plugin: mimic joints works in gazebo now -->
+  <!-- <gazebo>
+    loading plugin: mimic joints works in gazebo now
     <plugin name="gazebo_robot2_gripper_ros_control" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
       <joint>robot2/gripper</joint>
       <mimicJoint>robot2/gripper_sub</mimicJoint>
       <multiplier>1.0</multiplier>
       <offset>0.0</offset>
     </plugin>
-  </gazebo>
+  </gazebo> -->
 
   <gazebo>
     <!-- loading plugin: mimic joints works in gazebo now -->

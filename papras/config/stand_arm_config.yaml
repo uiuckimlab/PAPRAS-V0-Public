@@ -1,5 +1,5 @@
-robot1: 1
-robot2: 4
+robot1: 5
+robot2: 8
 
 arm:
   Return_Delay_Time: 25
@@ -15,3 +15,8 @@ gripper:
   Velocity_Limit: 2900
   Profile_Acceleration: 9982
   Profile_Velocity: 2900
+
+  # stand 1 nuc 3 left 2 right 3
+  # stand 2 nuc 2 left 6 right 7
+  # stand 3 nuc 4 left 1 right 4
+  # stand 4 nuc 6 left 5 right 8

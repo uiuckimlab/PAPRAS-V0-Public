@@ -323,7 +323,120 @@ arm1_3:
     - SPARStwo
   projection_evaluator: joints(robot1/joint1,robot1/joint2)
   longest_valid_segment_fraction: 0.005
+arm3_4:
+  planner_configs:
+    - AnytimePathShortening
+    - SBL
+    - EST
+    - LBKPIECE
+    - BKPIECE
+    - KPIECE
+    - RRT
+    - RRTConnect
+    - RRTstar
+    - TRRT
+    - PRM
+    - PRMstar
+    - FMT
+    - BFMT
+    - PDST
+    - STRIDE
+    - BiTRRT
+    - LBTRRT
+    - BiEST
+    - ProjEST
+    - LazyPRM
+    - LazyPRMstar
+    - SPARS
+    - SPARStwo
+  projection_evaluator: joints(robot3/joint1,robot3/joint2)
+  longest_valid_segment_fraction: 0.005
+arm1_4:
+  planner_configs:
+    - AnytimePathShortening
+    - SBL
+    - EST
+    - LBKPIECE
+    - BKPIECE
+    - KPIECE
+    - RRT
+    - RRTConnect
+    - RRTstar
+    - TRRT
+    - PRM
+    - PRMstar
+    - FMT
+    - BFMT
+    - PDST
+    - STRIDE
+    - BiTRRT
+    - LBTRRT
+    - BiEST
+    - ProjEST
+    - LazyPRM
+    - LazyPRMstar
+    - SPARS
+    - SPARStwo
+  projection_evaluator: joints(robot1/joint1,robot1/joint2)
+  longest_valid_segment_fraction: 0.005
 arm1_2_3:
+  planner_configs:
+    - AnytimePathShortening
+    - SBL
+    - EST
+    - LBKPIECE
+    - BKPIECE
+    - KPIECE
+    - RRT
+    - RRTConnect
+    - RRTstar
+    - TRRT
+    - PRM
+    - PRMstar
+    - FMT
+    - BFMT
+    - PDST
+    - STRIDE
+    - BiTRRT
+    - LBTRRT
+    - BiEST
+    - ProjEST
+    - LazyPRM
+    - LazyPRMstar
+    - SPARS
+    - SPARStwo
+  projection_evaluator: joints(robot1/joint1,robot1/joint2)
+  longest_valid_segment_fraction: 0.005
+arm1_2_4:
+  planner_configs:
+    - AnytimePathShortening
+    - SBL
+    - EST
+    - LBKPIECE
+    - BKPIECE
+    - KPIECE
+    - RRT
+    - RRTConnect
+    - RRTstar
+    - TRRT
+    - PRM
+    - PRMstar
+    - FMT
+    - BFMT
+    - PDST
+    - STRIDE
+    - BiTRRT
+    - LBTRRT
+    - BiEST
+    - ProjEST
+    - LazyPRM
+    - LazyPRMstar
+    - SPARS
+    - SPARStwo
+  projection_evaluator: joints(robot1/joint1,robot1/joint2)
+  longest_valid_segment_fraction: 0.005
+arm1_2_3_4:
+  default_planner_config: RRTConnect
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -379,7 +492,7 @@ gripper1:
     - SPARStwo
   projection_evaluator: joints(robot1/gripper,robot1/gripper_sub)
   longest_valid_segment_fraction: 0.005
-gripper2:
+gripper4:
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -405,7 +518,7 @@ gripper2:
     - LazyPRMstar
     - SPARS
     - SPARStwo
-  projection_evaluator: joints(robot2/gripper,robot2/gripper_sub)
+  projection_evaluator: joints(robot4/gripper,robot4/gripper_sub)
   longest_valid_segment_fraction: 0.005
 gripper3:
   planner_configs:
@@ -435,7 +548,7 @@ gripper3:
     - SPARStwo
   projection_evaluator: joints(robot3/gripper,robot3/gripper_sub)
   longest_valid_segment_fraction: 0.005
-gripper4:
+gripper3_4:
   planner_configs:
     - AnytimePathShortening
     - SBL
@@ -461,5 +574,5 @@ gripper4:
     - LazyPRMstar
     - SPARS
     - SPARStwo
-  projection_evaluator: joints(robot4/gripper,robot4/gripper_sub)
+  projection_evaluator: joints(robot3/gripper,robot3/gripper_sub)
   longest_valid_segment_fraction: 0.005

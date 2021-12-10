@@ -1,0 +1,7 @@
+<launch>
+
+  <include file="$(find papras)/launch/rviz.launch">
+    <arg name="spot" value="true"/>
+  </include>
+
+</launch>

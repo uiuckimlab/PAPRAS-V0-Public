@@ -80,7 +80,7 @@ def generate_stand(config, n_robots = 2, n_joints = 6):
 
 if __name__ == "__main__":
 
-    demo = 'spot'
+    demo = 'cage'
     repo_path = os.path.expanduser('~/catkin_ws/src/PAPRAS')
 
     if demo == 'cage':
@@ -93,7 +93,7 @@ if __name__ == "__main__":
         n_robots = 3
     elif demo == 'stand':
         read_path = repo_path + '/papras/config/stand_arm_config.yaml'
-        write_path = repo_path + '/open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_stand_nuc4.yaml'
+        write_path = repo_path + '/open_manipulator_p_controls/open_manipulator_p_hw/config/hardware_stand_nuc6.yaml'
         n_robots = 2
     elif demo == 'spot':
         read_path = repo_path + '/papras/config/spot_mount_config.yaml'
