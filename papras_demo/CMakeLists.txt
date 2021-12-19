@@ -1,7 +1,7 @@
 ################################################################################
 # Set minimum required version of cmake, project name and compile options
 ################################################################################
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(papras_demo)
 
 add_compile_options(-std=c++11)
@@ -108,10 +108,6 @@ install(TARGETS cage_tasks DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 add_executable(stand_tasks src/stand_tasks.cpp)
 target_link_libraries(stand_tasks ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS stand_tasks DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-add_executable(test_multi src/test_multi.cpp)
-target_link_libraries(test_multi ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS test_multi DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(command_operator src/command_operator.cpp)
 target_link_libraries(command_operator Qt5::Widgets ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES})

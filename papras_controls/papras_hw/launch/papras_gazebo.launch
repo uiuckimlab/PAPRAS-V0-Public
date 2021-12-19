@@ -3,7 +3,6 @@
   <arg name="gui" default="true"/>
   <arg name="paused" default="true"/>
   <arg name="use_sim_time" default="true"/>
-  <arg name="with_gripper" default="false"/>
 
   <!-- startup simulated world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -13,9 +12,7 @@
   </include>
 
   <!-- Load the URDF into the ROS Parameter Server -->
-  <include file="$(find open_manipulator_p_description)/launch/open_manipulator_p_upload.launch">
-    <arg name="with_gripper" value="$(arg with_gripper)"/>
-  </include>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/kitchen.urdf.xacro'"/>
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
