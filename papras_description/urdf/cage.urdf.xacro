@@ -2,13 +2,13 @@
 <robot name="open_manipulator_p" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <!-- Import Rviz colors -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/materials.xacro"/>
+  <xacro:include filename="$(find papras_description)/urdf/materials.xacro"/>
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/cage.gazebo.xacro"/>
+  <xacro:include filename="$(find papras_description)/urdf/cage.gazebo.xacro"/>
 
   <!-- Import Transmission -->
-  <xacro:include filename="$(find open_manipulator_p_description)/urdf/cage.transmission.xacro"/>
+  <xacro:include filename="$(find papras_description)/urdf/cage.transmission.xacro"/>
 
   <xacro:arg name="robot1_base_x" default="0.10939"/>
   <xacro:arg name="robot1_base_y" default="0.04503"/>
@@ -52,7 +52,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link1.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -60,7 +60,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link1.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -87,7 +87,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link2.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -95,7 +95,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link2.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -123,7 +123,7 @@
       <visual>
         <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -131,7 +131,7 @@
       <collision>
         <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link3_papras_simple.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link3_papras_simple.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -159,7 +159,7 @@
       <visual>
         <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -167,7 +167,7 @@
       <collision>
         <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link4_papras_simple.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link4_papras_simple.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -195,7 +195,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link5.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -203,7 +203,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link5.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -231,7 +231,7 @@
       <visual>
         <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -239,7 +239,7 @@
       <collision>
         <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/link6_papras_simple.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/link6_papras_simple.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -267,7 +267,7 @@
       <visual>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -275,7 +275,7 @@
       <collision>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -301,7 +301,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/gripper_main_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/gripper_main_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -309,7 +309,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/gripper_main_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/gripper_main_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
 
@@ -335,7 +335,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/gripper_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/gripper_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -343,7 +343,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/gripper_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/gripper_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </collision>
@@ -371,7 +371,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/gripper_sub_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/gripper_sub_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </visual>
@@ -379,7 +379,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/gripper_sub_link.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://papras_description/meshes/gripper_sub_link.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="grey"/>
       </collision>
@@ -437,14 +437,14 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/camera_mount.stl"/>
+          <mesh filename="package://papras_description/meshes/camera_mount.stl"/>
         </geometry>
       </visual>
 
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://open_manipulator_p_description/meshes/camera_mount_simple.stl"/>
+          <mesh filename="package://papras_description/meshes/camera_mount_simple.stl"/>
         </geometry>
       </collision>
 
@@ -467,14 +467,14 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://open_manipulator_p_description/meshes/cage.stl"/>
+        <mesh filename="package://papras_description/meshes/cage.stl"/>
       </geometry>
     </visual>
 
     <collision>
       <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://open_manipulator_p_description/meshes/cage_simple.stl"/>
+        <mesh filename="package://papras_description/meshes/cage_simple.stl"/>
       </geometry>
     </collision>
   </link>
