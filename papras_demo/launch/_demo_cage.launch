@@ -2,42 +2,43 @@
 <launch>
   <arg name="sim" default="false"/>
   <arg name="usb_port" default="/dev/ttyUSB0" />
-  <arg name="with_gripper" default="true"/>
   <arg name="pipeline" default="ompl"/>
   <arg name="gazebo_gui" default="true"/>
+  <arg name="rviz" default="true"/>
 
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">
-    <include file="$(find papras)/launch/system_urdf.launch">
-      <arg name="with_gripper" value="$(arg with_gripper)"/>
+    <include file="$(find papras_sim)/launch/sim.launch">
       <arg name="use_sim_time" value="true"/>
-      <arg name="urdf_upload" value="cage_upload.launch"/> 
+      <arg name="demo_env" value="cage"/> 
       <arg name="gui" value="$(arg gazebo_gui)"/> 
     </include>
   </group>
 
   <!-- startup ros_control for real robot -->
   <group unless="$(arg sim)">
-    <include file="$(find open_manipulator_p_hw)/launch/open_manipulator_p_control.launch">
+    <include file="$(find papras_hw)/launch/papras_hw.launch">
       <arg name="usb_port" value="/dev/ttyUSB0"/>
-      <arg name="with_gripper" value="$(arg with_gripper)"/>
-      <arg name="yaml_file" value="$(find open_manipulator_p_hw)/config/hardware_cage_2gripper.yaml"/>
+      <arg name="yaml_file" value="$(find papras_hw)/config/hardware_cage_2gripper.yaml"/>
       <arg name="baud_rate" value="1000000" />
     </include>
   </group>
 
-  <!-- controller utils -->
-  <include file="$(find open_manipulator_p_hw)/launch/controller_utils.launch"/>
+  <!-- joint velocity and acceleration limits -->
+  <rosparam file="$(find papras_hw)/config/joint_limits.yaml" command="load"/>
+
+  <!-- joint state controller-->
+  <include file="$(find papras_controllers)/launch/controller_utils.launch"/>
 
   <!-- joint_trajectory_controller -->
   <group unless="$(arg sim)">
-    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller.yaml" command="load"/>
+    <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller.yaml" command="load"/>
   </group>
   <group if="$(arg sim)">
-    <rosparam file="$(find open_manipulator_p_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
+    <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
   </group>
  
-
+  <!-- spawn controller nodes -->
   <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
   <node name="arm2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm2_controller"/>
   <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/>
@@ -50,9 +51,13 @@
   <include file="$(find cage_config_2gripper)/launch/move_group.launch">
     <arg name="pipeline" value="$(arg pipeline)"/>
   </include>
-  <!-- <include file="$(find cage_config_2gripper)/launch/moveit_rviz.launch">
-    <arg name="rviz_config" value="$(find cage_config_2gripper)/launch/moveit.rviz"/>
-  </include> -->
+
+  <!-- rviz moveit vis -->
+  <group if="$(arg rviz)">
+    <include file="$(find cage_config_2gripper)/launch/moveit_rviz.launch">
+        <arg name="rviz_config" value="$(find cage_config_2gripper)/launch/moveit.rviz"/>
+    </include>
+  </group>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
 </launch>

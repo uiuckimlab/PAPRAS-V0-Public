@@ -13,6 +13,6 @@
   </node>
 
   <!-- Load the URDF into the ROS Parameter Server -->
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/kitchen.urdf.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/cage.urdf.xacro'"/>
 
 </launch>

@@ -7,15 +7,6 @@ arm1_controller:
     - robot1/joint4
     - robot1/joint5
     - robot1/joint6
-  constraints:
-      goal_time: 0.6
-      stopped_velocity_tolerance: 0.05
-      robot1/joint1: {trajectory: 0.1, goal: 0.1}
-      robot1/joint2: {trajectory: 0.1, goal: 0.1}
-      robot1/joint3: {trajectory: 0.1, goal: 0.1}
-      robot1/joint4: {trajectory: 0.1, goal: 0.1}
-      robot1/joint5: {trajectory: 0.1, goal: 0.1}
-      robot1/joint6: {trajectory: 0.1, goal: 0.1}
   stop_trajectory_duration: 0.5
   state_publish_rate:  25
   action_monitor_rate: 10
@@ -29,15 +20,6 @@ arm2_controller:
     - robot2/joint4
     - robot2/joint5
     - robot2/joint6
-  constraints:
-      goal_time: 0.6
-      stopped_velocity_tolerance: 0.05
-      robot2/joint1: {trajectory: 0.1, goal: 0.1}
-      robot2/joint2: {trajectory: 0.1, goal: 0.1}
-      robot2/joint3: {trajectory: 0.1, goal: 0.1}
-      robot2/joint4: {trajectory: 0.1, goal: 0.1}
-      robot2/joint5: {trajectory: 0.1, goal: 0.1}
-      robot2/joint6: {trajectory: 0.1, goal: 0.1}
   stop_trajectory_duration: 0.5
   state_publish_rate:  25
   action_monitor_rate: 10
@@ -51,15 +33,6 @@ arm3_controller:
     - robot3/joint4
     - robot3/joint5
     - robot3/joint6
-  constraints:
-      goal_time: 0.6
-      stopped_velocity_tolerance: 0.05
-      robot3/joint1: {trajectory: 0.1, goal: 0.1}
-      robot3/joint2: {trajectory: 0.1, goal: 0.1}
-      robot3/joint3: {trajectory: 0.1, goal: 0.1}
-      robot3/joint4: {trajectory: 0.1, goal: 0.1}
-      robot3/joint5: {trajectory: 0.1, goal: 0.1}
-      robot3/joint6: {trajectory: 0.1, goal: 0.1}
   stop_trajectory_duration: 0.5
   state_publish_rate:  25
   action_monitor_rate: 10
@@ -73,15 +46,6 @@ arm4_controller:
     - robot4/joint4
     - robot4/joint5
     - robot4/joint6
-  constraints:
-      goal_time: 0.6
-      stopped_velocity_tolerance: 0.05
-      robot4/joint1: {trajectory: 0.1, goal: 0.1}
-      robot4/joint2: {trajectory: 0.1, goal: 0.1}
-      robot4/joint3: {trajectory: 0.1, goal: 0.1}
-      robot4/joint4: {trajectory: 0.1, goal: 0.1}
-      robot4/joint5: {trajectory: 0.1, goal: 0.1}
-      robot4/joint6: {trajectory: 0.1, goal: 0.1}
   stop_trajectory_duration: 0.5
   state_publish_rate:  25
   action_monitor_rate: 10
@@ -90,10 +54,6 @@ gripper1_controller:
   type: effort_controllers/JointTrajectoryController
   joints:
     - robot1/gripper
-  constraints:
-      goal_time: 0.6
-      stopped_velocity_tolerance: 0.05
-      robot1/gripper: {trajectory: 0.1, goal: 0.1}
   stop_trajectory_duration: 0.5
   state_publish_rate:  25
   action_monitor_rate: 10
@@ -104,10 +64,6 @@ gripper4_controller:
   type: effort_controllers/JointTrajectoryController
   joints:
     - robot4/gripper
-  constraints:
-      goal_time: 0.6
-      stopped_velocity_tolerance: 0.05
-      robot4/gripper: {trajectory: 0.1, goal: 0.1}
   stop_trajectory_duration: 0.5
   state_publish_rate:  25
   action_monitor_rate: 10
@@ -118,10 +74,6 @@ gripper3_controller:
   type: effort_controllers/JointTrajectoryController
   joints:
     - robot3/gripper
-  constraints:
-      goal_time: 0.6
-      stopped_velocity_tolerance: 0.05
-      robot3/gripper: {trajectory: 0.1, goal: 0.1}
   stop_trajectory_duration: 0.5
   state_publish_rate:  25
   action_monitor_rate: 10
