@@ -414,6 +414,7 @@
   <xacro:macro name="omp_camera" params="id">
     <!-- camera link fixed joint -->
     <joint name="robot${id}/camera_fixed_joint" type="fixed">
+      <axis xyz="0 1 0" />
       <parent link="robot${id}/gripper_main_link"/>
       <child link="robot${id}/camera_link"/>
       <origin xyz="0.0592 0.0167 0.04452" rpy="0 0 0" />
