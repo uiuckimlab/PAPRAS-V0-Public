@@ -18,7 +18,7 @@
   <!-- startup ros_control for real robot -->
   <group unless="$(arg sim)">
     <include file="$(find papras_hw)/launch/papras_hw.launch">
-      <arg name="usb_port" value="/dev/ttyUSB0"/>
+      <arg name="usb_port" value="$(arg usb_port)"/>
       <arg name="yaml_file" value="$(find papras_hw)/config/hardware_cage_2gripper.yaml"/>
       <arg name="baud_rate" value="1000000" />
     </include>

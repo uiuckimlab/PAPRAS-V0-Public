@@ -1,6 +1,6 @@
 moveit_setup_assistant_config:
   URDF:
-    package: open_manipulator_p_description
+    package: papras_description
     relative_path: urdf/coffee_camera.urdf.xacro
     xacro_args: ""
   SRDF:
@@ -8,4 +8,4 @@ moveit_setup_assistant_config:
   CONFIG:
     author_name: Dhruv Mathur
     author_email: dmathur2@illinois.edu
-    generated_timestamp: 1635459062
+    generated_timestamp: 1640303978

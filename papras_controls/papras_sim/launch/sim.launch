@@ -13,11 +13,6 @@
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
   </include>
 
-  <group if="$(eval arg('demo_env') == 'cage')">
-    <param name="robot_description"
-      command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/cage.urdf.xacro'"/>
-  </group>
-
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args=" -urdf -param /robot_description -model $(arg demo_env)"/>
