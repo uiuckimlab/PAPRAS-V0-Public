@@ -101,8 +101,8 @@
   </gazebo>
 
   <!-- rgb camera -->
-  <!-- <gazebo reference="robot1/camera_link">
-    <sensor type="camera" name="camera1">
+  <gazebo reference="robot1/camera_link">
+    <sensor name="rgb_camera1" type="camera">
       <update_rate>0</update_rate>
       <camera name="head">
         <horizontal_fov>1.02974</horizontal_fov>
@@ -137,10 +137,10 @@
         <distortionT2>0.0</distortionT2>
       </plugin>
     </sensor>
-  </gazebo> -->
+  </gazebo>
 
   <gazebo reference="robot1/camera_link">
-    <sensor name="camera1" type="depth">
+    <sensor name="depth_camera1" type="depth">
       <update_rate>20</update_rate>
       <camera>
         <horizontal_fov>1.047198</horizontal_fov>
@@ -164,7 +164,7 @@
         <depthImageTopicName>/depth/image_raw</depthImageTopicName>
         <depthImageInfoTopicName>/depth/camera_info</depthImageInfoTopicName>
         <pointCloudTopicName>/depth/points</pointCloudTopicName>
-        <frameName>robot1/camera_link</frameName>
+        <frameName>robot1/camera_depth_link</frameName>
         <pointCloudCutoff>0.01</pointCloudCutoff>
         <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
         <distortionK1>0.00000001</distortionK1>
