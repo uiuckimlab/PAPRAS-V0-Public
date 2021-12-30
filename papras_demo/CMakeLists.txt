@@ -4,8 +4,10 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(papras_demo)
 
-add_compile_options(-std=c++11)
-
+find_package(gazebo REQUIRED)
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 ################################################################################
 # Find catkin packages and libraries for catkin and system dependencie
 ################################################################################
@@ -37,6 +39,8 @@ find_package(catkin REQUIRED
     robotis_manipulator
     open_manipulator_msgs
     cmake_modules
+    vision_msgs
+    rosparam_shortcuts
 )
 
 find_package(gazebo REQUIRED)
@@ -82,7 +86,7 @@ catkin_package(
 
 # ensure generated header files are being created in the devel space
 set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
-set(CMAKE_CURRENT_BINARY_DIR ${papras_gazebo_INCLUDE_DIRECTORIES})
+set(CMAKE_CURRENT_BINARY_DIR ${papras_demo_INCLUDE_DIRECTORIES})
 
 ################################################################################
 # Build
@@ -90,7 +94,7 @@ set(CMAKE_CURRENT_BINARY_DIR ${papras_gazebo_INCLUDE_DIRECTORIES})
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
 include_directories(
-  ${papras_gazebo_INCLUDE_DIRECTORIES}
+  ${papras_demo_INCLUDE_DIRECTORIES}
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
@@ -112,6 +116,10 @@ install(TARGETS stand_tasks DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 add_executable(command_operator src/command_operator.cpp)
 target_link_libraries(command_operator Qt5::Widgets ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES})
 install(TARGETS command_operator DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(pick_place src/pick_place.cpp)
+target_link_libraries(pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ################################################################################
 # Install
