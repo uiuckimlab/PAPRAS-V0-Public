@@ -5,6 +5,9 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /MotionPlanning1
+        - /MarkerArray1
+        - /MarkerArray1/Namespaces1
+        - /Image2
       Splitter Ratio: 0.7425600290298462
     Tree Height: 383
   - Class: rviz/Help
@@ -75,6 +78,10 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          robot1/camera_depth_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
           robot1/camera_link:
             Alpha: 1
             Show Axes: false
@@ -135,6 +142,10 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          robot3/camera_depth_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
           robot3/camera_link:
             Alpha: 1
             Show Axes: false
@@ -249,6 +260,10 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          robot1/camera_depth_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
           robot1/camera_link:
             Alpha: 1
             Show Axes: false
@@ -309,6 +324,10 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          robot3/camera_depth_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
           robot3/camera_link:
             Alpha: 1
             Show Axes: false
@@ -378,6 +397,83 @@ Visualization Manager:
         Show Robot Visual: true
       Value: true
       Velocity_Scaling_Factor: 1
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /depth/points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /dope/rgb_points
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Queue Size: 10
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Arrow
+      Topic: /dope/pose_cracker
+      Unreliable: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /dope/markers
+      Name: MarkerArray
+      Namespaces:
+        bboxes: true
+        texts: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /dope/belief_cracker
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -394,7 +490,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 2.770583152770996
+      Distance: 3.777202844619751
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -402,17 +498,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.11356700211763382
-        Y: 0.10592000186443329
-        Z: 2.2351800055275817e-07
+        X: 0.10052049160003662
+        Y: 0.22709941864013672
+        Z: 3.427272758926847e-07
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4897969961166382
+      Pitch: 0.6097970604896545
       Target Frame: world
-      Yaw: 5.5549540519714355
+      Yaw: 2.7567689418792725
     Saved: ~
 Window Geometry:
   Displays:
@@ -422,11 +518,13 @@ Window Geometry:
     collapsed: false
   Hide Left Dock: false
   Hide Right Dock: false
+  Image:
+    collapsed: false
   MotionPlanning:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000002a20000039efc0200000007fb000000100044006900730070006c006100790073010000003d00000210000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a0056006900650077007300000003b0000000b0000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000253000001880000017d00ffffff000004900000039e00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000200000000000001f30000039efc0200000007fb000000100044006900730070006c006100790073010000003d00000210000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a0056006900650077007300000003b0000000b0000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000253000001880000017d00ffffff000000010000027e0000039efc0200000002fb0000000a0049006d006100670065010000003d000001c40000001600fffffffb0000000a0049006d0061006700650100000207000001d40000001600ffffff000002bb0000039e00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1848
