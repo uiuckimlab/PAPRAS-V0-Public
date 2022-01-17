@@ -5,7 +5,24 @@ moveit_sim_hw_interface:
 # Settings for ros_control_boilerplate control loop
 generic_hw_control_loop:
   loop_hz: 300
-  cycle_time_error_threshold: 0.01
+  cycle_time_error_threshold: 0.01  - name: gripper2_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - robot2/gripper
+  - name: gripper3_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - robot3/gripper
+  - name: gripper4_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+      - robot4/gripper
 # Settings for ros_control hardware interface
 hardware_interface:
   joints:

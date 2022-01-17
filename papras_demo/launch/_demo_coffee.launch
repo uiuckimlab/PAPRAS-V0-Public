@@ -6,6 +6,9 @@
   <arg name="gazebo_gui" default="true"/>
   <arg name="rviz" default="true"/>
 
+  <!-- Load the URDF into the ROS Parameter Server -->  
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/coffee_camera.urdf.xacro'"/>
+
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">
     <include file="$(find papras_sim)/launch/sim.launch">
@@ -24,7 +27,7 @@
     </include>
   </group>
 
-   <!-- joint velocity and acceleration limits -->
+  <!-- joint velocity and acceleration limits -->
   <!-- <rosparam file="$(find papras_hw)/config/coffee_joint_limits.yaml" command="load"/> -->
 
   <!-- joint state controller-->
