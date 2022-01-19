@@ -46,6 +46,9 @@
 
 // TF2
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf/transform_listener.h>
+// eigen_conversions
+#include <eigen_conversions/eigen_msg.h>
 
 // Other
 #include <sstream>
@@ -61,7 +64,7 @@
 #include <tinyxml.h>
 #include <sstream>
 
-std::string tf_prefix_ = "robot3/";
+std::string tf_prefix_ = "robot1/";
 constexpr char LOGNAME[] = "moveit_task_constructor_papras";
 // The circle constant tau = 2*pi. One tau is one rotation in radians.
 const double tau = 2 * M_PI;
@@ -77,7 +80,8 @@ enum state
     ST_SPAWN_URDF,
     ST_SPAWN_SDF,
     ST_MTC,
-    ST_DONE
+    ST_DONE,
+    ST_ARM_TO_CART_POSE
 };
 
 enum ObjectID
@@ -174,6 +178,33 @@ int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &plan
     return 0;
 }
 
+moveit::planning_interface::MoveItErrorCode moveToCartPose(moveit::planning_interface::MoveGroupInterface &group,
+                                                           Eigen::Isometry3d cartesian_pose,
+                                                           std::string base_frame = tf_prefix_ + "link1",
+                                                           std::string target_frame = tf_prefix_ + "end_effector_link")
+{
+    robot_state::RobotState start_state(*group.getCurrentState());
+    group.setStartState(start_state);
+
+    geometry_msgs::PoseStamped target_pose;
+    target_pose.header.frame_id = base_frame;
+    tf::poseEigenToMsg(cartesian_pose, target_pose.pose);
+
+    group.setPoseTarget(target_pose, target_frame);
+
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+
+    auto error_code = group.plan(my_plan);
+    bool success = (error_code == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+
+    ROS_INFO("Move planning (pose goal) %s", success ? "" : "FAILED");
+    if (success)
+    {
+        error_code = group.execute(my_plan);
+    }
+    return error_code;
+}
+
 bool pause_service(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res)
 {
     if (!paused)
@@ -195,13 +226,8 @@ bool continue_service(std_srvs::Empty::Request &req, std_srvs::Empty::Response &
     return true;
 }
 
-int main(int argc, char **argv)
+int spawnObjFSM(ros::NodeHandle nh)
 {
-    ros::init(argc, argv, "pick_n_place");
-    ros::AsyncSpinner spinner(1);
-    spinner.start();
-
-    ros::NodeHandle nh;
     state task_state = ST_INIT;
     state paused_state = ST_INIT;
 
@@ -370,8 +396,7 @@ int main(int argc, char **argv)
 
             spawn_model.request.robot_namespace = "";
             geometry_msgs::Pose pose;
-            pose.position.x = pose.position.y = 0;
-            pose.position.z = 1;
+            pose.position.x = pose.position.y = pose.position.z = 1;
             pose.orientation.w = 1.0;
             pose.orientation.x = pose.orientation.y = pose.orientation.z = 0;
             spawn_model.request.initial_pose = pose;
@@ -411,4 +436,68 @@ int main(int argc, char **argv)
         }
     }
     return 1;
+}
+
+int EEFControlFSM(ros::NodeHandle nh)
+{
+    state task_state = ST_INIT;
+    moveit::planning_interface::MoveGroupInterface group("arm1");
+
+    while (ros::ok)
+    {
+        switch (task_state)
+        {
+        case ST_INIT:
+        {
+            ROS_INFO_STREAM("ST_INIT");
+            group.setPlanningTime(10.0);
+            group.setPlannerId("geometric::RRTConnect");
+
+            task_state = ST_ARM_TO_CART_POSE;
+            break;
+        }
+        case ST_ARM_TO_CART_POSE:
+        {
+            ROS_INFO_STREAM("ST_ARM_TO_CART_POSE");
+            /* ********************* PLAN AND EXECUTE TO CARTESIAN POSE ********************* */
+            Eigen::Isometry3d eef_pose = Eigen::Isometry3d::Identity();
+            eef_pose.translate(Eigen::Vector3d(1, 1, 1));
+            // eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 0.0, 0.0)));
+            // eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 0.0, 0.0)));
+            // eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 0.0, 0.0)));
+
+            if (moveToCartPose(group, eef_pose) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
+            {
+                task_state = ST_DONE;
+            }
+            else
+            {
+                ROS_INFO("Move arm to cartesian pose failed");
+                failed = true;
+            }
+            break;
+        }
+        case ST_DONE:
+        {
+            ROS_INFO_STREAM("ST_DONE");
+            return 0;
+        }
+        default:
+        {
+            ROS_INFO_STREAM("Unknown state");
+            return 1;
+        }
+        }
+    }
+    return 1;
+}
+
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "pick_n_place");
+    ros::AsyncSpinner spinner(1);
+    spinner.start();
+
+    ros::NodeHandle nh;
+    return EEFControlFSM(nh);
 }

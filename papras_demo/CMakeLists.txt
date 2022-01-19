@@ -41,6 +41,7 @@ find_package(catkin REQUIRED
     cmake_modules
     vision_msgs
     rosparam_shortcuts
+    eigen_conversions
 )
 
 find_package(gazebo REQUIRED)
