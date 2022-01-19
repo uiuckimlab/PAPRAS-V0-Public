@@ -81,7 +81,8 @@ enum state
     ST_SPAWN_SDF,
     ST_MTC,
     ST_DONE,
-    ST_ARM_TO_CART_POSE
+    ST_ARM_TO_CART_POSE,
+    ST_ARM_TO_CART_POSE2
 };
 
 enum ObjectID
@@ -461,14 +462,33 @@ int EEFControlFSM(ros::NodeHandle nh)
             ROS_INFO_STREAM("ST_ARM_TO_CART_POSE");
             /* ********************* PLAN AND EXECUTE TO CARTESIAN POSE ********************* */
             Eigen::Isometry3d eef_pose = Eigen::Isometry3d::Identity();
-            eef_pose.translate(Eigen::Vector3d(1, 1, 1));
-            // eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 0.0, 0.0)));
-            // eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 0.0, 0.0)));
-            // eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 0.0, 0.0)));
-
+            eef_pose.translate(Eigen::Vector3d(0.5, 0 ,0.5));
+            eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 0.0, 0.0)));
+           
             if (moveToCartPose(group, eef_pose) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
             {
-                task_state = ST_DONE;
+                task_state = ST_ARM_TO_CART_POSE2;
+            }
+            else
+            {
+                ROS_INFO("Move arm to cartesian pose failed");
+                failed = true;
+            }
+            break;
+        }
+        case ST_ARM_TO_CART_POSE2:
+        {
+            ROS_INFO_STREAM("ST_ARM_TO_CART_POSE2");
+            /* ********************* PLAN AND EXECUTE TO CARTESIAN POSE ********************* */
+            Eigen::Isometry3d eef_pose = Eigen::Isometry3d::Identity();
+            eef_pose.translate(Eigen::Vector3d(0.4759, 0.045, 1.328));
+            eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(-3.141, 0.0, 0.0)));
+            eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 1.569, 0.0)));
+            //Original quaternion [ 0.7074067, 0.0, 0.7068067, -0.000088 ]
+           
+            if (moveToCartPose(group, eef_pose) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
+            {
+                task_state = ST_ARM_TO_CART_POSE;
             }
             else
             {
