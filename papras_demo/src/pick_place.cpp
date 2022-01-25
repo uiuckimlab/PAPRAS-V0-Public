@@ -1,38 +1,3 @@
-/*********************************************************************
- * Software License Agreement (BSD License)
- *
- *  Copyright (c) 2012, Willow Garage, Inc.
- *  Copyright (c) 2018, DFKI GmbH
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of Willow Garage nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *  POSSIBILITY OF SUCH DAMAGE.
- *********************************************************************/
-
 /* Authors: Kazuki Shin, Sankalp Yamsani */
 
 // ROS
@@ -76,13 +41,13 @@ enum state
 {
     ST_INIT,
     ST_PAUSED,
-    ST_ARM_TO_HOME_START,
-    ST_SPAWN_URDF,
-    ST_SPAWN_SDF,
-    ST_MTC,
-    ST_DONE,
-    ST_ARM_TO_CART_POSE,
-    ST_ARM_TO_CART_POSE2
+    ST_ARM_TO_REST_START,
+    ST_CAPTURE_OBJ,
+    ST_PICK_OBJ,
+    ST_ARM_TO_TRANSPORT,
+    ST_PLACE_OBJ,
+    ST_ARM_TO_HOME_END,
+    ST_DONE
 };
 
 enum ObjectID
@@ -92,6 +57,7 @@ enum ObjectID
     CARAFE = 3,
     PLATE = 4,
     TABLE = 5,
+    POPCORN = 14,
 };
 
 std::string id_to_string(int id)
@@ -108,21 +74,23 @@ std::string id_to_string(int id)
         return "plate";
     case ObjectID::TABLE:
         return "table";
+    case ObjectID::POPCORN:
+        return "popcorn";
     default:
         std::cerr << "No such ObjectID: " << id << std::endl;
         return "";
     }
 }
 
-bool paused = true;
+bool paused = false;
 bool failed = false;
 
 int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &planning_scene_interface,
                         ros::NodeHandle &nh, moveit::planning_interface::MoveGroupInterface &group)
 {
     // get objects from object detection
-    bool found_cup = false;
-    while (!found_cup)
+    bool found_popcorn = false;
+    while (!found_popcorn)
     {
         if (!ros::ok())
             return 0;
@@ -145,8 +113,8 @@ int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &plan
                 return 1;
             }
 
-            if (det3d.results[0].id == ObjectID::CUP)
-                found_cup = true;
+            if (det3d.results[0].id == ObjectID::POPCORN)
+                found_popcorn = true;
 
             moveit_msgs::CollisionObject co;
             co.header = detections->header;
@@ -155,17 +123,18 @@ int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &plan
             co.primitives.resize(1);
             co.primitives[0].type = shape_msgs::SolidPrimitive::BOX;
             co.primitives[0].dimensions.resize(geometric_shapes::solidPrimitiveDimCount<shape_msgs::SolidPrimitive::BOX>());
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = det3d.bbox.size.x + 10; //0.04;
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = det3d.bbox.size.y + 10; //0.04;
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = det3d.bbox.size.z + 10; //0.04;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = det3d.bbox.size.x + 0.04;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = det3d.bbox.size.y + 0.04;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = det3d.bbox.size.z + 0.04;
             co.primitive_poses.resize(1);
             co.primitive_poses[0] = det3d.bbox.center;
+            co.primitive_poses[0].position.z += 0.1;
 
             collision_objects.push_back(co);
         }
 
-        if (!found_cup)
-            ROS_INFO_THROTTLE(1.0, "Still waiting for cup...");
+        if (!found_popcorn)
+            ROS_INFO_THROTTLE(1.0, "Still waiting for popcorn...");
 
         planning_scene_interface.applyCollisionObjects(collision_objects);
     }
@@ -179,7 +148,7 @@ int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &plan
     return 0;
 }
 
-moveit::planning_interface::MoveItErrorCode moveToCartPose(moveit::planning_interface::MoveGroupInterface &group,
+moveit::core::MoveItErrorCode moveToCartPose(moveit::planning_interface::MoveGroupInterface &group,
                                                            Eigen::Isometry3d cartesian_pose,
                                                            std::string base_frame = tf_prefix_ + "link1",
                                                            std::string target_frame = tf_prefix_ + "end_effector_link")
@@ -196,7 +165,7 @@ moveit::planning_interface::MoveItErrorCode moveToCartPose(moveit::planning_inte
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
     auto error_code = group.plan(my_plan);
-    bool success = (error_code == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    bool success = (error_code == moveit::core::MoveItErrorCode::SUCCESS);
 
     ROS_INFO("Move planning (pose goal) %s", success ? "" : "FAILED");
     if (success)
@@ -227,297 +196,320 @@ bool continue_service(std_srvs::Empty::Request &req, std_srvs::Empty::Response &
     return true;
 }
 
-int spawnObjFSM(ros::NodeHandle nh)
+int main(int argc, char** argv)
 {
-    state task_state = ST_INIT;
-    state paused_state = ST_INIT;
+  ros::init(argc, argv, "papras_pick_n_place");
+  ros::AsyncSpinner spinner(1);
+  spinner.start();
 
-    geometry_msgs::Pose base_pick_pose;
-    geometry_msgs::Pose base_handover_pose;
-    geometry_msgs::Pose base_place_pose;
-    geometry_msgs::Pose base_home_pose;
-    std::string world_name;
-    bool handover_planned;
+  ros::NodeHandle nh;
+  state task_state = ST_INIT;
+  state paused_state = ST_INIT;
 
-    // Load rosparams
-    ros::NodeHandle nh_priv("~");
-    std::string param_path;
+  geometry_msgs::Pose base_pick_pose;
+  geometry_msgs::Pose base_handover_pose;
+  geometry_msgs::Pose base_place_pose;
+  geometry_msgs::Pose base_home_pose;
+  std::string world_name;
+  bool handover_planned;
 
-    // pause service
-    ros::ServiceServer pause_state = nh.advertiseService("pause_statemachine", pause_service);
+  // Load rosparams
+  ros::NodeHandle nh_priv("~");
+  std::string param_path;
+  if (nh_priv.searchParam("tf_prefix", param_path))
+    nh_priv.getParam(param_path, tf_prefix_);
+  nh_priv.param<std::string>("tf_prefix", tf_prefix_, "robot1/");
 
-    // continue service
-    ros::ServiceServer continue_state = nh.advertiseService("continue_statemachine", continue_service);
+  // ensure tf_prefix_ ends with exactly 1 '/' if nonempty, or "" if empty
+  tf_prefix_ = tf_prefix_.erase(tf_prefix_.find_last_not_of('/') + 1) + "/";
+  if (tf_prefix_.length() == 1)
+    tf_prefix_ = "";
 
-    // GAZEBO SERVICE
-    ros::ServiceClient gazebo_spawn_urdf_obj = nh.serviceClient<gazebo_msgs::SpawnModel>(SPAWN_URDF_OBJECT_TOPIC);
-    ros::ServiceClient gazebo_spawn_sdf_obj = nh.serviceClient<gazebo_msgs::SpawnModel>(SPAWN_SDF_OBJECT_TOPIC);
+  ROS_INFO_STREAM("Current world name: PAPRAS Table");
 
-    moveit::planning_interface::MoveGroupInterface group("arm3");
-    // MOVE IT
-    moveit::planning_interface::MoveGroupInterface::Plan plan;
-    // PLANNING INTERFACE
-    moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+  // pause service
+  ros::ServiceServer pause_state = nh.advertiseService("pause_statemachine", pause_service);
 
-    while (ros::ok())
+  // pause service
+  ros::ServiceServer continue_state = nh.advertiseService("continue_statemachine", continue_service);
+
+  moveit::planning_interface::MoveGroupInterface group("arm1");
+  // MOVE IT
+  moveit::planning_interface::MoveGroupInterface::Plan plan;
+  // PLANNING INTERFACE
+  moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+
+  while (ros::ok())
+  {
+    if ((paused || failed) && !(task_state == ST_PAUSED))
     {
-        if ((paused || failed) && !(task_state == ST_PAUSED))
-        {
-            ROS_INFO_STREAM("PAUSED in state " << task_state);
-            ROS_INFO_STREAM("Call service continue_statemachine to resume");
-            paused_state = task_state;
-            task_state = ST_PAUSED;
-        }
-        switch (task_state)
-        {
-        case ST_INIT:
-        {
-            ROS_INFO_STREAM("ST_INIT");
-            group.setPlanningTime(10.0);
-            group.setPlannerId("RRTConnect");
-
-            task_state = ST_ARM_TO_HOME_START;
-            break;
-        }
-        case ST_PAUSED:
-        {
-            if (!paused && !failed)
-            {
-                task_state = paused_state;
-                ROS_INFO_STREAM("Next state: " << task_state);
-            }
-            ros::Duration(0.1).sleep();
-            break;
-        }
-        case ST_ARM_TO_HOME_START:
-        {
-            ROS_INFO_STREAM("ST_ARM_TO_HOME_START");
-
-            /* ******************* MOVE ARM TO HOME ****************************** */
-            // plan
-            group.setPlannerId("RRTConnect");
-            group.setNamedTarget("rest");
-            moveit::planning_interface::MoveItErrorCode error_code = group.plan(plan);
-            if (error_code == moveit::planning_interface::MoveItErrorCode::SUCCESS)
-            {
-                ROS_INFO("Planning to home pose SUCCESSFUL");
-            }
-            else
-            {
-                ROS_ERROR("Planning to home pose FAILED");
-                failed = true;
-                break;
-            }
-
-            // move
-            error_code = group.execute(plan);
-            if (error_code == moveit::planning_interface::MoveItErrorCode::SUCCESS)
-            {
-                ROS_INFO("Moving to home pose SUCCESSFUL");
-                task_state = ST_SPAWN_SDF;
-            }
-            else
-            {
-                ROS_ERROR("Moving to home pose FAILED");
-                failed = true;
-            }
-            break;
-        }
-        case ST_SPAWN_URDF:
-        {
-            ROS_INFO_STREAM("ST_SPAWN_URDF");
-            gazebo_spawn_urdf_obj.waitForExistence();
-
-            gazebo_msgs::SpawnModel spawn_model;
-            spawn_model.request.model_name = "box1";
-
-            // load urdf file
-            std::string urdf_filename = std::string("/opt/catkin_ws/src/PAPRAS/papras_description/urdf/spot_mount.urdf.xacro");
-            ROS_INFO("loading file: %s", urdf_filename.c_str());
-            // read urdf / gazebo model xml from file
-            TiXmlDocument xml_in(urdf_filename);
-            xml_in.LoadFile();
-            std::ostringstream stream;
-            stream << xml_in;
-            spawn_model.request.model_xml = stream.str(); // load xml file
-            ROS_INFO("XML string: %s", stream.str().c_str());
-
-            spawn_model.request.robot_namespace = "";
-            geometry_msgs::Pose pose;
-            pose.position.x = pose.position.y = 0;
-            pose.position.z = 1;
-            pose.orientation.w = 1.0;
-            pose.orientation.x = pose.orientation.y = pose.orientation.z = 0;
-            spawn_model.request.initial_pose = pose;
-            spawn_model.request.reference_frame = "world";
-
-            if (gazebo_spawn_urdf_obj.call(spawn_model))
-            {
-                ROS_INFO("Spawn in simulation SUCCESSFUL");
-                task_state = ST_DONE;
-                break;
-            }
-            else
-            {
-                ROS_ERROR("Failed to spawn model in sim! Error msg:%s", spawn_model.response.status_message.c_str());
-                failed = true;
-            }
-            break;
-        }
-        case ST_SPAWN_SDF:
-        {
-            ROS_INFO_STREAM("ST_SPAWN_SDF");
-            gazebo_spawn_sdf_obj.waitForExistence();
-
-            gazebo_msgs::SpawnModel spawn_model;
-            spawn_model.request.model_name = "box2";
-            spawn_model.request.model_xml = "<sdf version ='1.4'>\
-                <model name ='cylinder'>\
-                    <pose>0.01 -0.2 0.81 0 0 0</pose>\
-                    <link name ='cup_link'>\
-                    <pose>0.01 -0.2 0.81 0 0 0</pose>\
-                    <collision name ='collision'>\
-                        <geometry>\
-                        <cylinder><length>0.20</length>\
-                                    <radius>0.02</radius>\
-                        </cylinder>\
-                        </geometry>\
-                    </collision>\
-                    <visual name ='visual'>\
-                        <geometry>\
-                        <cylinder><length>0.20</length>\
-                                    <radius>0.02</radius>\
-                        </cylinder>\
-                        </geometry>\
-                    </visual>\
-                    </link>\
-                </model>\
-                </sdf>";
-            ROS_INFO("XML string: %s", spawn_model.request.model_xml.c_str());
-
-            spawn_model.request.robot_namespace = "";
-            geometry_msgs::Pose pose;
-            pose.position.x = pose.position.y = pose.position.z = 1;
-            pose.orientation.w = 1.0;
-            pose.orientation.x = pose.orientation.y = pose.orientation.z = 0;
-            spawn_model.request.initial_pose = pose;
-            spawn_model.request.reference_frame = "world";
-
-            if (gazebo_spawn_sdf_obj.call(spawn_model))
-            {
-                ROS_INFO("Spawn in simulation SUCCESSFUL");
-                task_state = ST_DONE;
-                break;
-            }
-            else
-            {
-                ROS_ERROR("Failed to spawn model in sim! Error msg:%s", spawn_model.response.status_message.c_str());
-                failed = true;
-            }
-            break;
-        }
-        case ST_MTC:
-        {
-            ROS_INFO_STREAM("ST_MTC");
-
-            ros::WallDuration(5.0).sleep();
-            task_state = ST_DONE;
-            break;
-        }
-        case ST_DONE:
-        {
-            ROS_INFO_STREAM("ST_DONE");
-            return 0;
-        }
-        default:
-        {
-            ROS_INFO_STREAM("Unknown state");
-            return 1;
-        }
-        }
+      ROS_INFO_STREAM("PAUSED in state " << task_state);
+      ROS_INFO_STREAM("Call service continue_statemachine to resume");
+      paused_state = task_state;
+      task_state = ST_PAUSED;
     }
-    return 1;
-}
-
-int EEFControlFSM(ros::NodeHandle nh)
-{
-    state task_state = ST_INIT;
-    moveit::planning_interface::MoveGroupInterface group("arm1");
-
-    while (ros::ok)
+    switch (task_state)
     {
-        switch (task_state)
-        {
-        case ST_INIT:
-        {
-            ROS_INFO_STREAM("ST_INIT");
-            group.setPlanningTime(10.0);
-            group.setPlannerId("geometric::RRTConnect");
+      case ST_INIT:
+      {
+        ROS_INFO_STREAM("ST_INIT");
+        group.setPlanningTime(45.0);
+        group.setPlannerId("RRTConnect");
 
-            task_state = ST_ARM_TO_CART_POSE;
+        task_state = ST_ARM_TO_REST_START;
+        break;
+      }
+      case ST_PAUSED:
+      {
+        if (!paused && !failed)
+        {
+          task_state = paused_state;
+          ROS_INFO_STREAM("Next state: " << task_state);
+        }
+        ros::Duration(0.1).sleep();
+        break;
+      }
+      case ST_ARM_TO_REST_START:
+      {
+        ROS_INFO_STREAM("ST_ARM_TO_REST_START");
+
+        /* ******************* MOVE ARM TO HOME ****************************** */
+        // plan
+        group.setPlannerId("RRTConnect");
+        group.setNamedTarget("rest");
+        moveit::core::MoveItErrorCode error_code = group.plan(plan);
+        if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
+        {
+          ROS_INFO("Planning to rest pose SUCCESSFUL");
+        }
+        else
+        {
+          ROS_ERROR("Planning to rest pose FAILED");
+          failed = true;
+          break;
+        }
+
+        // move
+        error_code = group.execute(plan);
+        if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
+        {
+          ROS_INFO("Moving to rest pose SUCCESSFUL");
+          task_state = ST_CAPTURE_OBJ;
+        }
+        else
+        {
+          ROS_ERROR("Moving to rest pose FAILED");
+          failed = true;
+        }
+        break;
+      }
+      case ST_CAPTURE_OBJ:
+      {
+        ROS_INFO_STREAM("ST_CAPTURE_OBJ");
+
+        /* ********************* PLAN AND EXECUTE MOVES ********************* */
+
+        // plan to observe the table
+        group.setNamedTarget("observe_table_left");
+        moveit::core::MoveItErrorCode error_code = group.plan(plan);
+        if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
+        {
+          ROS_INFO("Planning to observation pose SUCCESSFUL");
+        }
+        else
+        {
+          ROS_ERROR("Planning to observation pose FAILED");
+          failed = true;
+          break;
+        }
+
+        // move to observation pose
+        error_code = group.execute(plan);
+        if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
+        {
+          ROS_INFO("Moving to observation pose SUCCESSFUL");
+          task_state = ST_PICK_OBJ;
+        }
+        else
+        {
+          ROS_ERROR("Moving to observation pose FAILED");
+          failed = true;
+        }
+        ros::WallDuration(5.0).sleep();
+        break;
+      }
+      case ST_PICK_OBJ:
+      {
+        ROS_INFO_STREAM("ST_PICK_OBJ");
+
+        /* ********************* PICK ********************* */
+
+        // clear octomap
+        ros::ServiceClient clear_octomap = nh.serviceClient<std_srvs::Empty>("clear_octomap");
+        std_srvs::Empty srv;
+        group.clearPathConstraints();
+        // pick
+        moveit::core::MoveItErrorCode error_code;
+        uint pickPlanAttempts = 0;
+        do
+        {
+          clear_octomap.call(srv);
+
+          int result = updatePlanningScene(planning_scene_interface, nh, group);
+          if (result != 0)
+          {
+            ROS_ERROR("Updating planning scene FAILED");
+            failed = true;
             break;
-        }
-        case ST_ARM_TO_CART_POSE:
+          }
+
+          error_code = moveit::core::MoveItErrorCode::SUCCESS;
+          ++pickPlanAttempts;
+
+          if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
+          {
+            ROS_INFO("Picking SUCCESSFUL");
+            task_state = ST_ARM_TO_TRANSPORT;
+          }
+          else if ((error_code == moveit::core::MoveItErrorCode::PLANNING_FAILED ||
+                    error_code == moveit::core::MoveItErrorCode::INVALID_MOTION_PLAN) &&
+                   pickPlanAttempts < 10)
+          {
+            ROS_INFO("Planning for Picking FAILED");
+          }
+          else
+          {
+            ROS_ERROR("Picking FAILED");
+            failed = true;
+          }
+
+        } while ((error_code == moveit::core::MoveItErrorCode::PLANNING_FAILED ||
+                  error_code == moveit::core::MoveItErrorCode::INVALID_MOTION_PLAN) &&
+                 pickPlanAttempts < 10);
+        break;
+      }
+      case ST_ARM_TO_TRANSPORT:
+      {
+        ROS_INFO_STREAM("ST_ARM_TO_TRANSPORT");
+
+        /* ********************* PLAN AND EXECUTE TO TRANSPORT POSE ********************* */
+        group.setStartStateToCurrentState();
+        group.setNamedTarget("observe_table_right");
+        moveit::core::MoveItErrorCode error_code = group.plan(plan);
+
+        if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
         {
-            ROS_INFO_STREAM("ST_ARM_TO_CART_POSE");
-            /* ********************* PLAN AND EXECUTE TO CARTESIAN POSE ********************* */
-            Eigen::Isometry3d eef_pose = Eigen::Isometry3d::Identity();
-            eef_pose.translate(Eigen::Vector3d(0.5, 0 ,0.5));
-            eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 0.0, 0.0)));
-           
-            if (moveToCartPose(group, eef_pose) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
-            {
-                task_state = ST_ARM_TO_CART_POSE2;
-            }
-            else
-            {
-                ROS_INFO("Move arm to cartesian pose failed");
-                failed = true;
-            }
-            break;
+          ROS_INFO("Planning to transport pose SUCCESSFUL");
         }
-        case ST_ARM_TO_CART_POSE2:
+        else
         {
-            ROS_INFO_STREAM("ST_ARM_TO_CART_POSE2");
-            /* ********************* PLAN AND EXECUTE TO CARTESIAN POSE ********************* */
-            Eigen::Isometry3d eef_pose = Eigen::Isometry3d::Identity();
-            eef_pose.translate(Eigen::Vector3d(0.4759, 0.045, 1.328));
-            eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(-3.141, 0.0, 0.0)));
-            eef_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0, 1.569, 0.0)));
-            //Original quaternion [ 0.7074067, 0.0, 0.7068067, -0.000088 ]
-           
-            if (moveToCartPose(group, eef_pose) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
-            {
-                task_state = ST_ARM_TO_CART_POSE;
-            }
-            else
-            {
-                ROS_INFO("Move arm to cartesian pose failed");
-                failed = true;
-            }
-            break;
+          ROS_ERROR("Planning to transport pose FAILED");
+          failed = true;
+          break;
         }
-        case ST_DONE:
+
+        // move to transport pose
+
+        error_code = group.execute(plan);
+        if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
         {
-            ROS_INFO_STREAM("ST_DONE");
-            return 0;
+          ROS_INFO("Moving to transport pose SUCCESSFUL");
+          task_state = ST_PLACE_OBJ;
         }
-        default:
+        else
         {
-            ROS_INFO_STREAM("Unknown state");
-            return 1;
+          ROS_INFO_STREAM("Move to TRANSPORT failed");
+          failed = true;
         }
+        break;
+      }
+      case ST_PLACE_OBJ:
+      {
+        ROS_INFO_STREAM("ST_PLACE_OBJ");
+
+        /* ********************* PLACE ********************* */
+
+        // move(group, -0.05, -0.05, 0.2);
+        ros::WallDuration(1.0).sleep();
+        group.setPlannerId("RRTConnect");
+        ROS_INFO("Start Placing");
+        // place
+        uint placePlanAttempts = 0;
+        moveit::core::MoveItErrorCode error_code;
+        do
+        {
+          group.setPlanningTime(40 + 10 * placePlanAttempts);
+          error_code = moveit::core::MoveItErrorCode::SUCCESS;
+          ++placePlanAttempts;
+          if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
+          {
+            ROS_INFO("Placing SUCCESSFUL");
+            task_state = ST_ARM_TO_HOME_END;
+          }
+          else if ((error_code == moveit::core::MoveItErrorCode::PLANNING_FAILED ||
+                    error_code == moveit::core::MoveItErrorCode::INVALID_MOTION_PLAN ||
+                    error_code == moveit::core::MoveItErrorCode::TIMED_OUT) &&
+                   placePlanAttempts < 10)
+          {
+            ROS_INFO("Planning for Placing FAILED");
+            ros::WallDuration(1.0).sleep();
+          }
+          else
+          {
+            ROS_ERROR("Placing FAILED");
+            failed = true;
+          }
+        } while ((error_code == moveit::core::MoveItErrorCode::PLANNING_FAILED ||
+                  error_code == moveit::core::MoveItErrorCode::INVALID_MOTION_PLAN ||
+                  error_code == moveit::core::MoveItErrorCode::TIMED_OUT) &&
+                 placePlanAttempts < 10);
+        break;
+      }
+      case ST_ARM_TO_HOME_END:
+      {
+        ROS_INFO_STREAM("ST_ARM_TO_HOME_END");
+        // plan to go home
+
+        group.setPlannerId("RRTConnect");
+        group.setStartStateToCurrentState();  // not sure why this is necessary after placing
+        group.setNamedTarget("rest");
+        moveit::core::MoveItErrorCode error_code = group.plan(plan);
+        if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
+        {
+          ROS_INFO("Planning to home pose SUCCESSFUL");
         }
+        else
+        {
+          ROS_ERROR("Planning to home pose FAILED");
+          failed = true;
+          break;
+        }
+
+        // move to home
+        error_code = group.execute(plan);
+        if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
+        {
+          ROS_INFO("Moving to home pose SUCCESSFUL");
+          task_state = ST_DONE;
+        }
+        else
+        {
+          ROS_ERROR("Moving to home pose FAILED");
+          failed = true;
+        }
+        break;
+      }
+      case ST_DONE:
+      {
+        ROS_INFO_STREAM("ST_DONE");
+        return 0;
+      }
+      default:
+      {
+        ROS_INFO_STREAM("Unknown state");
+        return 1;
+      }
     }
-    return 1;
-}
-
-int main(int argc, char **argv)
-{
-    ros::init(argc, argv, "pick_n_place");
-    ros::AsyncSpinner spinner(1);
-    spinner.start();
-
-    ros::NodeHandle nh;
-    return EEFControlFSM(nh);
+  }
+  return 1;
 }
