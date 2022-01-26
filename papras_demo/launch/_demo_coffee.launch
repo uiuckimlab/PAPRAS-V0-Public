@@ -5,6 +5,7 @@
   <arg name="pipeline" default="ompl"/>
   <arg name="gazebo_gui" default="true"/>
   <arg name="rviz" default="true"/>
+  <arg name="dope_config" default="$(find dope)/config/config_pose.yaml" doc="Path to parameter config file"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->  
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/coffee_camera.urdf.xacro'"/>
@@ -60,4 +61,8 @@
   </group>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
+
+  <node name="dope" pkg="dope" type="dope" output="screen" clear_params="true">
+    <rosparam file="$(arg dope_config)"/>
+  </node>
 </launch>

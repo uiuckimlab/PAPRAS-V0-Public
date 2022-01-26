@@ -42,6 +42,7 @@ enum state
     ST_INIT,
     ST_PAUSED,
     ST_ARM_TO_REST_START,
+    ST_INIT_SIM_OBJ,
     ST_CAPTURE_OBJ,
     ST_PICK_OBJ,
     ST_ARM_TO_TRANSPORT,
@@ -52,11 +53,7 @@ enum state
 
 enum ObjectID
 {
-    CUP = 1,
-    KETTLE = 2,
-    CARAFE = 3,
-    PLATE = 4,
-    TABLE = 5,
+    CRACKER = 1,
     POPCORN = 14,
 };
 
@@ -64,16 +61,8 @@ std::string id_to_string(int id)
 {
     switch (id)
     {
-    case ObjectID::CUP:
-        return "cup";
-    case ObjectID::KETTLE:
-        return "kettle";
-    case ObjectID::CARAFE:
-        return "carafe";
-    case ObjectID::PLATE:
-        return "plate";
-    case ObjectID::TABLE:
-        return "table";
+    case ObjectID::CRACKER:
+        return "cracker";
     case ObjectID::POPCORN:
         return "popcorn";
     default:
@@ -85,12 +74,89 @@ std::string id_to_string(int id)
 bool paused = false;
 bool failed = false;
 
-int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &planning_scene_interface,
-                        ros::NodeHandle &nh, moveit::planning_interface::MoveGroupInterface &group)
+int spawnGazeboModel(std::string objName, geometry_msgs::Pose pose, ros::ServiceClient gazebo_spawn_sdf_obj){
+  ROS_INFO_STREAM("SPAWN SDF MODEL");
+
+  gazebo_spawn_sdf_obj.waitForExistence();
+
+  gazebo_msgs::SpawnModel spawn_model;
+  spawn_model.request.model_name = "cracker_og"; //TODO: model name as arg, case for file path
+
+  // load urdf file
+  std::string sdf_filename = std::string("/home/kazuki/model_editor_models/cracker_box_resized/model.sdf"); // TODO: Make path relative
+  
+
+  ROS_INFO("loading file: %s", sdf_filename.c_str());
+  // read sdf / gazebo model xml from file
+  TiXmlDocument xml_in(sdf_filename);
+  xml_in.LoadFile();
+  std::ostringstream stream;
+  stream << xml_in;
+  spawn_model.request.model_xml = stream.str(); // load xml file
+  ROS_INFO("XML string: %s", stream.str().c_str());
+
+  spawn_model.request.robot_namespace = "";
+  spawn_model.request.initial_pose = pose;
+  spawn_model.request.reference_frame = "world";
+
+  if (gazebo_spawn_sdf_obj.call(spawn_model))
+  {
+      ROS_INFO("Spawn in simulation SUCCESSFUL");
+      return 0;
+  }
+  else
+  {
+      ROS_ERROR("Failed to spawn model in sim! Error msg:%s", spawn_model.response.status_message.c_str());
+      return 1;
+  }
+}
+
+int spawnGazeboModel(vision_msgs::Detection3D detected_obj, ros::ServiceClient gazebo_spawn_sdf_obj){
+    ROS_INFO_STREAM("SPAWN SDF MODEL");
+
+    gazebo_spawn_sdf_obj.waitForExistence();
+
+    gazebo_msgs::SpawnModel spawn_model;
+    spawn_model.request.model_name = "cracker_det"; //TODO: model name as arg, case for file path
+
+    // load urdf file
+    std::string sdf_filename = std::string("/home/kazuki/model_editor_models/cracker_box_resized/model.sdf"); // TODO: Make path relative
+    
+
+    ROS_INFO("loading file: %s", sdf_filename.c_str());
+    // read sdf / gazebo model xml from file
+    TiXmlDocument xml_in(sdf_filename);
+    xml_in.LoadFile();
+    std::ostringstream stream;
+    stream << xml_in;
+    spawn_model.request.model_xml = stream.str(); // load xml file
+    ROS_INFO("XML string: %s", stream.str().c_str());
+
+    spawn_model.request.robot_namespace = "";
+    geometry_msgs::Pose pose = detected_obj.bbox.center;
+    spawn_model.request.initial_pose = pose;
+    spawn_model.request.reference_frame = "robot1/end_link";
+
+    if (gazebo_spawn_sdf_obj.call(spawn_model))
+    {
+        ROS_INFO("Spawn in simulation SUCCESSFUL");
+        return 0;
+    }
+    else
+    {
+        ROS_ERROR("Failed to spawn model in sim! Error msg:%s", spawn_model.response.status_message.c_str());
+        return 1;
+    }
+}
+
+// Updates the simulation and planning scenes
+int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_scene_interface,
+                        ros::NodeHandle &nh, moveit::planning_interface::MoveGroupInterface &group,
+                        ros::ServiceClient gazebo_spawn_sdf_obj)
 {
     // get objects from object detection
-    bool found_popcorn = false;
-    while (!found_popcorn)
+    bool found_cracker = false;
+    while (!found_cracker)
     {
         if (!ros::ok())
             return 0;
@@ -113,9 +179,12 @@ int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &plan
                 return 1;
             }
 
-            if (det3d.results[0].id == ObjectID::POPCORN)
-                found_popcorn = true;
+            if (det3d.results[0].id == ObjectID::CRACKER)
+                found_cracker = true;
+            
+            spawnGazeboModel(det3d, gazebo_spawn_sdf_obj);
 
+            // add collision object to planning scene 
             moveit_msgs::CollisionObject co;
             co.header = detections->header;
             co.id = id_to_string(det3d.results[0].id);
@@ -123,9 +192,9 @@ int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &plan
             co.primitives.resize(1);
             co.primitives[0].type = shape_msgs::SolidPrimitive::BOX;
             co.primitives[0].dimensions.resize(geometric_shapes::solidPrimitiveDimCount<shape_msgs::SolidPrimitive::BOX>());
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = det3d.bbox.size.x + 0.04;
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = det3d.bbox.size.y + 0.04;
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = det3d.bbox.size.z + 0.04;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = det3d.bbox.size.x + 0.01;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = det3d.bbox.size.y + 0.01;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = det3d.bbox.size.z + 0.01;
             co.primitive_poses.resize(1);
             co.primitive_poses[0] = det3d.bbox.center;
             co.primitive_poses[0].position.z += 0.1;
@@ -133,8 +202,8 @@ int updatePlanningScene(moveit::planning_interface::PlanningSceneInterface &plan
             collision_objects.push_back(co);
         }
 
-        if (!found_popcorn)
-            ROS_INFO_THROTTLE(1.0, "Still waiting for popcorn...");
+        if (!found_cracker)
+            ROS_INFO_THROTTLE(1.0, "Still waiting for cracker...");
 
         planning_scene_interface.applyCollisionObjects(collision_objects);
     }
@@ -233,6 +302,9 @@ int main(int argc, char** argv)
   // pause service
   ros::ServiceServer continue_state = nh.advertiseService("continue_statemachine", continue_service);
 
+  // GAZEBO SERVICE
+  ros::ServiceClient gazebo_spawn_sdf_obj = nh.serviceClient<gazebo_msgs::SpawnModel>(SPAWN_SDF_OBJECT_TOPIC);
+
   moveit::planning_interface::MoveGroupInterface group("arm1");
   // MOVE IT
   moveit::planning_interface::MoveGroupInterface::Plan plan;
@@ -294,7 +366,7 @@ int main(int argc, char** argv)
         if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
         {
           ROS_INFO("Moving to rest pose SUCCESSFUL");
-          task_state = ST_CAPTURE_OBJ;
+          task_state = ST_INIT_SIM_OBJ;
         }
         else
         {
@@ -302,6 +374,19 @@ int main(int argc, char** argv)
           failed = true;
         }
         break;
+      }
+      case ST_INIT_SIM_OBJ:
+      {
+        geometry_msgs::Pose pose;
+        pose.position.x = 0.16;
+        pose.position.y = 0.74;
+        pose.position.z = 0.88;
+        pose.orientation.w = 1.0;
+        pose.orientation.x = pose.orientation.y = pose.orientation.z = 0;
+
+        spawnGazeboModel("cracker", pose, gazebo_spawn_sdf_obj);
+        task_state = ST_CAPTURE_OBJ;
+        
       }
       case ST_CAPTURE_OBJ:
       {
@@ -355,7 +440,7 @@ int main(int argc, char** argv)
         {
           clear_octomap.call(srv);
 
-          int result = updatePlanningScene(planning_scene_interface, nh, group);
+          int result = updateScene(planning_scene_interface, nh, group, gazebo_spawn_sdf_obj);
           if (result != 0)
           {
             ROS_ERROR("Updating planning scene FAILED");
