@@ -54,6 +54,7 @@ enum state
 enum ObjectID
 {
     CRACKER = 1,
+    TABLE = 2,
     POPCORN = 14,
 };
 
@@ -65,14 +66,107 @@ std::string id_to_string(int id)
         return "cracker";
     case ObjectID::POPCORN:
         return "popcorn";
+    case ObjectID::TABLE:
+        return "table";
     default:
         std::cerr << "No such ObjectID: " << id << std::endl;
         return "";
     }
 }
 
+struct GrapsPoseDefine
+{
+  Eigen::Isometry3d grasp_pose;
+  std::float_t gripper_width;
+};
+
 bool paused = false;
 bool failed = false;
+
+void initCollisionObject(moveit::planning_interface::PlanningSceneInterface &planning_scene_interface){
+  std::vector<moveit_msgs::CollisionObject> collision_objects;
+
+  // Add table 
+  moveit_msgs::CollisionObject co;
+  co.header.frame_id = "/world";
+  co.id = id_to_string(ObjectID::TABLE);
+  co.operation = moveit_msgs::CollisionObject::ADD;
+  co.primitives.resize(1);
+  co.primitives[0].type = shape_msgs::SolidPrimitive::BOX;
+  co.primitives[0].dimensions.resize(geometric_shapes::solidPrimitiveDimCount<shape_msgs::SolidPrimitive::BOX>());
+  co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = 1;
+  co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = 2;
+  co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = 0.78;
+  co.primitive_poses.resize(1);
+  co.primitive_poses[0].position.x = 0; 
+  co.primitive_poses[0].position.y = 0;
+  co.primitive_poses[0].position.z = 0.38;
+  co.primitive_poses[0].orientation.z = 0;
+  co.primitive_poses[0].orientation.w = 1.0;
+
+  collision_objects.push_back(co);
+
+  planning_scene_interface.applyCollisionObjects(collision_objects);
+}
+
+moveit::core::MoveItErrorCode pick(moveit::planning_interface::MoveGroupInterface& group)
+{
+  std::vector<moveit_msgs::Grasp> grasps;
+
+  // --- calculate grasps
+  // this is using standard frame orientation: x forward, y left, z up, relative to object bounding box center
+
+  std::vector<GrapsPoseDefine> grasp_poses;
+  {
+    // GRASP 2: pitch = pi/2 (grasp top part from above)
+    GrapsPoseDefine grasp_pose_define;
+    grasp_pose_define.grasp_pose = Eigen::Isometry3d::Identity();
+    grasp_pose_define.grasp_pose.translate(Eigen::Vector3d(0.05d, 0.0d, 0.0d));
+    // grasp_pose_define.grasp_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0d, 0.0d, 0.0d)));
+    grasp_pose_define.gripper_width = 0.03;
+    grasp_poses.push_back(grasp_pose_define);
+  }
+  for (auto&& grasp_pose : grasp_poses)
+  {
+    // rotate grasp pose from CAD model orientation to standard orientation (x forward, y left, z up)
+    // Eigen quaternion = wxyz, not xyzw
+    Eigen::Isometry3d bbox_center_rotated = Eigen::Isometry3d::Identity();
+    // bbox_center_rotated.rotate(Eigen::AngleAxisd(M_PI, Eigen::Vector3d(0.0d, 0.0d, 0.0d)));
+
+    // bbox_center_rotated.rotate(Eigen::AngleAxisd(-M_PI_2, Eigen::Vector3d(0.0d, 0.0d, 0.0d)));
+
+    // --- calculate desired pose of end_effector_link (in cracker frame) when grasping
+    geometry_msgs::PoseStamped p;
+    p.header.frame_id = "cracker";
+    tf::poseEigenToMsg(bbox_center_rotated * grasp_pose.grasp_pose, p.pose);
+    p.pose.orientation.x = 0;
+    p.pose.orientation.y = 0;
+    p.pose.orientation.z = 0.707;
+    p.pose.orientation.w = 0.707;
+    ROS_DEBUG_STREAM("Grasp pose:\n" << p.pose);
+
+    moveit_msgs::Grasp g;
+
+    g.grasp_pose = p;
+    g.grasp_quality = 1.0;
+    ROS_INFO_STREAM("Grasp pose:\n" << p.pose);
+
+    g.pre_grasp_approach.direction.vector.x = 1.0;
+    g.pre_grasp_approach.direction.header.frame_id = tf_prefix_ + "end_effector_link";
+    g.pre_grasp_approach.min_distance = 0.08;
+    g.pre_grasp_approach.desired_distance = 0.25;
+
+    g.post_grasp_retreat.direction.header.frame_id = tf_prefix_ + "link1";
+    g.post_grasp_retreat.direction.vector.z = 1.0;
+    g.post_grasp_retreat.min_distance = 0.1;
+    g.post_grasp_retreat.desired_distance = 0.15;
+
+    grasps.push_back(g);
+  }
+
+  group.setSupportSurfaceName("table");
+  return group.pick("cracker", grasps);
+}
 
 int spawnGazeboModel(std::string objName, geometry_msgs::Pose pose, ros::ServiceClient gazebo_spawn_sdf_obj){
   ROS_INFO_STREAM("SPAWN SDF MODEL");
@@ -182,11 +276,19 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
             if (det3d.results[0].id == ObjectID::CRACKER)
                 found_cracker = true;
             
-            spawnGazeboModel(det3d, gazebo_spawn_sdf_obj);
+            // spawnGazeboModel(det3d, gazebo_spawn_sdf_obj);
+            geometry_msgs::Pose pose;
+            pose.position.x = 0.16;
+            pose.position.y = 0.74;
+            pose.position.z = 0.88;
+            pose.orientation.w = 1.0;
+            pose.orientation.x = pose.orientation.y = pose.orientation.z = 0;
+
 
             // add collision object to planning scene 
             moveit_msgs::CollisionObject co;
             co.header = detections->header;
+            co.header.frame_id = "/world";
             co.id = id_to_string(det3d.results[0].id);
             co.operation = moveit_msgs::CollisionObject::ADD;
             co.primitives.resize(1);
@@ -196,8 +298,8 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
             co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = det3d.bbox.size.y + 0.01;
             co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = det3d.bbox.size.z + 0.01;
             co.primitive_poses.resize(1);
-            co.primitive_poses[0] = det3d.bbox.center;
-            co.primitive_poses[0].position.z += 0.1;
+            // co.primitive_poses[0] = det3d.bbox.center;
+            co.primitive_poses[0] = pose;
 
             collision_objects.push_back(co);
         }
@@ -327,6 +429,7 @@ int main(int argc, char** argv)
         ROS_INFO_STREAM("ST_INIT");
         group.setPlanningTime(45.0);
         group.setPlannerId("RRTConnect");
+        initCollisionObject(planning_scene_interface);
 
         task_state = ST_ARM_TO_REST_START;
         break;
@@ -448,7 +551,7 @@ int main(int argc, char** argv)
             break;
           }
 
-          error_code = moveit::core::MoveItErrorCode::SUCCESS;
+          error_code = pick(group);
           ++pickPlanAttempts;
 
           if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
