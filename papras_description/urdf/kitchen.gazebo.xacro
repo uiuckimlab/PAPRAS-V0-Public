@@ -72,4 +72,62 @@
     </plugin>
   </gazebo>
 
+  <gazebo reference="robot1/joint1">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+
+  <gazebo reference="robot1/joint2">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+
+  <gazebo reference="robot1/joint3">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+
+  <gazebo reference="robot1/joint4">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+
+  <gazebo reference="robot1/joint5">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+
+  <gazebo reference="robot1/joint6">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+
+  <!-- The ft_sensor plugin -->  
+  <gazebo>
+      <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+          <updateRate>30.0</updateRate>
+          <topicName>ft_sensor_topic/robot1/joint1</topicName>
+          <jointName>robot1/joint1</jointName>
+      </plugin>
+      <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+          <updateRate>30.0</updateRate>
+          <topicName>ft_sensor_topic/robot1/joint2</topicName>
+          <jointName>robot1/joint2</jointName>
+      </plugin>
+      <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+          <updateRate>30.0</updateRate>
+          <topicName>ft_sensor_topic/robot1/joint3</topicName>
+          <jointName>robot1/joint3</jointName>
+      </plugin>
+      <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+          <updateRate>30.0</updateRate>
+          <topicName>ft_sensor_topic/robot1/joint4</topicName>
+          <jointName>robot1/joint4</jointName>
+      </plugin>
+      <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+          <updateRate>30.0</updateRate>
+          <topicName>ft_sensor_topic/robot1/joint5</topicName>
+          <jointName>robot1/joint5</jointName>
+      </plugin>
+      <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+          <updateRate>30.0</updateRate>
+          <topicName>ft_sensor_topic/robot1/joint6</topicName>
+          <jointName>robot1/joint6</jointName>
+      </plugin>
+  </gazebo>
+
 </robot>
