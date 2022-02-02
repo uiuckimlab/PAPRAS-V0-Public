@@ -109,6 +109,26 @@ void initCollisionObject(moveit::planning_interface::PlanningSceneInterface &pla
   planning_scene_interface.applyCollisionObjects(collision_objects);
 }
 
+void openGripper(trajectory_msgs::JointTrajectory& posture)
+{
+  posture.joint_names.resize(1);
+  posture.joint_names[0] = tf_prefix_ + "gripper";
+  posture.points.resize(1);
+  posture.points[0].positions.resize(1);
+  posture.points[0].positions[0] = 0;
+  posture.points[0].time_from_start.fromSec(5.0);
+}
+
+void closedGripper(trajectory_msgs::JointTrajectory& posture, std::float_t gripper_width = 0.1)
+{
+  posture.joint_names.resize(1);
+  posture.joint_names[0] = tf_prefix_ + "gripper";
+  posture.points.resize(1);
+  posture.points[0].positions.resize(1);
+  posture.points[0].positions[0] = 1;
+  posture.points[0].time_from_start.fromSec(5.0);
+}
+
 moveit::core::MoveItErrorCode pick(moveit::planning_interface::MoveGroupInterface& group)
 {
   std::vector<moveit_msgs::Grasp> grasps;
