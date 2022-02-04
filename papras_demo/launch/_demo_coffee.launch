@@ -62,7 +62,7 @@
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
 
-  <node name="dope" pkg="dope" type="dope" output="screen" clear_params="true">
+  <!-- <node name="dope" pkg="dope" type="dope" output="screen" clear_params="true">
     <rosparam file="$(arg dope_config)"/>
-  </node>
+  </node> -->
 </launch>

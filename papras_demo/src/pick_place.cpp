@@ -141,28 +141,17 @@ moveit::core::MoveItErrorCode pick(moveit::planning_interface::MoveGroupInterfac
     // GRASP 2: pitch = pi/2 (grasp top part from above)
     GrapsPoseDefine grasp_pose_define;
     grasp_pose_define.grasp_pose = Eigen::Isometry3d::Identity();
-    grasp_pose_define.grasp_pose.translate(Eigen::Vector3d(0.05d, 0.0d, 0.0d));
-    // grasp_pose_define.grasp_pose.rotate(Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d(0.0d, 0.0d, 0.0d)));
-    grasp_pose_define.gripper_width = 0.03;
+    grasp_pose_define.grasp_pose.translate(Eigen::Vector3d(0.05d, 0.0d, -0.05d));
+    grasp_pose_define.grasp_pose.rotate(Eigen::AngleAxisd(0, Eigen::Vector3d(1.0d, 0.0d, 0.0d)));
+    grasp_pose_define.gripper_width = 0.1;
     grasp_poses.push_back(grasp_pose_define);
   }
   for (auto&& grasp_pose : grasp_poses)
   {
-    // rotate grasp pose from CAD model orientation to standard orientation (x forward, y left, z up)
-    // Eigen quaternion = wxyz, not xyzw
-    Eigen::Isometry3d bbox_center_rotated = Eigen::Isometry3d::Identity();
-    // bbox_center_rotated.rotate(Eigen::AngleAxisd(M_PI, Eigen::Vector3d(0.0d, 0.0d, 0.0d)));
-
-    // bbox_center_rotated.rotate(Eigen::AngleAxisd(-M_PI_2, Eigen::Vector3d(0.0d, 0.0d, 0.0d)));
-
     // --- calculate desired pose of end_effector_link (in cracker frame) when grasping
     geometry_msgs::PoseStamped p;
-    p.header.frame_id = "cracker";
-    tf::poseEigenToMsg(bbox_center_rotated * grasp_pose.grasp_pose, p.pose);
-    p.pose.orientation.x = 0;
-    p.pose.orientation.y = 0;
-    p.pose.orientation.z = 0.707;
-    p.pose.orientation.w = 0.707;
+    p.header.frame_id = tf_prefix_ + "end_effector_link";
+    tf::poseEigenToMsg(grasp_pose.grasp_pose, p.pose);
     ROS_DEBUG_STREAM("Grasp pose:\n" << p.pose);
 
     moveit_msgs::Grasp g;
@@ -173,19 +162,70 @@ moveit::core::MoveItErrorCode pick(moveit::planning_interface::MoveGroupInterfac
 
     g.pre_grasp_approach.direction.vector.x = 1.0;
     g.pre_grasp_approach.direction.header.frame_id = tf_prefix_ + "end_effector_link";
-    g.pre_grasp_approach.min_distance = 0.08;
-    g.pre_grasp_approach.desired_distance = 0.25;
+    g.pre_grasp_approach.min_distance = 0.01;
+    g.pre_grasp_approach.desired_distance = 0.1;
 
-    g.post_grasp_retreat.direction.header.frame_id = tf_prefix_ + "link1";
+    g.post_grasp_retreat.direction.header.frame_id = "world";
     g.post_grasp_retreat.direction.vector.z = 1.0;
-    g.post_grasp_retreat.min_distance = 0.1;
-    g.post_grasp_retreat.desired_distance = 0.15;
+    g.post_grasp_retreat.min_distance = 0.01;
+    g.post_grasp_retreat.desired_distance = 0.03;
+
+    openGripper(g.pre_grasp_posture);
+
+    closedGripper(g.grasp_posture);
 
     grasps.push_back(g);
   }
 
   group.setSupportSurfaceName("table");
+  ros::Duration(5.0).sleep();
   return group.pick("cracker", grasps);
+}
+
+moveit::core::MoveItErrorCode place(moveit::planning_interface::MoveGroupInterface& group)
+{
+  std::vector<moveit_msgs::PlaceLocation> loc;
+
+  moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+
+  // get table height
+  std::vector<std::string> object_ids;
+  object_ids.push_back("table");
+  auto table = planning_scene_interface.getObjects(object_ids).at("table");
+  double table_height = table.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z];
+  ROS_INFO("Table height: %f", table_height);
+
+  // --- calculate desired pose of cracker (in base_link frame) when placing
+  geometry_msgs::PoseStamped p;
+
+  Eigen::Isometry3d place_pose = Eigen::Isometry3d::Identity();
+  place_pose.translate(Eigen::Vector3d(0.0d, 0.0d, 0.05d));
+  place_pose.rotate(Eigen::AngleAxisd(-M_PI_2, Eigen::Vector3d(0.0d, 1.0d, 0.0d)));
+  p.header.frame_id = tf_prefix_ + "end_effector_link";
+  tf::poseEigenToMsg(place_pose, p.pose);
+
+  moveit_msgs::PlaceLocation g;
+  g.place_pose = p;
+  g.allowed_touch_objects.push_back("table");
+
+  g.pre_place_approach.direction.header.frame_id = tf_prefix_ + "end_effector_link";
+  g.pre_place_approach.desired_distance = 0.10;
+  g.pre_place_approach.direction.vector.y = -1.0;
+  g.pre_place_approach.direction.vector.z = -1.0;
+  g.pre_place_approach.min_distance = 0.01;
+
+  g.post_place_retreat.direction.header.frame_id = "world";
+  g.post_place_retreat.direction.vector.z = 1.0;
+  g.post_place_retreat.desired_distance = 0.10;
+  g.post_place_retreat.min_distance = 0.01;
+
+  loc.push_back(g);
+  group.setSupportSurfaceName("table");
+
+  ROS_INFO_STREAM("Place at " << g.place_pose);
+  auto error_code = group.place("cracker", loc);
+  group.clearPathConstraints();
+  return error_code;
 }
 
 int spawnGazeboModel(std::string objName, geometry_msgs::Pose pose, ros::ServiceClient gazebo_spawn_sdf_obj){
@@ -298,8 +338,11 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
             
             // spawnGazeboModel(det3d, gazebo_spawn_sdf_obj);
             geometry_msgs::Pose pose;
-            pose.position.x = 0.16;
-            pose.position.y = 0.74;
+            // pose.position.x = 0.16;
+            // pose.position.y = 0.74;
+            // pose.position.z = 0.88;
+            pose.position.x = 0.0;
+            pose.position.y = 0.4;
             pose.position.z = 0.88;
             pose.orientation.w = 1.0;
             pose.orientation.x = pose.orientation.y = pose.orientation.z = 0;
@@ -339,7 +382,7 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
     return 0;
 }
 
-moveit::core::MoveItErrorCode moveToCartPose(moveit::planning_interface::MoveGroupInterface &group,
+moveit::core::MoveItErrorCode moveToCartesianPose(moveit::planning_interface::MoveGroupInterface &group,
                                                            Eigen::Isometry3d cartesian_pose,
                                                            std::string base_frame = tf_prefix_ + "link1",
                                                            std::string target_frame = tf_prefix_ + "end_effector_link")
@@ -450,6 +493,12 @@ int main(int argc, char** argv)
         group.setPlanningTime(45.0);
         group.setPlannerId("RRTConnect");
         initCollisionObject(planning_scene_interface);
+        // detach all objects
+        auto attached_objects = planning_scene_interface.getAttachedObjects();
+        for (auto &&object : attached_objects)
+        {
+            group.detachObject(object.first);
+        }
 
         task_state = ST_ARM_TO_REST_START;
         break;
@@ -647,7 +696,7 @@ int main(int argc, char** argv)
         do
         {
           group.setPlanningTime(40 + 10 * placePlanAttempts);
-          error_code = moveit::core::MoveItErrorCode::SUCCESS;
+          error_code = place(group);
           ++placePlanAttempts;
           if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
           {
