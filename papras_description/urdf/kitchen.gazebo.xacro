@@ -72,7 +72,7 @@
     </plugin>
   </gazebo>
 
-  <!-- <gazebo reference="robot1/joint1">
+  <gazebo reference="robot1/joint1">
     <provideFeedback>true</provideFeedback>
   </gazebo>
 
@@ -94,43 +94,49 @@
 
   <gazebo reference="robot1/joint6">
     <provideFeedback>true</provideFeedback>
-  </gazebo> -->
+  </gazebo>
 
   <!-- The ft_sensor plugin -->  
-  <!-- <gazebo>
+  <gazebo>
       <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-          <updateRate>100.0</updateRate>
+          <updateRate>25.0</updateRate>
           <topicName>ft_sensor_topic/robot1/joint1</topicName>
           <jointName>robot1/joint1</jointName>
+          <gaussianNoise>0.0</gaussianNoise>
       </plugin>
       <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-          <updateRate>100.0</updateRate>
+          <updateRate>25.0</updateRate>
           <topicName>ft_sensor_topic/robot1/joint2</topicName>
           <jointName>robot1/joint2</jointName>
+          <gaussianNoise>0.0</gaussianNoise>
       </plugin>
       <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-          <updateRate>100.0</updateRate>
+          <updateRate>25.0</updateRate>
           <topicName>ft_sensor_topic/robot1/joint3</topicName>
           <jointName>robot1/joint3</jointName>
+          <gaussianNoise>0.0</gaussianNoise>
       </plugin>
       <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-          <updateRate>100.0</updateRate>
+          <updateRate>25.0</updateRate>
           <topicName>ft_sensor_topic/robot1/joint4</topicName>
           <jointName>robot1/joint4</jointName>
+          <gaussianNoise>0.0</gaussianNoise>
       </plugin>
       <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-          <updateRate>100.0</updateRate>
+          <updateRate>25.0</updateRate>
           <topicName>ft_sensor_topic/robot1/joint5</topicName>
           <jointName>robot1/joint5</jointName>
+          <gaussianNoise>0.0</gaussianNoise>
       </plugin>
       <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-          <updateRate>100.0</updateRate>
+          <updateRate>25.0</updateRate>
           <topicName>ft_sensor_topic/robot1/joint6</topicName>
           <jointName>robot1/joint6</jointName>
+          <gaussianNoise>0.0</gaussianNoise>
       </plugin>
-  </gazebo> -->
+  </gazebo>
 
-  <gazebo reference="robot1/joint1">
+  <!-- <gazebo reference="robot1/joint1">
     <provideFeedback>true</provideFeedback>
     <sensor name="ft-joint1" type="force_torque">
       <always_on>true</always_on>
@@ -200,6 +206,6 @@
         <measure_direction>child_to_parent</measure_direction>
       </force_torque>
     </sensor>
-  </gazebo>
+  </gazebo> -->
 
 </robot>
