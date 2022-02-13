@@ -116,8 +116,16 @@
         <joint name="robot1/joint5" value="1.1542"/>
         <joint name="robot1/joint6" value="0"/>
     </group_state>
+    <group_state name="observe_table_waypoint1" group="arm1">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="-1.6243"/>
+        <joint name="robot1/joint3" value="0.3992"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="1.5533"/>
+        <joint name="robot1/joint6" value="0"/>
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="gripper1" parent_link="robot1/end_effector_link" group="gripper1"/>
+    <end_effector name="gripper1" parent_link="robot1/end_link" group="gripper1" parent_group="arm1"/>
     <end_effector name="gripper3" parent_link="robot3/end_effector_link" group="gripper3"/>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
     <passive_joint name="robot1/gripper_sub"/>

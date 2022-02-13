@@ -8,7 +8,12 @@ Panels:
         - /MarkerArray1
         - /MarkerArray1/Namespaces1
         - /Image2
-      Splitter Ratio: 0.7425600290298462
+        - /MarkerArray2
+        - /TF1
+        - /TF1/Frames1
+        - /Trajectory1
+        - /MarkerArray4
+      Splitter Ratio: 0.5895372033119202
     Tree Height: 383
   - Class: rviz/Help
     Name: Help
@@ -474,6 +479,453 @@ Visualization Manager:
       Transport Hint: raw
       Unreliable: false
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /grasp_visuals
+      Name: MarkerArray
+      Namespaces:
+        Axis: true
+        Cuboid: true
+      Queue Size: 100
+      Value: true
+    - Attached Body Color: 150; 50; 150
+      Class: moveit_rviz_plugin/RobotState
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        papras_desk:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/camera_depth_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        robot1/camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/end_effector_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/end_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/gripper_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/gripper_main_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/gripper_sub_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/camera_depth_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        robot3/camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/end_effector_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/end_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/gripper_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/gripper_main_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/gripper_sub_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+      Name: RobotState
+      Robot Alpha: 1
+      Robot Description: robot_description
+      Robot State Topic: display_robot_state
+      Show All Links: true
+      Show Highlights: true
+      Value: true
+      Visual Enabled: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /grasp_visuals
+      Name: MarkerArray
+      Namespaces:
+        Axis: true
+        Cuboid: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        papras_desk:
+          Value: false
+        robot1/camera_depth_link:
+          Value: false
+        robot1/camera_link:
+          Value: false
+        robot1/end_effector_link:
+          Value: true
+        robot1/end_link:
+          Value: false
+        robot1/gripper_link:
+          Value: false
+        robot1/gripper_main_link:
+          Value: false
+        robot1/gripper_sub_link:
+          Value: false
+        robot1/link1:
+          Value: false
+        robot1/link2:
+          Value: false
+        robot1/link3:
+          Value: false
+        robot1/link4:
+          Value: false
+        robot1/link5:
+          Value: false
+        robot1/link6:
+          Value: false
+        robot3/camera_depth_link:
+          Value: false
+        robot3/camera_link:
+          Value: false
+        robot3/end_effector_link:
+          Value: false
+        robot3/end_link:
+          Value: false
+        robot3/gripper_link:
+          Value: false
+        robot3/gripper_main_link:
+          Value: false
+        robot3/gripper_sub_link:
+          Value: false
+        robot3/link1:
+          Value: false
+        robot3/link2:
+          Value: false
+        robot3/link3:
+          Value: false
+        robot3/link4:
+          Value: false
+        robot3/link5:
+          Value: false
+        robot3/link6:
+          Value: false
+        world:
+          Value: false
+      Marker Alpha: 1
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        world:
+          papras_desk:
+            robot1/link1:
+              robot1/link2:
+                robot1/link3:
+                  robot1/link4:
+                    robot1/link5:
+                      robot1/link6:
+                        robot1/end_link:
+                          robot1/gripper_main_link:
+                            robot1/camera_link:
+                              robot1/camera_depth_link:
+                                {}
+                            robot1/end_effector_link:
+                              {}
+                            robot1/gripper_link:
+                              {}
+                            robot1/gripper_sub_link:
+                              {}
+            robot3/link1:
+              robot3/link2:
+                robot3/link3:
+                  robot3/link4:
+                    robot3/link5:
+                      robot3/link6:
+                        robot3/end_link:
+                          robot3/gripper_main_link:
+                            robot3/camera_link:
+                              robot3/camera_depth_link:
+                                {}
+                            robot3/end_effector_link:
+                              {}
+                            robot3/gripper_link:
+                              {}
+                            robot3/gripper_sub_link:
+                              {}
+      Update Interval: 0
+      Value: true
+    - Class: moveit_rviz_plugin/Trajectory
+      Color Enabled: false
+      Enabled: true
+      Interrupt Display: false
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        papras_desk:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/camera_depth_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        robot1/camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/end_effector_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/end_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/gripper_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/gripper_main_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/gripper_sub_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot1/link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/camera_depth_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        robot3/camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/end_effector_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/end_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/gripper_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/gripper_main_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/gripper_sub_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        robot3/link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+      Loop Animation: false
+      Name: Trajectory
+      Robot Alpha: 0.5
+      Robot Color: 150; 50; 150
+      Robot Description: robot_description
+      Show Robot Collision: false
+      Show Robot Visual: true
+      Show Trail: false
+      State Display Time: 3x
+      Trail Step Size: 1
+      Trajectory Topic: /display_planned_path
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /rviz_visual_tools
+      Name: MarkerArray
+      Namespaces:
+        Arrow: true
+        end_effector: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -490,7 +942,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 3.777202844619751
+      Distance: 2.4612298011779785
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -498,17 +950,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.10052049160003662
-        Y: 0.22709941864013672
-        Z: 3.427272758926847e-07
+        X: -0.8079253435134888
+        Y: 0.7013446092605591
+        Z: -2.5331917186122155e-07
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6097970604896545
+      Pitch: 0.49479758739471436
       Target Frame: world
-      Yaw: 2.7567689418792725
+      Yaw: 5.826766014099121
     Saved: ~
 Window Geometry:
   Displays:
@@ -524,9 +976,11 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000200000000000001f30000039efc0200000007fb000000100044006900730070006c006100790073010000003d00000210000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a0056006900650077007300000003b0000000b0000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000253000001880000017d00ffffff000000010000027e0000039efc0200000002fb0000000a0049006d006100670065010000003d000001c40000001600fffffffb0000000a0049006d0061006700650100000207000001d40000001600ffffff000002bb0000039e00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000200000000000001f30000039efc0200000009fb000000100044006900730070006c006100790073010000003d00000210000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a0056006900650077007300000003b0000000b0000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000253000001880000017d00fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000003c005400720061006a006500630074006f007200790020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016000000010000027e0000039efc0200000002fb0000000a0049006d006100670065010000003d000001c40000001600fffffffb0000000a0049006d0061006700650100000207000001d40000001600ffffff000002bb0000039e00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Trajectory - Trajectory Slider:
+    collapsed: false
   Views:
     collapsed: false
   Width: 1848
-  X: 72
+  X: 1497
   Y: 27
