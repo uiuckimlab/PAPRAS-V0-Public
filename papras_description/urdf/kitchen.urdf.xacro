@@ -406,20 +406,20 @@
   <joint name="kitchen_world_fixed" type="fixed">
       <parent link="world" />
       <child link="kitchen_link" />
-      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
   <link name="kitchen_link">
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://papras_description/meshes/kitchen.stl"/>
+        <mesh filename="package://papras_description/meshes/kitchen_new.stl"/>
       </geometry>
     </visual>
 
     <collision>
       <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://papras_description/meshes/kitchen_simple.stl"/>
+        <mesh filename="package://papras_description/meshes/kitchen_new_simple.stl"/>
       </geometry>
     </collision>
     <inertial>
