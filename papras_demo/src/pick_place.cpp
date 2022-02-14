@@ -29,6 +29,14 @@
 #include <tinyxml.h>
 #include <sstream>
 
+// Grasp 
+#include <moveit_grasps/two_finger_grasp_generator.h>
+#include <moveit_grasps/two_finger_grasp_data.h>
+#include <moveit_grasps/two_finger_grasp_filter.h>
+#include <moveit_grasps/grasp_planner.h>
+#include <moveit_grasps/grasp_generator.h>
+
+
 std::string tf_prefix_ = "robot1/";
 constexpr char LOGNAME[] = "moveit_task_constructor_papras";
 // The circle constant tau = 2*pi. One tau is one rotation in radians.
@@ -129,56 +137,77 @@ void closedGripper(trajectory_msgs::JointTrajectory& posture, std::float_t gripp
   posture.points[0].time_from_start.fromSec(5.0);
 }
 
-moveit::core::MoveItErrorCode pick(moveit::planning_interface::MoveGroupInterface& group)
+std::vector<moveit_msgs::Grasp> generate_grasps(moveit::planning_interface::MoveGroupInterface& group,
+                                    moveit_grasps::TwoFingerGraspGeneratorPtr grasp_generator_,
+                                    rviz_visual_tools::RvizVisualToolsPtr grasp_visuals_,
+                                    moveit_visual_tools::MoveItVisualToolsPtr visual_tools_,
+                                    moveit_grasps::TwoFingerGraspDataPtr grasp_data_)
 {
-  std::vector<moveit_msgs::Grasp> grasps;
-
   // --- calculate grasps
   // this is using standard frame orientation: x forward, y left, z up, relative to object bounding box center
+  // ---------------------------------------------------------------------------------------------
+  // Generate grasps for a bunch of random objects
+  moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+  planning_scene_monitor::PlanningSceneMonitorPtr planning_scene_monitor_;
+  planning_scene_monitor_ = std::make_shared<planning_scene_monitor::PlanningSceneMonitor>("robot_description");
+  planning_scene_monitor_->startSceneMonitor("/move_group/monitored_planning_scene");
+  bool success = planning_scene_monitor_->requestPlanningSceneState("/get_planning_scene");
 
-  std::vector<GrapsPoseDefine> grasp_poses;
-  {
-    // GRASP 2: pitch = pi/2 (grasp top part from above)
-    GrapsPoseDefine grasp_pose_define;
-    grasp_pose_define.grasp_pose = Eigen::Isometry3d::Identity();
-    grasp_pose_define.grasp_pose.translate(Eigen::Vector3d(0.05d, 0.0d, -0.05d));
-    grasp_pose_define.grasp_pose.rotate(Eigen::AngleAxisd(0, Eigen::Vector3d(1.0d, 0.0d, 0.0d)));
-    grasp_pose_define.gripper_width = 0.1;
-    grasp_poses.push_back(grasp_pose_define);
-  }
-  for (auto&& grasp_pose : grasp_poses)
-  {
-    // --- calculate desired pose of end_effector_link (in cracker frame) when grasping
-    geometry_msgs::PoseStamped p;
-    p.header.frame_id = tf_prefix_ + "end_effector_link";
-    tf::poseEigenToMsg(grasp_pose.grasp_pose, p.pose);
-    ROS_DEBUG_STREAM("Grasp pose:\n" << p.pose);
+  // get table height
+  std::vector<std::string> object_ids;
+  object_ids.push_back("cracker");
+  geometry_msgs::Pose object_pose = planning_scene_interface.getObjectPoses({object_ids}).at("cracker");
+  ROS_INFO_STREAM("cracker pose in pick(): " << object_pose.position.x << ", " 
+                                             << object_pose.position.y << ", " 
+                                             << object_pose.position.z);
+  std::vector<moveit_grasps::GraspCandidatePtr> grasp_candidates;
 
-    moveit_msgs::Grasp g;
+  // Configure the desired types of grasps
+  moveit_grasps::TwoFingerGraspCandidateConfig grasp_generator_config =
+      moveit_grasps::TwoFingerGraspCandidateConfig();
+  grasp_generator_config.disableAll();
+  grasp_generator_config.enable_face_grasps_ = true;
+  grasp_generator_config.enable_edge_grasps_ = true;
+  grasp_generator_config.generate_x_axis_grasps_ = true;
+  grasp_generator_config.generate_y_axis_grasps_ = true;
+  grasp_generator_config.generate_z_axis_grasps_ = true;
 
-    g.grasp_pose = p;
-    g.grasp_quality = 1.0;
-    ROS_INFO_STREAM("Grasp pose:\n" << p.pose);
+  grasp_candidates.clear();
 
-    g.pre_grasp_approach.direction.vector.x = 1.0;
-    g.pre_grasp_approach.direction.header.frame_id = tf_prefix_ + "end_effector_link";
-    g.pre_grasp_approach.min_distance = 0.01;
-    g.pre_grasp_approach.desired_distance = 0.1;
+  // Generate set of grasps for one object
+  double depth = 0.03;
+  double width = 0.03;
+  double height = 0.03;
 
-    g.post_grasp_retreat.direction.header.frame_id = "world";
-    g.post_grasp_retreat.direction.vector.z = 1.0;
-    g.post_grasp_retreat.min_distance = 0.01;
-    g.post_grasp_retreat.desired_distance = 0.03;
+  grasp_visuals_->publishCuboid(object_pose, depth, width, height, rviz_visual_tools::TRANSLUCENT_DARK);
+  grasp_visuals_->publishAxis(object_pose, rviz_visual_tools::MEDIUM);
+  grasp_visuals_->trigger();
 
-    openGripper(g.pre_grasp_posture);
+  grasp_generator_->setGraspCandidateConfig(grasp_generator_config);
+  grasp_generator_->generateGrasps(visual_tools_->convertPose(object_pose), depth, width, height, grasp_data_,
+                                    grasp_candidates);
 
-    closedGripper(g.grasp_posture);
+  // Filter the grasp for only the ones that are reachable
+  ROS_INFO_STREAM_NAMED("test", "Filtering grasps kinematically");
+  bool filter_pregrasps = true;
 
-    grasps.push_back(g);
-  }
+  moveit_grasps::TwoFingerGraspFilterPtr grasp_filter_ = std::make_shared<moveit_grasps::TwoFingerGraspFilter>(visual_tools_->getSharedRobotState(), visual_tools_); 
+  const moveit::core::JointModelGroup* arm_jmg = visual_tools_->getRobotModel()->getJointModelGroup("arm1");
+  std::size_t valid_grasps = grasp_filter_->filterGrasps(grasp_candidates, planning_scene_monitor_, arm_jmg,
+                                                      visual_tools_->getSharedRobotState(), filter_pregrasps, "cracker");
 
   group.setSupportSurfaceName("table");
-  ros::Duration(5.0).sleep();
+  // ros::Duration(5.0).sleep();
+
+  std::vector<moveit_msgs::Grasp> grasps;
+  for (auto grasp_candidate : grasp_candidates)
+    grasps.push_back(grasp_candidate->grasp_);
+   ROS_INFO_STREAM("Valid grasps: " << grasps.front());
+
+  return grasps;
+}
+
+moveit::core::MoveItErrorCode pick(moveit::planning_interface::MoveGroupInterface& group, std::vector<moveit_msgs::Grasp> grasps){
   return group.pick("cracker", grasps);
 }
 
@@ -223,7 +252,7 @@ moveit::core::MoveItErrorCode place(moveit::planning_interface::MoveGroupInterfa
   group.setSupportSurfaceName("table");
 
   ROS_INFO_STREAM("Place at " << g.place_pose);
-  auto error_code = group.place("cracker", loc);
+  auto error_code = group.place("cracker");
   group.clearPathConstraints();
   return error_code;
 }
@@ -337,21 +366,11 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
                 found_cracker = true;
             
             // spawnGazeboModel(det3d, gazebo_spawn_sdf_obj);
-            geometry_msgs::Pose pose;
-            // pose.position.x = 0.16;
-            // pose.position.y = 0.74;
-            // pose.position.z = 0.88;
-            pose.position.x = 0.0;
-            pose.position.y = 0.4;
-            pose.position.z = 0.88;
-            pose.orientation.w = 1.0;
-            pose.orientation.x = pose.orientation.y = pose.orientation.z = 0;
-
 
             // add collision object to planning scene 
             moveit_msgs::CollisionObject co;
             co.header = detections->header;
-            co.header.frame_id = "/world";
+            co.header.frame_id = "robot1/camera_link";
             co.id = id_to_string(det3d.results[0].id);
             co.operation = moveit_msgs::CollisionObject::ADD;
             co.primitives.resize(1);
@@ -361,8 +380,7 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
             co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = det3d.bbox.size.y + 0.01;
             co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = det3d.bbox.size.z + 0.01;
             co.primitive_poses.resize(1);
-            // co.primitive_poses[0] = det3d.bbox.center;
-            co.primitive_poses[0] = pose;
+            co.primitive_poses[0] = det3d.bbox.center;
 
             collision_objects.push_back(co);
         }
@@ -475,6 +493,55 @@ int main(int argc, char** argv)
   moveit::planning_interface::MoveGroupInterface::Plan plan;
   // PLANNING INTERFACE
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+  // Grasp generator
+  moveit_grasps::TwoFingerGraspGeneratorPtr grasp_generator_;
+  // Robot-specific data for generating grasps
+  moveit_grasps::TwoFingerGraspDataPtr grasp_data_;
+  // Tool for publishing stuff to rviz
+  moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
+  rviz_visual_tools::RvizVisualToolsPtr grasp_visuals_;
+  
+  // Which arm should be used
+  std::string ee_group_name_;
+  nh.param("ee_group_name", ee_group_name_, std::string("hand1"));
+  ROS_INFO_STREAM_NAMED("pick place", "End Effector: " << ee_group_name_);
+
+  // ---------------------------------------------------------------------------------------------
+  // Load the Robot Viz Tools for publishing to Rviz
+  visual_tools_ = std::make_shared<moveit_visual_tools::MoveItVisualTools>("world");
+  visual_tools_->setMarkerTopic("/rviz_visual_tools");
+  visual_tools_->loadMarkerPub();
+  visual_tools_->loadRobotStatePub("/display_robot_state");
+  visual_tools_->loadTrajectoryPub("/display_planned_path");
+  visual_tools_->loadSharedRobotState();
+  visual_tools_->getSharedRobotState()->setToDefaultValues();
+  visual_tools_->enableBatchPublishing();
+  visual_tools_->deleteAllMarkers();
+  visual_tools_->removeAllCollisionObjects();
+  visual_tools_->hideRobot();
+  visual_tools_->trigger();
+
+  grasp_visuals_ = std::make_shared<rviz_visual_tools::RvizVisualTools>("world");
+  grasp_visuals_->setMarkerTopic("/grasp_visuals");
+  grasp_visuals_->loadMarkerPub();
+  grasp_visuals_->enableBatchPublishing();
+  grasp_visuals_->deleteAllMarkers();
+  grasp_visuals_->trigger();
+
+  // ---------------------------------------------------------------------------------------------
+  // Load grasp data specific to our robot
+  grasp_data_ =
+      std::make_shared<moveit_grasps::TwoFingerGraspData>(nh, ee_group_name_, visual_tools_->getRobotModel());
+  if (!grasp_data_->loadGraspData(nh, ee_group_name_))
+  {
+    ROS_ERROR_STREAM("Failed to load Grasp Data parameters.");
+    exit(-1);
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Load grasp generator
+  grasp_generator_ = std::make_shared<moveit_grasps::TwoFingerGraspGenerator>(visual_tools_, true);
+  grasp_generator_->setVerbose(false);
 
   while (ros::ok())
   {
@@ -550,11 +617,13 @@ int main(int argc, char** argv)
       case ST_INIT_SIM_OBJ:
       {
         geometry_msgs::Pose pose;
-        pose.position.x = 0.16;
-        pose.position.y = 0.74;
+        pose.position.x = -0.30;
+        pose.position.y = 0.60;
         pose.position.z = 0.88;
-        pose.orientation.w = 1.0;
-        pose.orientation.x = pose.orientation.y = pose.orientation.z = 0;
+        double theta = 170 * (M_PI / 180);
+        pose.orientation.x = pose.orientation.y = 0.0;
+        pose.orientation.z = sin(theta / 2);
+        pose.orientation.w = cos(theta / 2);
 
         spawnGazeboModel("cracker", pose, gazebo_spawn_sdf_obj);
         task_state = ST_CAPTURE_OBJ;
@@ -567,7 +636,8 @@ int main(int argc, char** argv)
         /* ********************* PLAN AND EXECUTE MOVES ********************* */
 
         // plan to observe the table
-        group.setNamedTarget("observe_table_left");
+        // group.setNamedTarget("observe_table_left");
+        group.setNamedTarget("observe_table_waypoint1");
         moveit::core::MoveItErrorCode error_code = group.plan(plan);
         if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
         {
@@ -620,7 +690,8 @@ int main(int argc, char** argv)
             break;
           }
 
-          error_code = pick(group);
+          auto grasps = generate_grasps(group, grasp_generator_, grasp_visuals_, visual_tools_, grasp_data_);
+          error_code = pick(group, grasps);
           ++pickPlanAttempts;
 
           if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
