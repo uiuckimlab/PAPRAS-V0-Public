@@ -21,14 +21,17 @@
   <arg unless="$(arg valgrind)" name="launch_prefix3" value="" />
   <arg     if="$(arg valgrind)" name="launch_prefix3" value="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes -v" />
 
-  <rosparam command="load" file="$(find moveit_grasps)/config_robot/papras_grasp_data.yaml"/>
-  <rosparam command="load" file="$(find moveit_grasps)/config/moveit_grasps_config.yaml"/>
-
+  
   <!-- Start the demo -->
   <node name="pick_place" launch-prefix="$(arg launch_prefix) $(arg launch_prefix2) $(arg launch_prefix3)" pkg="papras_demo"
-  type="pick_place" output="screen" args="$(arg command_args)">
-    <param name="ee_group_name" value="gripper1"/>
+  type="pick_place" output="screen" args="$(arg command_args)"/>
+
+  <node name="plan_dope_grasps_service" launch-prefix="$(arg launch_prefix) $(arg launch_prefix2) $(arg launch_prefix3)" pkg="papras_demo" 
+    type="plan_grasps_service"  output="screen" args="$(arg command_args)">
+    <param name="ee_group_name" value="hand1"/>
     <param name="planning_group_name" value="arm1"/>
+    <rosparam command="load" file="$(find moveit_grasps)/config_robot/papras_grasp_data.yaml"/>
+    <rosparam command="load" file="$(find moveit_grasps)/config/moveit_grasps_config.yaml"/>
   </node>
 
 </launch>
