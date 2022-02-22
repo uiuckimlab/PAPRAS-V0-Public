@@ -124,6 +124,14 @@
         <joint name="robot1/joint5" value="1.5533"/>
         <joint name="robot1/joint6" value="0"/>
     </group_state>
+    <group_state name="observe_table_left" group="arm3">
+        <joint name="robot3/joint1" value="-0.5033"/>
+        <joint name="robot3/joint2" value="-1.337"/>
+        <joint name="robot3/joint3" value="0.9719"/>
+        <joint name="robot3/joint4" value="0"/>
+        <joint name="robot3/joint5" value="0.7376"/>
+        <joint name="robot3/joint6" value="0"/>
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="hand1" parent_link="robot1/end_effector_link" group="gripper1" parent_group="arm1"/>
     <end_effector name="hand3" parent_link="robot3/end_effector_link" group="gripper3" parent_group="arm3"/>

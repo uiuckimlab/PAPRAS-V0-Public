@@ -85,18 +85,24 @@ public:
 
     // get table height
     std::vector<std::string> object_ids;
-    object_ids.push_back("abetSoup");
-    geometry_msgs::Pose object_pose = planning_scene_interface.getObjectPoses({object_ids}).at("abetSoup");
+    object_ids.push_back("bowl");
+    geometry_msgs::Pose object_pose = planning_scene_interface.getObjectPoses({object_ids}).at("bowl");
     ROS_INFO_STREAM("abetSoup pose in pick(): " << object_pose.position.x << ", " 
                                               << object_pose.position.y << ", " 
                                               << object_pose.position.z);
 
     // Generate set of grasps for one object
-    double depth = 0.0835;
-    double width = 0.07112;
-    double height = 0.06605;
+    double depth = 0.13;  
+    double width = 0.13;  //y is height
+    double height = 0.06;
     // 16.403600692749023,21.343700408935547,7.179999828338623
     // 8.3555002212524414, 7.1121001243591309, 6.6055998802185059
+
+    object_pose.position.z += 0.05;
+    object_pose.orientation.x = 0;
+    object_pose.orientation.y = 0;
+    object_pose.orientation.z = 0;
+    object_pose.orientation.w = 1;
 
     grasp_visuals_->publishCuboid(object_pose, depth, width, height, rviz_visual_tools::TRANSLUCENT_DARK);
     grasp_visuals_->publishAxis(object_pose, rviz_visual_tools::MEDIUM);
@@ -111,8 +117,8 @@ public:
     grasp_generator_config.disableAll();
     grasp_generator_config.enable_face_grasps_ = true;
     grasp_generator_config.enable_edge_grasps_ = true;
-    grasp_generator_config.generate_x_axis_grasps_ = true;
-    grasp_generator_config.generate_y_axis_grasps_ = true;
+    grasp_generator_config.generate_x_axis_grasps_ = false;
+    grasp_generator_config.generate_y_axis_grasps_ = false;
     grasp_generator_config.generate_z_axis_grasps_ = true;
 
     // ---------------------------------------------------------------------------------------------
@@ -147,7 +153,7 @@ public:
 
     moveit_grasps::TwoFingerGraspFilterPtr grasp_filter_ = std::make_shared<moveit_grasps::TwoFingerGraspFilter>(visual_tools_->getSharedRobotState(), visual_tools_); 
     std::size_t valid_grasps = grasp_filter_->filterGrasps(grasp_candidates, planning_scene_monitor_, arm_jmg,
-                                                        visual_tools_->getSharedRobotState(), filter_pregrasps, "abetSoup");
+                                                        visual_tools_->getSharedRobotState(), filter_pregrasps, "bowl");
 
 
     for(auto grasp_candidate: grasp_candidates)

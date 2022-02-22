@@ -5,16 +5,18 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /MotionPlanning1
+        - /Image1
         - /MarkerArray1/Namespaces1
         - /Image2
         - /MarkerArray2
+        - /TF1
         - /TF1/Frames1
         - /Trajectory1
         - /MarkerArray4
         - /MarkerArray5
         - /Axes1
       Splitter Ratio: 0.5895372033119202
-    Tree Height: 590
+    Tree Height: 1004
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -47,7 +49,7 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Acceleration_Scaling_Factor: 1
+    - Acceleration_Scaling_Factor: 0.05
       Class: moveit_rviz_plugin/MotionPlanning
       Enabled: true
       Move Group Namespace: ""
@@ -78,20 +80,15 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          papras_desk:
+          env:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          robot1/camera_depth_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
           robot1/camera_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
           robot1/end_effector_link:
             Alpha: 1
             Show Axes: false
@@ -102,17 +99,17 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          robot1/gripper_link:
+          robot1/gripper_body:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          robot1/gripper_main_link:
+          robot1/gripper_jaw:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          robot1/gripper_sub_link:
+          robot1/gripper_pulley:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -143,70 +140,6 @@ Visualization Manager:
             Show Trail: false
             Value: true
           robot1/link6:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/camera_depth_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          robot3/camera_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/end_effector_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/end_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/gripper_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/gripper_main_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/gripper_sub_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link1:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link2:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link3:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link4:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link5:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link6:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -260,20 +193,15 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          papras_desk:
+          env:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          robot1/camera_depth_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
           robot1/camera_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-            Value: true
           robot1/end_effector_link:
             Alpha: 1
             Show Axes: false
@@ -284,17 +212,17 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          robot1/gripper_link:
+          robot1/gripper_body:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          robot1/gripper_main_link:
+          robot1/gripper_jaw:
             Alpha: 1
             Show Axes: false
             Show Trail: false
             Value: true
-          robot1/gripper_sub_link:
+          robot1/gripper_pulley:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -329,70 +257,6 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          robot3/camera_depth_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          robot3/camera_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/end_effector_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/end_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/gripper_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/gripper_main_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/gripper_sub_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link1:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link2:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link3:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link4:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link5:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          robot3/link6:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
           world:
             Alpha: 1
             Show Axes: false
@@ -401,7 +265,7 @@ Visualization Manager:
         Show Robot Collision: false
         Show Robot Visual: true
       Value: true
-      Velocity_Scaling_Factor: 1
+      Velocity_Scaling_Factor: 0.05
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -463,13 +327,12 @@ Visualization Manager:
       Marker Topic: /dope/markers
       Name: MarkerArray
       Namespaces:
-        bboxes: true
-        texts: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Image
       Enabled: false
-      Image Topic: /dope/belief_cracker
+      Image Topic: /dope/belief_AlphabetSoup
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -497,20 +360,15 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        papras_desk:
+        env:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/camera_depth_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         robot1/camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
         robot1/end_effector_link:
           Alpha: 1
           Show Axes: false
@@ -521,17 +379,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/gripper_link:
+        robot1/gripper_body:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/gripper_main_link:
+        robot1/gripper_jaw:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/gripper_sub_link:
+        robot1/gripper_pulley:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -562,70 +420,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         robot1/link6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/camera_depth_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot3/camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/end_effector_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/end_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/gripper_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/gripper_main_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/gripper_sub_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link6:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -675,20 +469,15 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        papras_desk:
+        env:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/camera_depth_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         robot1/camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
         robot1/end_effector_link:
           Alpha: 1
           Show Axes: false
@@ -699,17 +488,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/gripper_link:
+        robot1/gripper_body:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/gripper_main_link:
+        robot1/gripper_jaw:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        robot1/gripper_sub_link:
+        robot1/gripper_pulley:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -740,70 +529,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         robot1/link6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/camera_depth_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        robot3/camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/end_effector_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/end_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/gripper_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/gripper_main_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/gripper_sub_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robot3/link6:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -849,6 +574,30 @@ Visualization Manager:
       Reference Frame: papras_desk
       Show Trail: false
       Value: true
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /aruco_tracker/debug
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /aruco_tracker/result
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -865,7 +614,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 2.276988983154297
+      Distance: 3.440487861633301
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -873,22 +622,22 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.054718971252441406
-        Y: 0.39915284514427185
+        X: -0.21217846870422363
+        Y: 0.3066842257976532
         Z: 3.427272758926847e-07
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.26479804515838623
+      Pitch: 0.25979822874069214
       Target Frame: world
-      Yaw: 0.09358379244804382
+      Yaw: 5.581765651702881
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1376
+  Height: 2096
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -899,11 +648,11 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000200000000000001f300000506fc0200000009fb000000100044006900730070006c006100790073010000003d000002df000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a0056006900650077007300000003b0000000b0000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000322000002210000017d00fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000003c005400720061006a006500630074006f007200790020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016000000010000027e00000506fc0200000002fb0000000a0049006d006100670065000000003d000002750000001600fffffffb0000000a0049006d00610067006500000002b80000028b0000001600ffffff0000049b0000050600000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000200000000000001f3000007d6fc0200000009fb000000100044006900730070006c006100790073010000003d0000047d000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a0056006900650077007300000003b0000000b0000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000004c0000003530000017d00fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000003c005400720061006a006500630074006f007200790020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016000000010000027e000007d6fc0200000002fc0000003d000003d70000000000fffffffaffffffff0100000002fb0000000a0049006d0061006700650000000000ffffffff0000005e00fffffffb0000000a0049006d00610067006500000004de0000027e0000005e00fffffffc0000041a000003f90000000000fffffffaffffffff0100000002fb0000000a0049006d0061006700650000000000ffffffff0000005e00fffffffb0000000a0049006d00610067006500000004de0000027e0000005e00ffffff00000563000007d600000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Trajectory - Trajectory Slider:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1684
+  Width: 1884
   X: 72
   Y: 27

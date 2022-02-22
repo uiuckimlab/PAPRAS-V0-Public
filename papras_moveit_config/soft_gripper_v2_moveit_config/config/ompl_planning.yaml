@@ -182,5 +182,5 @@ gripper1:
     - LazyPRMstar
     - SPARS
     - SPARStwo
-  projection_evaluator: joints(robot1/jaw,robot1/pulley)
+  projection_evaluator: joints(robot1/soft_gripper_jaw,robot1/soft_gripper_pulley)
   longest_valid_segment_fraction: 0.005

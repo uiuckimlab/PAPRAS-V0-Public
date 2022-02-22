@@ -760,7 +760,7 @@
     <xacro:RefLink ref="robot${id}/gripper_body"/>
 
     <!-- jaw joint -->
-    <joint name="robot${id}/jaw" type="revolute">
+    <joint name="robot${id}/soft_gripper_jaw" type="revolute">
       <axis xyz="0 1 0" />
       <origin xyz="0.06625 -0.019 0.01425" rpy="0 0 0"/>
       <parent link="robot${id}/gripper_body"/>
@@ -797,7 +797,7 @@
     <xacro:RefLink ref="robot${id}/gripper_jaw"/>
 
     <!-- pulley joint -->
-    <joint name="robot${id}/pulley" type="revolute">
+    <joint name="robot${id}/soft_gripper_pulley" type="revolute">
       <axis xyz="0 0 1" />
       <origin xyz="0.01675 0 0.015" rpy="0 0 0"/>
       <parent link="robot${id}/gripper_body"/>
@@ -913,7 +913,7 @@
     <xacro:RefLink ref="robot${id}/gripper_body"/>
 
     <!-- jaw joint -->
-    <joint name="robot${id}/jaw" type="revolute">
+    <joint name="robot${id}/soft_gripper_jaw" type="revolute">
       <axis xyz="0 1 0" />
       <origin xyz="0.06625 0.019 0.00975" rpy="0 0 0"/>
       <parent link="robot${id}/gripper_body"/>
@@ -950,7 +950,7 @@
     <xacro:RefLink ref="robot${id}/gripper_jaw"/>
 
     <!-- pulley joint -->
-    <joint name="robot${id}/pulley" type="revolute">
+    <joint name="robot${id}/soft_gripper_pulley" type="revolute">
       <axis xyz="0 0 -1" />
       <origin xyz="0.01675 0 -0.015" rpy="0 0 0"/>
       <parent link="robot${id}/gripper_body"/>
@@ -1025,7 +1025,7 @@
     <joint name="robot${id}/camera_fixed_joint" type="fixed">
       <parent link="robot${id}/gripper_body"/>
       <child link="robot${id}/camera_link"/>
-      <origin xyz="0.07755 0 0.0545" rpy="-1.57 0 0"/>
+      <origin xyz="0.07755 0 0.0545" rpy="0 -1.57 3.14"/>
     </joint>
 
     <!-- Camera Link -->
