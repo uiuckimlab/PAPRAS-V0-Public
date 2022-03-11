@@ -4,30 +4,39 @@ Project-NR: Developing Plug-And-Play Robotic Arm System (PAPRAS)
 ## How to Run
 
 We use a ROS1 build environment. This project can easily be made to interface with ROS1 for visualization or for running on a real or simulated robot.
+
+1. Manual Install
+Follow installation instructions for [ROS Noetic](https://wiki.ros.org/noetic/Installation/Ubuntu)
+The specific commands are listed below:
 ```
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt install curl # if you haven't already installed curl
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+sudo apt update
+sudo apt install ros-noetic-desktop-full
+echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+sudo rosdep init
+rosdep update
+```
+
+2. Install MoveIt! and other necessary packages
+```
+sudo apt install ros-noetic-moveit \
+ros-noetic-rviz-visual-tools \
+ros-noetic-moveit-visual-tools \
+ros-noetic-moveit-resources-prbt-moveit-config \
+ros-noetic-pilz-industrial-motion-planner \
+ros-noetic-joint-trajectory-controller \
+ros-noetic-effort-controllers
+```
+
+3. Go to catkin_ws directory, build the package, and configure ROS
+```
+cd && mkdir catkin_ws && cd catkin_ws && mkdir src && cd src
 git clone repo
-cd PAPRAS
-```
-
-1. Build Docker environment
-```
-docker build -t papras .
-```
-
-2. Open a terminal inside the environment with this repository mounted
-```
-docker run -it -v `pwd`:/opt/catkin_ws/src/PAPRAS papras
-
-or 
-
-./gui-docker -it -v `pwd`:/opt/catkin_ws/src/PAPRAS papras
-./gui-docker -c <container>
-```
-
-3. Go to `/opt/arpp`, the mounted directory, build the package, and configure ROS2
-```
-cd /opt/catkin_ws
-catkin_make
+cd ~/catkin_ws && catkin_make
 source devel/setup.bash
 ```
 
