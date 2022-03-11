@@ -29,7 +29,8 @@ ros-noetic-moveit-visual-tools \
 ros-noetic-moveit-resources-prbt-moveit-config \
 ros-noetic-pilz-industrial-motion-planner \
 ros-noetic-joint-trajectory-controller \
-ros-noetic-effort-controllers
+ros-noetic-effort-controllers \
+ros-noetic-plotjuggler-ros
 ```
 
 3. Go to catkin_ws directory, build the package, and configure ROS
@@ -52,29 +53,20 @@ Loading 'pilz_industrial_motion_planner/MoveGroupSequenceAction'...
 Loading 'pilz_industrial_motion_planner/MoveGroupSequenceService'...
 [ INFO] [1647025084.526412752, 0.973000000]: Reading limits from namespace /robot_description_planning
 [ INFO] [1647025084.535253190, 0.982000000]: 
-
-********************************************************
-* MoveGroup using: 
-*     - ApplyPlanningSceneService
-*     - ClearOctomapService
-*     - CartesianPathService
-*     - ExecuteTrajectoryAction
-*     - GetPlanningSceneService
-*     - KinematicsService
-*     - MoveAction
-*     - PickPlaceAction
-*     - MotionPlanService
-*     - QueryPlannersService
-*     - StateValidationService
-*     - SequenceAction
-*     - SequenceService
-********************************************************
-
+*
 [ INFO] [1647025084.535305630, 0.982000000]: MoveGroup context using planning plugin ompl_interface/OMPLPlanner
 [ INFO] [1647025084.535326920, 0.982000000]: MoveGroup context initialization complete
 
 You can start planning now!
 ```
+
+5. Plotting joint positon and torque using PlotJuggler 
+```
+rosrun plotjuggler plotjuggler
+```
+Streaming Panel -> Select `ROS Topic Subscriber` -> Click Start \
+Select all `/ft_sensor_topic` topics and click OK \
+Drag & Drop any of the joint force/torque values onto plot.
 
 # Credits
 This code was written by Kazuki Shin, Dhruv Mathur and Sankalp Yamsani. The grasp detection code was adapted from 2020 PickNik Inc.
