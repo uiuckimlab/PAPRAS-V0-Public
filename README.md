@@ -42,15 +42,16 @@ source devel/setup.bash
 
 4. Run the executable
 ```
-roslaunch papras _demo_coffee.launch
+ roslaunch papras_demo _demo_kitchen.launch sim:=true gazebo_gui:=true rviz:=true
 ```
 Example output:
 ```
-[ INFO] [1628267446.776641700, 2.266000000]: initialize move group sequence action
-[ INFO] [1628267446.785980000, 2.275000000]: Reading limits from namespace /robot_description_planning
+Loading 'pilz_industrial_motion_planner/MoveGroupSequenceAction'...
+[ INFO] [1647025084.512747382, 0.959000000]: initialize move group sequence action
+[ INFO] [1647025084.516892254, 0.963000000]: Reading limits from namespace /robot_description_planning
 Loading 'pilz_industrial_motion_planner/MoveGroupSequenceService'...
-[ INFO] [1628267446.871081900, 2.358000000]: Reading limits from namespace /robot_description_planning
-[ INFO] [1628267446.961461200, 2.447000000]: 
+[ INFO] [1647025084.526412752, 0.973000000]: Reading limits from namespace /robot_description_planning
+[ INFO] [1647025084.535253190, 0.982000000]: 
 
 ********************************************************
 * MoveGroup using: 
@@ -69,8 +70,8 @@ Loading 'pilz_industrial_motion_planner/MoveGroupSequenceService'...
 *     - SequenceService
 ********************************************************
 
-[ INFO] [1628267446.961596600, 2.447000000]: MoveGroup context using planning plugin ompl_interface/OMPLPlanner
-[ INFO] [1628267446.961666700, 2.447000000]: MoveGroup context initialization complete
+[ INFO] [1647025084.535305630, 0.982000000]: MoveGroup context using planning plugin ompl_interface/OMPLPlanner
+[ INFO] [1647025084.535326920, 0.982000000]: MoveGroup context initialization complete
 
 You can start planning now!
 ```
