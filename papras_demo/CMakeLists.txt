@@ -42,7 +42,7 @@ find_package(catkin REQUIRED
     vision_msgs
     rosparam_shortcuts
     eigen_conversions
-    moveit_grasps
+    # moveit_grasps
 )
 
 find_package(gazebo REQUIRED)
@@ -119,13 +119,13 @@ add_executable(command_operator src/command_operator.cpp)
 target_link_libraries(command_operator Qt5::Widgets ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES})
 install(TARGETS command_operator DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-add_executable(pick_place src/pick_place.cpp)
-target_link_libraries(pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+# add_executable(pick_place src/pick_place.cpp)
+# target_link_libraries(pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+# install(TARGETS pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-add_executable(plan_grasps_service src/plan_grasps_service.cpp)
-target_link_libraries(plan_grasps_service ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS plan_grasps_service DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+# add_executable(plan_grasps_service src/plan_grasps_service.cpp)
+# target_link_libraries(plan_grasps_service ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+# install(TARGETS plan_grasps_service DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ################################################################################
 # Install
