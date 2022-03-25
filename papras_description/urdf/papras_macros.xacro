@@ -1037,27 +1037,27 @@
     <joint name="robot${id}/camera_fixed_joint" type="fixed">
       <parent link="robot${id}/gripper_main_link"/>
       <child link="robot${id}/camera_link"/>
-      <origin xyz="0.0592 0.0167 0.04452" rpy="0 0 0" />
+      <origin xyz="0.0592 0.0167 0.04452" rpy="${-0.5*pi} 0 ${-0.5*pi}" />
     </joint>
 
     <!-- Camera Link -->
     <link name="robot${id}/camera_link">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
         <geometry>
           <mesh filename="package://papras_description/meshes/camera_mount.stl"/>
         </geometry>
       </visual>
 
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
         <geometry>
           <mesh filename="package://papras_description/meshes/camera_mount_simple.stl"/>
         </geometry>
       </collision>
 
       <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0"/>
         <mass value="0.088"/>
         <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
       </inertial>

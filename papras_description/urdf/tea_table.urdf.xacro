@@ -41,7 +41,9 @@
 
   <xacro:papras_arm id="1"/>
   <xacro:papras_gripper id="1"/>
+  <xacro:papras_camera id="1"/>
   <xacro:papras_arm id="2"/>
   <xacro:papras_gripper id="2"/>
+  <xacro:papras_camera id="2"/>
 
 </robot>
