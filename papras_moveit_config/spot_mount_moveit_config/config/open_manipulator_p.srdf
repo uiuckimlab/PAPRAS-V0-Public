@@ -234,6 +234,14 @@
         <joint name="robot1/gripper" value="0"/>
         <joint name="robot2/gripper" value="0"/>
     </group_state>
+    <group_state name="close" group="gripper1_2">
+        <joint name="robot1/gripper" value="1"/>
+        <joint name="robot2/gripper" value="1"/>
+    </group_state>
+    <group_state name="close_cup" group="gripper1_2">
+        <joint name="robot1/gripper" value="0.56"/>
+        <joint name="robot2/gripper" value="0.56"/>
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="gripper1" parent_link="robot1/end_effector_link" group="gripper1"/>
     <end_effector name="gripper2" parent_link="robot2/end_effector_link" group="gripper2"/>
