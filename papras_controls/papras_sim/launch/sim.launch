@@ -5,6 +5,7 @@
   <arg name="use_sim_time" default="true"/>
   <arg name="demo_env" default="cage"/>
   <arg name="verbose" value="true" />
+  <arg name="initial_joint_positions" doc="Initial joint configuration of the robot" default=""/>
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -12,11 +13,11 @@
     <arg name="gui" value="$(arg gui)"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
-    <arg name="verbose" value="$(arg verbose)" />
+    <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args=" -urdf -param /robot_description -model $(arg demo_env)"/>
+    args=" -urdf -param robot_description -model $(arg demo_env) $(arg initial_joint_positions)"/>
  
 </launch>
