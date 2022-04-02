@@ -6,7 +6,7 @@ Panels:
       Expanded:
         - /MotionPlanning1
       Splitter Ratio: 0.5
-    Tree Height: 353
+    Tree Height: 245
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -14,6 +14,8 @@ Panels:
       - /Current View1
     Name: Views
     Splitter Ratio: 0.5
+  - Class: rviz_visual_tools/RvizVisualToolsGui
+    Name: RvizVisualToolsGui
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -75,6 +77,11 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          robot1/camera_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           robot1/end_effector_link:
             Alpha: 1
             Show Axes: false
@@ -126,6 +133,11 @@ Visualization Manager:
             Show Trail: false
             Value: true
           robot1/link6:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          robot2/camera_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -212,7 +224,7 @@ Visualization Manager:
         Goal State Color: 250; 128; 0
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
-        Planning Group: arm1
+        Planning Group: arm1_2
         Query Goal State: true
         Query Start State: false
         Show Workspace: false
@@ -236,6 +248,11 @@ Visualization Manager:
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
           env:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          robot1/camera_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -291,6 +308,11 @@ Visualization Manager:
             Show Trail: false
             Value: true
           robot1/link6:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          robot2/camera_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -375,7 +397,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.409090518951416
+      Distance: 3.384598731994629
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -383,22 +405,22 @@ Visualization Manager:
         Value: false
       Field of View: 0.75
       Focal Point:
-        X: 0.5140039324760437
-        Y: 0.7402514219284058
-        Z: 0.0801587700843811
+        X: 1.0222771167755127
+        Y: 0.5214633345603943
+        Z: -0.1391124427318573
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3800000846385956
+      Pitch: 0.6149998903274536
       Target Frame: world
-      Yaw: 5.1799468994140625
+      Yaw: 5.254939556121826
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1136
+  Height: 1016
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -407,9 +429,11 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000001f300000416fc0200000007fb000000100044006900730070006c006100790073010000003d000001f2000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000002350000021e0000017d00ffffff0000053f0000041600000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000001f3000003a2fc0200000008fb000000100044006900730070006c006100790073010000003b00000184000000c700fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000001c5000001d30000016900fffffffb00000024005200760069007a00560069007300750061006c0054006f006f006c0073004700750069010000039e0000003f0000003f00ffffff000001a3000003a200000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  RvizVisualToolsGui:
+    collapsed: false
   Views:
     collapsed: false
-  Width: 1848
-  X: 386
-  Y: 1107
+  Width: 924
+  X: 996
+  Y: 27
