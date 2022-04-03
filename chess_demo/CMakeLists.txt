@@ -55,6 +55,14 @@ find_package(Qt5Widgets REQUIRED)
 # Setup for python modules and scripts
 ################################################################################
 
+catkin_install_python(PROGRAMS src/chess_RR.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+catkin_install_python(PROGRAMS src/chess_RH.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 ################################################################################
 # Declare ROS messages, services and actions
 ################################################################################

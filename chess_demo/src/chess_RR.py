@@ -49,14 +49,11 @@ class ChessEngine:
     def detect_capture(self, move):
         board = self.disect_board()
         pos1, pos2 = move[:2], move[2:]
-        x = int(pos2[1])
+        x = abs(int(pos2[1])-8)
         y = self.board_letters.index(pos2[0])
-        print(board)
-        print(x)
-        print(y)
-        print(board[x][y])
-        if board[x][y] is not '':
-            print("CAPTURE")
+        if board[x][y] != '':
+            return True
+        return False
 
 
 
@@ -77,11 +74,17 @@ def chess_RR():
 
     while not rospy.is_shutdown():
         move = chess.get_move()#"Arm1,A1,A2"
-        if move['Mate'] is not None:
+        if move is None:
             print("GAME OVER")
             print("Winning robot: "+arms[which_arm])
             break
-        move_string = arms[which_arm] + "," + move['Move']
+        from_move = move['Move'][:2]
+        to_move = move['Move'][2:]
+        if chess.detect_capture(move['Move']):
+            print("Capture")
+            move_string = arms[which_arm] + "," + to_move + ",bucket"
+            publisher.publish(move_string)
+        move_string = arms[which_arm] + "," + from_move + "," + to_move
         publisher.publish(move_string)
         chess.make_move(move['Move'])
         rate.sleep()
@@ -93,18 +96,26 @@ def tester():
     # chess.print_board()
     arms = ["Arm1", "Arm2"]
     which_arm = 0
-    chess.print_board()
+    # chess.print_board()
     # chess.disect_board()
-    chess.detect_capture("a8a1")
-    return
+    # chess.detect_capture("a8c6")
+    # return
 
     while not rospy.is_shutdown():
         move = chess.get_move()#"Arm1,A1,A2"
+        chess.print_board()
+        print(arms[which_arm])
         print(move)
         if move is None:
             print("GAME OVER")
             print("Winning robot: "+arms[which_arm])
             break
+        from_move = move['Move'][:2]
+        to_move = move['Move'][2:]
+        if chess.detect_capture(move['Move']):
+            print("Capture")
+            move_string = arms[which_arm] + "," + to_move + ",bucket"
+            # publisher.publish(move_string)
         move_string = arms[which_arm] + "," + move['Move']
         # print(move_string)
         chess.make_move(move['Move'])
