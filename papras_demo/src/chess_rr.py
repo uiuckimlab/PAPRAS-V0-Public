@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''
 Robot vs. Robot Chess Demo
 '''
@@ -110,13 +110,17 @@ class ChessEngine:
         self.prev_piece = board[x][y]
 
 def publish_move(publisher, data):
+    print("Trying to publish move.")
     global robot_done
     while not robot_done:
         pass
+    print(data)
     publisher.publish(data)
     robot_done = False
 
 def callback(data):
+    print("Callback.")
+    global robot_done
     robot_done = True
 
 def chess_RR():
@@ -124,7 +128,7 @@ def chess_RR():
     Output: "Arm, Starting Position, Ending Position"
             "Arm1,C3,D8" -- comma delimited, no spaces
     '''
-    publisher = rospy.Publisher('chess_move', String)
+    publisher = rospy.Publisher('chess_move', String, queue_size=10)
     subscriber = rospy.Subscriber("move_finished", Bool, callback)
     rospy.init_node('chess_rr', anonymous=True)
     rate = rospy.Rate(10) # 10hz
