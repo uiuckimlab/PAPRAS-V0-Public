@@ -12,6 +12,11 @@ class ChessEngine:
     def __init__(self):
         self.engine = Stockfish()
         self.board_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+        self.piece_dict = {'q':'Queen', 'Q':'Queen', 'k':'King', 'K':'King', \
+                           'b':'Bishop', 'B':'Bishop', 'n':'Knight', 'N':'Knight', \
+                           'r':'Rook', 'R':'Rook', 'p':'Pawn', 'P':'Pawn'}
+        self.prev_move = None
+        self.prev_piece = None
 
     def get_move(self):
         correct = False
@@ -48,13 +53,59 @@ class ChessEngine:
 
     def detect_capture(self, move):
         board = self.disect_board()
-        pos1, pos2 = move[:2], move[2:]
+        pos1, pos2 = move[:2], move[2:4]
+
+        # check for piece on top of piece capture
         x = abs(int(pos2[1])-8)
         y = self.board_letters.index(pos2[0])
         if board[x][y] != '':
+            print("Capture!")
+            return pos2 + ",bucket"
+
+        # check for en passant
+        if self.prev_move is not None:
+            x = abs(int(pos1[1])-8)
+            y = self.board_letters.index(pos1[0])
+            if board[x][y].lower() == 'p' and self.prev_piece.lower() == 'p':
+                # did previous pawn move two spaces
+                if abs(int(self.prev_move[3]) - int(self.prev_move[1])) == 2:
+                    # did current pawn move behind this pawn
+                    if pos2 == (self.prev_move[3]+str(int(self.prev_move[4])-1)) and \
+                       board[x][y] == 'p':
+                        print("Capture! En Passant!")
+                        return self.prev_move[2:4] + ",bucket"
+                    if pos2 == (self.prev_move[3]+str(int(self.prev_move[4])+1)) and \
+                       board[x][y] == 'P':
+                        print("Capture! En Passant!")
+                        return self.prev_move[2:4] + ",bucket"
+
+        return None
+
+    def detect_castle(self, move):
+        if 'castling' in move:
+            print("Castling!")
+            if move[2] == 'g':
+                return 'h1,f1'
+            if move[2] == 'c':
+                return 'a1,d1'
+
+        return None
+
+    def detect_promotion(self, move):
+        if 'promotion' in move:
+            print("Promotion!")
+            piece = move[4]
+            print("Please give me: "+self.piece_dict[piece])
             return True
         return False
 
+    def save_move(self, move):
+        board = self.disect_board()
+        self.prev_move = move[0:4]
+        pos1, pos2 = move[:2], move[2:4]
+        x = abs(int(pos1[1])-8)
+        y = self.board_letters.index(pos1[0])
+        self.prev_piece = board[x][y]
 
 
 def chess_RR():
@@ -66,61 +117,85 @@ def chess_RR():
     rospy.init_node('chess_RR', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     chess = ChessEngine()
-    # chess.print_board()
-    # chess.disect_board()
-    # return
     arms = ["Arm1", "Arm2"]
     which_arm = 0
 
     while not rospy.is_shutdown():
+
+        # get best move based on state of the board
         move = chess.get_move()#"Arm1,A1,A2"
         if move is None:
             print("GAME OVER")
             print("Winning robot: "+arms[which_arm])
             break
         from_move = move['Move'][:2]
-        to_move = move['Move'][2:]
-        if chess.detect_capture(move['Move']):
-            print("Capture")
-            move_string = arms[which_arm] + "," + to_move + ",bucket"
+        to_move = move['Move'][2:4]
+
+        # Check if the move is a castle and move the Knight first
+        move_castle = chess.detect_castle(move['Move'])
+        if move_castle is not None:
+            move_string = arms[which_arm] + "," + move_castle
             publisher.publish(move_string)
+
+        # Check if the move captures another pawn
+        move_capture = chess.detect_capture(move['Move'])
+        if move_capture is not None:
+            move_string = arms[which_arm] + "," + move_capture
+            publisher.publish(move_string)
+
+        # Publish chosen move
         move_string = arms[which_arm] + "," + from_move + "," + to_move
         publisher.publish(move_string)
         chess.make_move(move['Move'])
-        rate.sleep()
 
+        # Check if the move is a promotion
+        if chess.detect_promotion(move['Move']):
+            publisher.publish('promotion')
+
+        # switch to other player's turn
         which_arm = (which_arm + 1) % 2
+        chess.save_move(move['Move'])
+
+        rate.sleep()
 
 def tester():
     chess = ChessEngine()
-    # chess.print_board()
     arms = ["Arm1", "Arm2"]
     which_arm = 0
-    # chess.print_board()
-    # chess.disect_board()
-    # chess.detect_capture("a8c6")
-    # return
 
-    while not rospy.is_shutdown():
+    while True:
+
+        # get best move based on state of the board
         move = chess.get_move()#"Arm1,A1,A2"
-        chess.print_board()
-        print(arms[which_arm])
-        print(move)
         if move is None:
             print("GAME OVER")
             print("Winning robot: "+arms[which_arm])
             break
         from_move = move['Move'][:2]
-        to_move = move['Move'][2:]
-        if chess.detect_capture(move['Move']):
-            print("Capture")
-            move_string = arms[which_arm] + "," + to_move + ",bucket"
-            # publisher.publish(move_string)
-        move_string = arms[which_arm] + "," + move['Move']
-        # print(move_string)
+        to_move = move['Move'][2:4]
+
+        # Check if the move is a castle and move the Knight first
+        move_castle = chess.detect_castle(move['Move'])
+        if move_castle is not None:
+            move_string = arms[which_arm] + "," + move_castle
+
+        # Check if the move captures another pawn
+        move_capture = chess.detect_capture(move['Move'])
+        if move_capture is not None:
+            move_string = arms[which_arm] + "," + move_capture
+
+        # Publish chosen move
+        move_string = arms[which_arm] + "," + from_move + "," + to_move
         chess.make_move(move['Move'])
 
+        # Check if the move is a promotion
+        if chess.detect_promotion(move['Move']):
+            pass
+            # publisher.publish('promotion')
+
+        # switch to other player's turn
         which_arm = (which_arm + 1) % 2
+        chess.save_move(move['Move'])
 
 if __name__ == '__main__':
     tester()
