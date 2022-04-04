@@ -1,0 +1,9 @@
+<launch>
+
+  <rosparam file="$(find papras_demo)/config/tea_chess_moves.yaml">
+  </rosparam>
+  
+  <node name="tea_chess_demo" pkg="papras_demo" type="tea_chess_demo" respawn="false" output="screen">
+  </node>
+
+</launch>

@@ -111,6 +111,10 @@ add_executable(tea_demo src/tea_demo.cpp)
 target_link_libraries(tea_demo ${catkin_LIBRARIES} ${Boost_LIBRARIES} yaml-cpp)
 install(TARGETS tea_demo DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(tea_chess_demo src/tea_chess_demo.cpp)
+target_link_libraries(tea_chess_demo ${catkin_LIBRARIES} ${Boost_LIBRARIES} yaml-cpp)
+install(TARGETS tea_chess_demo DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 add_executable(cage_tasks src/cage_tasks.cpp)
 target_link_libraries(cage_tasks ${catkin_LIBRARIES} ${Boost_LIBRARIES} yaml-cpp)
 install(TARGETS cage_tasks DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
