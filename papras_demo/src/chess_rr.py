@@ -4,9 +4,11 @@ Robot vs. Robot Chess Demo
 '''
 
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 # Chess Engine
 from stockfish import Stockfish
+
+robot_done = True
 
 class ChessEngine:
     def __init__(self):
@@ -107,6 +109,15 @@ class ChessEngine:
         y = self.board_letters.index(pos1[0])
         self.prev_piece = board[x][y]
 
+def publish_move(publisher, data):
+    global robot_done
+    while not robot_done:
+        pass
+    publisher.publish(data)
+    robot_done = False
+
+def callback(data):
+    robot_done = True
 
 def chess_RR():
     '''
@@ -114,10 +125,11 @@ def chess_RR():
             "Arm1,C3,D8" -- comma delimited, no spaces
     '''
     publisher = rospy.Publisher('chess_move', String)
+    subscriber = rospy.Subscriber("move_finished", Bool, callback)
     rospy.init_node('chess_RR', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     chess = ChessEngine()
-    arms = ["Arm1", "Arm2"]
+    arms = ["arm1", "arm2"]
     which_arm = 0
 
     while not rospy.is_shutdown():
@@ -135,17 +147,17 @@ def chess_RR():
         move_castle = chess.detect_castle(move['Move'])
         if move_castle is not None:
             move_string = arms[which_arm] + "," + move_castle
-            publisher.publish(move_string)
+            publish_move(publisher, move_string)
 
         # Check if the move captures another pawn
         move_capture = chess.detect_capture(move['Move'])
         if move_capture is not None:
             move_string = arms[which_arm] + "," + move_capture
-            publisher.publish(move_string)
+            publish_move(publisher, move_string)
 
         # Publish chosen move
         move_string = arms[which_arm] + "," + from_move + "," + to_move
-        publisher.publish(move_string)
+        publish_move(publisher, move_string)
         chess.make_move(move['Move'])
 
         # Check if the move is a promotion
@@ -198,9 +210,8 @@ def tester():
         chess.save_move(move['Move'])
 
 if __name__ == '__main__':
-    tester()
-
-    # try:
-    #     chess_RR()
-    # except rospy.ROSInterruptException:
-    #     print("Failed to launch chess demo RvR!")
+    # tester()
+    try:
+        chess_RR()
+    except rospy.ROSInterruptException:
+        print("Failed to launch chess demo RvR!")

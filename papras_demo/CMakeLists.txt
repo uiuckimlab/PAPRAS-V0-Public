@@ -14,6 +14,7 @@ list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 find_package(catkin REQUIRED
   COMPONENTS
     roscpp
+    rospy
     std_msgs
     gazebo_ros
     gazebo_ros_control
@@ -54,6 +55,10 @@ find_package(Qt5Widgets REQUIRED)
 # Setup for python modules and scripts
 ################################################################################
 
+catkin_install_python(PROGRAMS src/chess_rr.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 ################################################################################
 # Declare ROS messages, services and actions
 ################################################################################
@@ -68,6 +73,7 @@ find_package(Qt5Widgets REQUIRED)
 catkin_package(
   CATKIN_DEPENDS
     roscpp
+    rospy
     std_msgs
     gazebo_ros
     gazebo_ros_control
