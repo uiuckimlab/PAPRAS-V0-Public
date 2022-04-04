@@ -156,7 +156,7 @@ int main(int argc, char** argv)
     } else if (control_group == "gripper2") {
       move_group = move_group_gripper2;
     } 
-    
+    ROS_INFO("Visualizing plan %s", move_name.c_str());
     bool success;
     move_group->setPlanningPipelineId("ompl");
     move_group->setMaxVelocityScalingFactor(VEL_SCALE);
