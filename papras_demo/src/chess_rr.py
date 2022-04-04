@@ -115,8 +115,8 @@ def publish_move(publisher, data):
     while not robot_done:
         pass
     print(data)
-    publisher.publish(data)
     robot_done = False
+    publisher.publish(data)
 
 def callback(data):
     print("Callback.")
@@ -166,7 +166,8 @@ def chess_RR():
 
         # Check if the move is a promotion
         if chess.detect_promotion(move['Move']):
-            publisher.publish('promotion')
+            move_string = arms[which_arm] + ",00,promotion"
+            publish_move(publisher, move_string)
 
         # switch to other player's turn
         which_arm = (which_arm + 1) % 2

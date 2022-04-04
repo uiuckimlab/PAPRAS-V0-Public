@@ -212,12 +212,12 @@ void execute_move(const ros::NodeHandle node_handle){
     std::vector<int> comma_positions;
     
     comma_positions.push_back(msg.find(","));
-    comma_positions.push_back(msg.substr(comma_positions[0]+1).find(","));
+    // comma_positions.push_back(msg.substr(comma_positions[0]+1).find(",") + comma_positions[0]);
 
     bool success;
-    std::string control_group = msg.substr(0,comma_positions[0]);
-    std::string from = msg.substr(comma_positions[0]+1,comma_positions[1]);
-    std::string to = msg.substr(comma_positions[1]+1);
+    std::string control_group = msg.substr(0,4);
+    std::string from = msg.substr(5,2);
+    std::string to = msg.substr(8);
     std::string move_name_from;
     std::string move_name_to; 
     moveit::planning_interface::MoveGroupInterface* move_group_gripper;
