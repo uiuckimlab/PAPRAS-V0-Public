@@ -126,7 +126,7 @@ def chess_RR():
     '''
     publisher = rospy.Publisher('chess_move', String)
     subscriber = rospy.Subscriber("move_finished", Bool, callback)
-    rospy.init_node('chess_RR', anonymous=True)
+    rospy.init_node('chess_rr', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     chess = ChessEngine()
     arms = ["arm1", "arm2"]
