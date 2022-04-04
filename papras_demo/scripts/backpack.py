@@ -189,8 +189,8 @@ def demo_reset():
     # Arm 4: Notch points up -> 0 position points back
     rest1 = np.radians([90, -90, 85, 0, 20, 0])
     rest2 = np.radians([90, -90, 85, 0, 20, 0])
-    rest3 = np.radians([0, -90, 85, 0, 20, 0])
-    rest4 = np.radians([-180, -90, 85, 0, 20, 0]) # Joint 1 is maxed out!
+    rest3 = np.radians([-5, -90, 85, 0, 20, 0])
+    rest4 = np.radians([-175, -90, 85, 0, 20, 0]) # Joint 1 is maxed out!
     backpack.move_arm(rest1, rest2, rest3, rest4, 5)
 
 def main():
@@ -207,24 +207,24 @@ def main():
     input("Press enter to continue forward")
     forward1 = np.radians([90, 30, -30, -60, 0, 90])
     forward2 = np.radians([90, 30, -30, 60, 0, -90])
-    forward3 = np.radians([0, 30, -30, 0, 0, 0])
-    forward4 = np.radians([-180, 30, -30, 0, 0, 0]) # Joint 1 is maxed out!
+    forward3 = np.radians([-5, 30, -30, 0, 0, 0])
+    forward4 = np.radians([-175, 30, -30, 0, 0, 0]) # Joint 1 is maxed out!
     backpack.move_arm(forward1, forward2, forward3, forward4, 5)
 
     # Look left
     input("Press enter to continue look_left")
     left1 = np.radians([90, 30, -30, -60, -45, 90])
     left2 = np.radians([90, 30, -30, 60, 45, -90])
-    left3 = np.radians([0, 30, -30, 0, -45, 0])
-    left4 = np.radians([-180, 30, -30, 0, 45, 0]) # Joint 1 is maxed out!
+    left3 = np.radians([-5, 30, -30, 0, -45, 0])
+    left4 = np.radians([-175, 30, -30, 0, 45, 0]) # Joint 1 is maxed out!
     backpack.move_arm(left1, left2, left3, left4, 0.5)
 
     # Look right
     input("Press enter to continue look_right")
     right1 = np.radians([90, 30, -30, -60, 45, 90])
     right2 = np.radians([90, 30, -30, 60, -45, -90])
-    right3 = np.radians([0, 30, -30, 0, 45, 0])
-    right4 = np.radians([-180, 30, -30, 0, -45, 0]) # Joint 1 is maxed out!
+    right3 = np.radians([-5, 30, -30, 0, 45, 0])
+    right4 = np.radians([-175, 30, -30, 0, -45, 0]) # Joint 1 is maxed out!
     backpack.move_arm(right1, right2, right3, right4, 1)
 
     # Back to forward
