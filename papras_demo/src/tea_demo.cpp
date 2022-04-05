@@ -25,8 +25,8 @@
 #include <yaml-cpp/yaml.h>
 
 
-#define VEL_SCALE 0.15
-#define ACCEL_SCALE 0.15
+#define VEL_SCALE 0.10
+#define ACCEL_SCALE 0.10
 #define PLANNING_TIME 5
 #define PLAN_ATTEMPTS 30
 
