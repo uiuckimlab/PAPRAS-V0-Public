@@ -238,104 +238,104 @@ void execute_move(const ros::NodeHandle node_handle){
 
     ROS_INFO("Control Group: %s, move_name_from: %s, move_name_to: %s",control_group.c_str(),from.c_str(),to.c_str());
     
-    // moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-    // // move_group->setPlanningPipelineId("ompl");
-    // // move_group->setMaxVelocityScalingFactor(VEL_SCALE);
-    // // move_group->setMaxAccelerationScalingFactor(ACCEL_SCALE);
-    // // move_group->setPlanningTime(PLANNING_TIME);
-    // // move_group->setNumPlanningAttempts(PLAN_ATTEMPTS);
-    // // move_group_gripper->setPlanningPipelineId("ompl");
-    // // move_group_gripper->setMaxVelocityScalingFactor(VEL_SCALE);
-    // // move_group_gripper->setMaxAccelerationScalingFactor(ACCEL_SCALE);
-    // // move_group_gripper->setPlanningTime(PLANNING_TIME);
-    // // move_group_gripper->setNumPlanningAttempts(PLAN_ATTEMPTS);
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    // move_group->setPlanningPipelineId("ompl");
+    // move_group->setMaxVelocityScalingFactor(VEL_SCALE);
+    // move_group->setMaxAccelerationScalingFactor(ACCEL_SCALE);
+    // move_group->setPlanningTime(PLANNING_TIME);
+    // move_group->setNumPlanningAttempts(PLAN_ATTEMPTS);
+    // move_group_gripper->setPlanningPipelineId("ompl");
+    // move_group_gripper->setMaxVelocityScalingFactor(VEL_SCALE);
+    // move_group_gripper->setMaxAccelerationScalingFactor(ACCEL_SCALE);
+    // move_group_gripper->setPlanningTime(PLANNING_TIME);
+    // move_group_gripper->setNumPlanningAttempts(PLAN_ATTEMPTS);
 
 
-    // move_group->setStartStateToCurrentState();
-    // // 
-    // // move to position from
-    // node_handle.getParam(move_name_from, pose_data);
-    // move_group->setJointValueTarget(pose_data);
-    // success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    // visual_tools->trigger();
-    // if (success) {
-    //   visual_tools->prompt("Press 'next' to execute plan");
-    //   move_group->execute(my_plan);
-    // }
-
-
-
-    // move_group_gripper->setStartStateToCurrentState();
-    // // grab
-    // node_handle.getParam("/gripper/grab_piece", pose_data);
-    // move_group_gripper->setJointValueTarget(pose_data);
-    // success = (move_group_gripper->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    // visual_tools->trigger();
-    // if (success) {
-    //   visual_tools->prompt("Press 'next' to execute plan");
-    //   move_group_gripper->execute(my_plan);
-    // }
-
-
-    // move_group->setStartStateToCurrentState();
-    // // 
-    // // move to position home
-    // node_handle.getParam("/arm1/home", pose_data);
-    // move_group->setJointValueTarget(pose_data);
-    // success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    // visual_tools->trigger();
-    // if (success) {
-    //   visual_tools->prompt("Press 'next' to execute plan");
-    //   move_group->execute(my_plan);
-    // }
+    move_group->setStartStateToCurrentState();
+    // 
+    // move to position from
+    node_handle.getParam(move_name_from, pose_data);
+    move_group->setJointValueTarget(pose_data);
+    success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group->execute(my_plan);
+    }
 
 
 
+    move_group_gripper->setStartStateToCurrentState();
+    // grab
+    node_handle.getParam("/gripper/grab_piece", pose_data);
+    move_group_gripper->setJointValueTarget(pose_data);
+    success = (move_group_gripper->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group_gripper->execute(my_plan);
+    }
 
-    // move_group->setStartStateToCurrentState();
-    // // 
-    // // move to position to
-    // node_handle.getParam(move_name_to, pose_data);
-    // move_group->setJointValueTarget(pose_data);
-    // success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    // visual_tools->trigger();
-    // if (success) {
-    //   visual_tools->prompt("Press 'next' to execute plan");
-    //   move_group->execute(my_plan);
-    // }
+
+    move_group->setStartStateToCurrentState();
+    // 
+    // move to position home
+    node_handle.getParam("/arm1/home", pose_data);
+    move_group->setJointValueTarget(pose_data);
+    success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group->execute(my_plan);
+    }
+
+
+
+
+    move_group->setStartStateToCurrentState();
+    // 
+    // move to position to
+    node_handle.getParam(move_name_to, pose_data);
+    move_group->setJointValueTarget(pose_data);
+    success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group->execute(my_plan);
+    }
 
 
 
     
-    // move_group_gripper->setStartStateToCurrentState();
-    // // un grasp
-    // node_handle.getParam("/gripper/ungrab_piece", pose_data);
-    // move_group_gripper->setJointValueTarget(pose_data);
-    // success = (move_group_gripper->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    // visual_tools->trigger();
-    // if (success) {
-    //   visual_tools->prompt("Press 'next' to execute plan");
-    //   move_group_gripper->execute(my_plan);
-    // }
+    move_group_gripper->setStartStateToCurrentState();
+    // un grasp
+    node_handle.getParam("/gripper/ungrab_piece", pose_data);
+    move_group_gripper->setJointValueTarget(pose_data);
+    success = (move_group_gripper->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group_gripper->execute(my_plan);
+    }
 
 
-    // move_group->setStartStateToCurrentState();
-    // // 
-    // // move to position home
-    // node_handle.getParam("/arm1/home", pose_data);
-    // move_group->setJointValueTarget(pose_data);
-    // success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-    // visual_tools->trigger();
-    // if (success) {
-    //   visual_tools->prompt("Press 'next' to execute plan");
-    //   move_group->execute(my_plan);
-    // }
+    move_group->setStartStateToCurrentState();
+    // 
+    // move to position home
+    node_handle.getParam("/arm1/home", pose_data);
+    move_group->setJointValueTarget(pose_data);
+    success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group->execute(my_plan);
+    }
 
     // on game finish flip the boolean
 
