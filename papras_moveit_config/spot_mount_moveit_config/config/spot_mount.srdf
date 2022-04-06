@@ -3,7 +3,7 @@
     This is a format for representing semantic information about the robot structure.
     A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
 -->
-<robot name="open_manipulator_p">
+<robot name="spot_mount">
     <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
     <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
     <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
@@ -212,17 +212,85 @@
         <joint name="robot2/joint5" value="0.610865"/>
         <joint name="robot2/joint6" value="0.0872665"/>
     </group_state>
+    <group_state name="candyrest" group="arm1">
+        <joint name="robot1/joint1" value="-1.5707"/>
+        <joint name="robot1/joint2" value="-1.5707"/>
+        <joint name="robot1/joint3" value="1.5"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0.0707"/>
+        <joint name="robot1/joint6" value="2.356"/>
+    </group_state>
+    <group_state name="candyrest" group="arm2">
+        <joint name="robot2/joint1" value="1.5707"/>
+        <joint name="robot2/joint2" value="-1.5707"/>
+        <joint name="robot2/joint3" value="1.5"/>
+        <joint name="robot2/joint4" value="0"/>
+        <joint name="robot2/joint5" value="0.0707"/>
+        <joint name="robot2/joint6" value="-2.356"/>
+    </group_state>
+    <group_state name="candyrest" group="arm1_2">
+        <joint name="robot1/joint1" value="-1.5707"/>
+        <joint name="robot1/joint2" value="-1.5707"/>
+        <joint name="robot1/joint3" value="1.5"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0.0707"/>
+        <joint name="robot1/joint6" value="2.356"/>
+        <joint name="robot2/joint1" value="1.5707"/>
+        <joint name="robot2/joint2" value="-1.5707"/>
+        <joint name="robot2/joint3" value="1.5"/>
+        <joint name="robot2/joint4" value="0"/>
+        <joint name="robot2/joint5" value="0.0707"/>
+        <joint name="robot2/joint6" value="-2.356"/>
+    </group_state>
+    <group_state name="candyforward" group="arm1">
+        <joint name="robot1/joint1" value="-2.02458"/>
+        <joint name="robot1/joint2" value="0.10472"/>
+        <joint name="robot1/joint3" value="0.15708"/>
+        <joint name="robot1/joint4" value="2.05949"/>
+        <joint name="robot1/joint5" value="0.523599"/>
+        <joint name="robot1/joint6" value="0.24435"/>
+    </group_state>
+    <group_state name="candyforward" group="arm2">
+        <joint name="robot2/joint1" value="2.02458"/>
+        <joint name="robot2/joint2" value="0.10472"/>
+        <joint name="robot2/joint3" value="0.15708"/>
+        <joint name="robot2/joint4" value="-2.05949"/>
+        <joint name="robot2/joint5" value="0.523599"/>
+        <joint name="robot2/joint6" value="-0.24435"/>
+    </group_state>
+    <group_state name="candyforward" group="arm1_2">
+        <joint name="robot1/joint1" value="-2.02458"/>
+        <joint name="robot1/joint2" value="0.10472"/>
+        <joint name="robot1/joint3" value="0.15708"/>
+        <joint name="robot1/joint4" value="2.05949"/>
+        <joint name="robot1/joint5" value="0.523599"/>
+        <joint name="robot1/joint6" value="0.24435"/>
+        <joint name="robot2/joint1" value="2.02458"/>
+        <joint name="robot2/joint2" value="0.10472"/>
+        <joint name="robot2/joint3" value="0.15708"/>
+        <joint name="robot2/joint4" value="-2.05949"/>
+        <joint name="robot2/joint5" value="0.523599"/>
+        <joint name="robot2/joint6" value="-0.24435"/>
+    </group_state>
     <group_state name="open" group="gripper1">
         <joint name="robot1/gripper" value="0"/>
     </group_state>
     <group_state name="open" group="gripper2">
         <joint name="robot2/gripper" value="0"/>
     </group_state>
+    <group_state name="open" group="gripper1_2">
+        <joint name="robot1/gripper" value="0"/>
+        <joint name="robot2/gripper" value="0"/>
+    </group_state>
     <group_state name="close" group="gripper1">
-        <joint name="robot1/gripper" value="1"/>
+        <joint name="robot1/gripper" value="1.15"/>
     </group_state>
     <group_state name="close" group="gripper2">
-        <joint name="robot2/gripper" value="1"/>
+        <joint name="robot2/gripper" value="1.15"/>
+    </group_state>
+    <group_state name="close" group="gripper1_2">
+        <joint name="robot1/gripper" value="1.15"/>
+        <joint name="robot2/gripper" value="1.15"/>
     </group_state>
     <group_state name="cup_close" group="gripper1">
         <joint name="robot1/gripper" value="0.56"/>
@@ -230,25 +298,23 @@
     <group_state name="cup_close" group="gripper2">
         <joint name="robot2/gripper" value="0.56"/>
     </group_state>
-    <group_state name="open" group="gripper1_2">
-        <joint name="robot1/gripper" value="0"/>
-        <joint name="robot2/gripper" value="0"/>
-    </group_state>
-    <group_state name="close" group="gripper1_2">
-        <joint name="robot1/gripper" value="1"/>
-        <joint name="robot2/gripper" value="1"/>
-    </group_state>
-    <group_state name="close_cup" group="gripper1_2">
+    <group_state name="cup_close" group="gripper1_2">
         <joint name="robot1/gripper" value="0.56"/>
         <joint name="robot2/gripper" value="0.56"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="gripper1" parent_link="robot1/end_effector_link" group="gripper1"/>
-    <end_effector name="gripper2" parent_link="robot2/end_effector_link" group="gripper2"/>
+    <end_effector name="eef1" parent_link="robot1/end_effector_link" group="gripper1"/>
+    <end_effector name="eef2" parent_link="robot2/end_effector_link" group="gripper2"/>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
     <passive_joint name="robot1/gripper_sub"/>
     <passive_joint name="robot2/gripper_sub"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="env" link2="robot1/link1" reason="Adjacent"/>
+    <disable_collisions link1="env" link2="robot1/link2" reason="Never"/>
+    <disable_collisions link1="env" link2="robot1/link3" reason="Never"/>
+    <disable_collisions link1="env" link2="robot2/link1" reason="Adjacent"/>
+    <disable_collisions link1="env" link2="robot2/link2" reason="Never"/>
+    <disable_collisions link1="env" link2="robot2/link3" reason="Never"/>
     <disable_collisions link1="robot1/camera_link" link2="robot1/end_effector_link" reason="Never"/>
     <disable_collisions link1="robot1/camera_link" link2="robot1/end_link" reason="Never"/>
     <disable_collisions link1="robot1/camera_link" link2="robot1/gripper_link" reason="Never"/>
@@ -266,7 +332,6 @@
     <disable_collisions link1="robot1/end_effector_link" link2="robot1/link4" reason="Never"/>
     <disable_collisions link1="robot1/end_effector_link" link2="robot1/link5" reason="Never"/>
     <disable_collisions link1="robot1/end_effector_link" link2="robot1/link6" reason="Never"/>
-    <disable_collisions link1="robot1/end_effector_link" link2="robot2/end_effector_link" reason="Never"/>
     <disable_collisions link1="robot1/end_link" link2="robot1/gripper_link" reason="Never"/>
     <disable_collisions link1="robot1/end_link" link2="robot1/gripper_main_link" reason="Adjacent"/>
     <disable_collisions link1="robot1/end_link" link2="robot1/gripper_sub_link" reason="Never"/>
@@ -290,16 +355,13 @@
     <disable_collisions link1="robot1/link1" link2="robot2/link1" reason="Never"/>
     <disable_collisions link1="robot1/link1" link2="robot2/link2" reason="Never"/>
     <disable_collisions link1="robot1/link1" link2="robot2/link3" reason="Never"/>
-    <disable_collisions link1="robot1/link1" link2="spot_mount" reason="Adjacent"/>
     <disable_collisions link1="robot1/link2" link2="robot1/link3" reason="Adjacent"/>
     <disable_collisions link1="robot1/link2" link2="robot1/link4" reason="Never"/>
     <disable_collisions link1="robot1/link2" link2="robot2/link1" reason="Never"/>
     <disable_collisions link1="robot1/link2" link2="robot2/link2" reason="Never"/>
-    <disable_collisions link1="robot1/link2" link2="spot_mount" reason="Never"/>
     <disable_collisions link1="robot1/link3" link2="robot1/link4" reason="Adjacent"/>
     <disable_collisions link1="robot1/link3" link2="robot1/link5" reason="Never"/>
     <disable_collisions link1="robot1/link3" link2="robot2/link1" reason="Never"/>
-    <disable_collisions link1="robot1/link3" link2="spot_mount" reason="Never"/>
     <disable_collisions link1="robot1/link4" link2="robot1/link5" reason="Adjacent"/>
     <disable_collisions link1="robot1/link4" link2="robot1/link6" reason="Never"/>
     <disable_collisions link1="robot1/link5" link2="robot1/link6" reason="Adjacent"/>
@@ -340,13 +402,10 @@
     <disable_collisions link1="robot2/gripper_sub_link" link2="robot2/link6" reason="Never"/>
     <disable_collisions link1="robot2/link1" link2="robot2/link2" reason="Adjacent"/>
     <disable_collisions link1="robot2/link1" link2="robot2/link3" reason="Never"/>
-    <disable_collisions link1="robot2/link1" link2="spot_mount" reason="Adjacent"/>
     <disable_collisions link1="robot2/link2" link2="robot2/link3" reason="Adjacent"/>
     <disable_collisions link1="robot2/link2" link2="robot2/link4" reason="Never"/>
-    <disable_collisions link1="robot2/link2" link2="spot_mount" reason="Never"/>
     <disable_collisions link1="robot2/link3" link2="robot2/link4" reason="Adjacent"/>
     <disable_collisions link1="robot2/link3" link2="robot2/link5" reason="Never"/>
-    <disable_collisions link1="robot2/link3" link2="spot_mount" reason="Never"/>
     <disable_collisions link1="robot2/link4" link2="robot2/link5" reason="Adjacent"/>
     <disable_collisions link1="robot2/link4" link2="robot2/link6" reason="Never"/>
     <disable_collisions link1="robot2/link5" link2="robot2/link6" reason="Adjacent"/>

@@ -3,7 +3,7 @@
   <arg name="gui" default="true"/>
   <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="true"/>
-  <arg name="demo_env" default="cage"/>
+  <arg name="demo_env" default="papras"/>
   <arg name="verbose" value="true" />
   <arg name="initial_joint_positions" doc="Initial joint configuration of the robot" default=""/>
 

@@ -1,13 +1,12 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 138
+    Help Height: 84
     Name: Displays
     Property Tree Widget:
       Expanded:
         - /MotionPlanning1
-        - /MotionPlanning1/Scene Robot1
-      Splitter Ratio: 0.7425600290298462
-    Tree Height: 305
+      Splitter Ratio: 0.5
+    Tree Height: 238
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -51,9 +50,9 @@ Visualization Manager:
       MoveIt_Allow_Replanning: false
       MoveIt_Allow_Sensor_Positioning: false
       MoveIt_Planning_Attempts: 10
-      MoveIt_Planning_Time: 0.1
+      MoveIt_Planning_Time: 5
       MoveIt_Use_Cartesian_Path: false
-      MoveIt_Use_Constraint_Aware_IK: true
+      MoveIt_Use_Constraint_Aware_IK: false
       MoveIt_Workspace:
         Center:
           X: 0
@@ -73,6 +72,11 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
+          env:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           robot1/camera_link:
             Alpha: 1
             Show Axes: false
@@ -189,11 +193,6 @@ Visualization Manager:
             Show Trail: false
             Value: true
           robot2/link6:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          spot_mount:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -211,6 +210,7 @@ Visualization Manager:
         State Display Time: 0.05 s
         Trail Step Size: 1
         Trajectory Topic: move_group/display_planned_path
+        Use Sim Time: false
       Planning Metrics:
         Payload: 1
         Show Joint Torques: false
@@ -224,7 +224,7 @@ Visualization Manager:
         Goal State Color: 250; 128; 0
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
-        Planning Group: arm1_2
+        Planning Group: arm1
         Query Goal State: true
         Query Start State: false
         Show Workspace: false
@@ -235,7 +235,7 @@ Visualization Manager:
       Scene Geometry:
         Scene Alpha: 1
         Scene Color: 50; 230; 50
-        Scene Display Time: 0.20000000298023224
+        Scene Display Time: 0.009999999776482582
         Show Scene Geometry: true
         Voxel Coloring: Z-Axis
         Voxel Rendering: Occupied Voxels
@@ -247,6 +247,11 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
+          env:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           robot1/camera_link:
             Alpha: 1
             Show Axes: false
@@ -363,11 +368,6 @@ Visualization Manager:
             Show Trail: false
             Value: true
           robot2/link6:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          spot_mount:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -396,31 +396,31 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rviz/XYOrbit
-      Distance: 1.621370553970337
+      Class: rviz/Orbit
+      Distance: 2.9270124435424805
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Field of View: 0.7853981852531433
+      Field of View: 0.75
       Focal Point:
-        X: 0.24373286962509155
-        Y: -0.3688679337501526
-        Z: -1.341098823104403e-07
+        X: -0.11362109333276749
+        Y: 0.11393018066883087
+        Z: 0.1656685620546341
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4447970390319824
+      Pitch: 0.22000004351139069
       Target Frame: world
-      Yaw: 5.289950370788574
+      Yaw: 5.689949989318848
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 2237
+  Height: 1136
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -429,11 +429,11 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000003a300000821fc0200000008fb000000100044006900730070006c006100790073010000006e000002290000018200fffffffb0000000800480065006c00700000000342000000bb000000d400fffffffb0000000a0056006900650077007300000003b0000000b00000013200fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000002600000026fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000002a3000003fe000002b800fffffffb00000030005200760069007a00560069007300750061006c0054006f006f006c007300470075006900500041005000520041005301000006ad000001e2000001e200ffffff0000081d0000082100000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000032300000416fc0200000008fb000000100044006900730070006c006100790073010000003d0000017f000000c900fffffffb00000030005200760069007a00560069007300750061006c0054006f006f006c007300470075006900500041005000520041005301000001c2000000ea000000dc00fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000002b2000001a10000017d00ffffff0000040f0000041600000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   RvizVisualToolsGuiPAPRAS:
     collapsed: false
   Views:
     collapsed: false
-  Width: 3020
-  X: 706
-  Y: 174
+  Width: 1848
+  X: 386
+  Y: 1107

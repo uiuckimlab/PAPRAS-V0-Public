@@ -1,6 +1,6 @@
 controller_list:
   - name: fake_arm1_controller
-    type: $(arg execution_type)
+    type: $(arg fake_execution_type)
     joints:
       - robot1/joint1
       - robot1/joint2
@@ -9,7 +9,7 @@ controller_list:
       - robot1/joint5
       - robot1/joint6
   - name: fake_arm2_controller
-    type: $(arg execution_type)
+    type: $(arg fake_execution_type)
     joints:
       - robot2/joint1
       - robot2/joint2
@@ -18,7 +18,7 @@ controller_list:
       - robot2/joint5
       - robot2/joint6
   - name: fake_arm1_2_controller
-    type: $(arg execution_type)
+    type: $(arg fake_execution_type)
     joints:
       - robot1/joint1
       - robot1/joint2
@@ -33,21 +33,28 @@ controller_list:
       - robot2/joint5
       - robot2/joint6
   - name: fake_gripper1_controller
-    type: $(arg execution_type)
+    type: $(arg fake_execution_type)
     joints:
       - robot1/gripper
   - name: fake_gripper2_controller
-    type: $(arg execution_type)
+    type: $(arg fake_execution_type)
     joints:
+      - robot2/gripper
+  - name: fake_gripper1_2_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - robot1/gripper
       - robot2/gripper
 initial:  # Define initial robot poses.
   - group: arm1
-    pose: init
+    pose: rest
   - group: arm2
-    pose: init
+    pose: rest
   - group: arm1_2
-    pose: init
+    pose: rest
   - group: gripper1
     pose: open
   - group: gripper2
+    pose: open
+  - group: gripper1_2
     pose: open

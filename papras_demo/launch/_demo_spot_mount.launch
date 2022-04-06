@@ -33,10 +33,10 @@
 
   <!-- joint_trajectory_controller -->
   <group unless="$(arg sim)">
-    <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller_spot_mount.yaml" command="load"/>
+    <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller_2arm.yaml" command="load"/>
   </group>
   <group if="$(arg sim)">
-    <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller_spot_mount_gazebo.yaml" command="load"/>
+    <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller_2arm_gazebo.yaml" command="load"/>
   </group>
 
   <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
