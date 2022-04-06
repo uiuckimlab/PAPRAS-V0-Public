@@ -89,13 +89,13 @@
         <joint name="robot2/joint6" value="0"/>
     </group_state>
     <group_state name="open" group="gripper1">
-        <joint name="robot1/gripper" value="0.1"/>
+        <joint name="robot1/gripper" value="0"/>
     </group_state>
     <group_state name="close" group="gripper1">
         <joint name="robot1/gripper" value="1"/>
     </group_state>
     <group_state name="open" group="gripper2">
-        <joint name="robot2/gripper" value="0.1"/>
+        <joint name="robot2/gripper" value="0"/>
     </group_state>
     <group_state name="close" group="gripper2">
         <joint name="robot2/gripper" value="1"/>
