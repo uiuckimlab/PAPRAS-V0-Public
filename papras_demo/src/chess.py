@@ -9,7 +9,7 @@ from std_msgs.msg import String, Bool
 from stockfish import Stockfish
 
 robot_done = True
-mode = 'rh'
+mode = 'rr'
 
 class ChessEngine:
     def __init__(self):
@@ -164,10 +164,17 @@ def callback(data):
 
 def robot_turn(chess, arms, which_arm, publisher):
 
+    # tell robot to move to 'playing home position'
+    move_string = arms[which_arm] + ',00,playing'
+    publish_move(publisher, move_string)
+
     # get best move based on state of the board
     move = chess.get_move()#"Arm1,A1,A2"
     if move is None:
         print("Winning Robot: "+arms[(which_arm + 1) % 2])
+        # tell robot to move to 'not playing home position'
+        move_string = arms[which_arm] + ',00,notplaying'
+        publish_move(publisher, move_string)
         return True
     from_move = move['Move'][:2]
     to_move = move['Move'][2:4]
@@ -195,6 +202,11 @@ def robot_turn(chess, arms, which_arm, publisher):
         publish_move(publisher, move_string)
 
     chess.save_move(move['Move'])
+
+    # tell robot to move to 'not playing home position'
+    move_string = arms[which_arm] + ',00,notplaying'
+    publish_move(publisher, move_string)
+
     return False
 
 def human_turn(chess, arms, which_arm):
