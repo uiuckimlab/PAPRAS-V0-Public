@@ -463,7 +463,7 @@ int main(int argc, char** argv)
   // TODO CONVERT TO C++ FROM PYTHON
   while(!game_finished && ros::ok()){
     ROS_INFO("IN WHILE");
-    std::string letters = "abcdefgh";
+    std::string letters = "a";
     for (int i=0; i < letters.length(); i++) {
         for (int j=0; j < 8; j++) {
             std::string square = letters[i] + std::to_string(j+1);
@@ -472,12 +472,6 @@ int main(int argc, char** argv)
             r.sleep();
         }
     }
-    // for letter in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']:
-    //     for number in range(8):
-    //         square = letter + str(number + 1)
-    //         execute_move(node_handle, "arm1", square);
-    //         ros::spinOnce();
-    //         r.sleep();
   }
 
   

@@ -1,0 +1,9 @@
+<launch>
+
+  <rosparam file="$(find papras_demo)/config/tea_chess_moves.yaml">
+  </rosparam>
+  
+  <node name="tea_chess_calibration" pkg="papras_demo" type="tea_chess_calibration" respawn="false" output="screen">
+  </node>
+
+</launch>
