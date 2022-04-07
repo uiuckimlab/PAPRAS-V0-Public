@@ -234,7 +234,7 @@ namespace open_manipulator_p_hw
       }
     }
 
-    // Torque On after setting up all servo
+    // // Torque On after setting up all servo
     for (auto const &dxl : dynamixel_)
       dxl_wb_->torqueOn((uint8_t)dxl.second);
 

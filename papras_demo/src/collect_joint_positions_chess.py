@@ -10,8 +10,9 @@ from moveit_commander.conversions import pose_to_list
 import yaml
 import pdb
 
-chess_board_top_left = [0.508+0.0325, 0.518-0.0175, 0.359] #m 3.25 x y 1.75
-chess_board_square_side = 0.057 #m
+# chess_board_top_left = [0.508+0.0325, 0.518-0.0175, 0.359] #m 3.25 x y 1.75
+chess_board_center_top_left = [0.445+0.09, 0.575-0.09, 0.359]
+chess_board_square_side = 0.06#0.057 #m
 pawn_piece_gripper_height = 0.03 + 0.015 #m
 king_piece_height = 0.095 #m
 chess_board_col = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']

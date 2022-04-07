@@ -25,8 +25,8 @@
 #include <yaml-cpp/yaml.h>
 
 
-#define VEL_SCALE 0.10
-#define ACCEL_SCALE 0.10
+#define VEL_SCALE 0.15
+#define ACCEL_SCALE 0.15
 #define PLANNING_TIME 5
 #define PLAN_ATTEMPTS 30
 
@@ -38,24 +38,18 @@ static const std::string PLANNING_GROUP_GRIPPER1 = "gripper1";
 static const std::string PLANNING_GROUP_ARM2 = "arm2";
 static const std::string PLANNING_GROUP_GRIPPER2 = "gripper2";
 static const std::string PLANNING_GROUP_ARM1_2 = "arm1_2";
+static const std::string PLANNING_GROUP_GRIPPER1_2 = "gripper1_2";
 
 moveit::planning_interface::MoveGroupInterface* move_group_arm1;
 moveit::planning_interface::MoveGroupInterface* move_group_gripper1;
 moveit::planning_interface::MoveGroupInterface* move_group_arm2;
 moveit::planning_interface::MoveGroupInterface* move_group_gripper2;
 moveit::planning_interface::MoveGroupInterface* move_group_arm1_2;
+moveit::planning_interface::MoveGroupInterface* move_group_gripper1_2;
 moveit::planning_interface::MoveGroupInterface* move_group;
-
-// Pointers to move groups
-const moveit::core::JointModelGroup* joint_model_arm1;
-const moveit::core::JointModelGroup* joint_model_gripper1;
-const moveit::core::JointModelGroup* joint_model_arm2;
-const moveit::core::JointModelGroup* joint_model_gripper2;
-const moveit::core::JointModelGroup* joint_model_arm1_2;
 
 // Double pointers for current move
 moveit::planning_interface::MoveGroupInterface** current_move_group;
-const moveit::core::JointModelGroup** current_joint_model;
 
 // Visualization
 moveit_visual_tools::MoveItVisualTools* visual_tools;
@@ -77,16 +71,10 @@ int main(int argc, char** argv)
   move_group_arm2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM2);
   move_group_gripper2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER2);
   move_group_arm1_2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_2);
+  move_group_gripper1_2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER1_2);
 
   // Set up planning scene to add/remove collision objects in world
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
-
-  // Create pointers to planning groups
-  joint_model_arm1 = move_group_arm1->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1);
-  joint_model_gripper1 = move_group_gripper1->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER1);
-  joint_model_arm2 = move_group_arm2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM2);
-  joint_model_gripper2 = move_group_gripper2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_GRIPPER2);
-  joint_model_arm1_2 = move_group_arm1_2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_2);
 
   // Print reference information
   ROS_INFO("Arm 1 planning frame: %s", move_group_arm1->getPlanningFrame().c_str());
@@ -147,6 +135,8 @@ int main(int argc, char** argv)
 
     if (control_group == "arm1_2"){
       move_group = move_group_arm1_2;
+    } else if (control_group == "gripper1_2") {
+      move_group = move_group_gripper1_2;
     } else if (control_group == "arm1") {
       move_group = move_group_arm1;
     } else if (control_group == "arm2") {
