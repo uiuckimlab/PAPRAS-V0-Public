@@ -118,6 +118,8 @@ class ChessEngine:
             print("Promotion!")
             piece = move[4]
             print("Please give me: "+self.piece_dict[piece])
+            print("Please indicate you have finished helping the robot :) Simply hit enter.")
+            done = input(">>> ")
             return True
         return False
 
@@ -380,4 +382,4 @@ if __name__ == '__main__':
             tester()
             # chess_RH()
     except rospy.ROSInterruptException:
-        print("Failed to launch chess demo RvR!")
+        print("Error: Failed to start chess demo!")

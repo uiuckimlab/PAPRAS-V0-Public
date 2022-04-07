@@ -139,70 +139,70 @@ std::unordered_map<std::string,std::string>arm1_moves({
 });
 
 std::unordered_map<std::string,std::string>arm2_moves({
-  {"a1","/arm1/h8"},
-  {"a2","/arm1/h7"},
-  {"a3","/arm1/h6"},
-  {"a4","/arm1/h5"},
-  {"a5","/arm1/h4"},
-  {"a6","/arm1/h3"},
-  {"a7","/arm1/h2"},
-  {"a8","/arm1/h1"},
-  {"b1","/arm1/g8"},
-  {"b2","/arm1/g7"},
-  {"b3","/arm1/g6"},
-  {"b4","/arm1/g5"},
-  {"b5","/arm1/g4"},
-  {"b6","/arm1/g3"},
-  {"b7","/arm1/g2"},
-  {"b8","/arm1/g1"},
-  {"c1","/arm1/f8"},
-  {"c2","/arm1/f7"},
-  {"c3","/arm1/f6"},
-  {"c4","/arm1/f5"},
-  {"c5","/arm1/f4"},
-  {"c6","/arm1/f3"},
-  {"c7","/arm1/f2"},
-  {"c8","/arm1/f1"},
-  {"d1","/arm1/e8"},
-  {"d2","/arm1/e7"},
-  {"d3","/arm1/e6"},
-  {"d4","/arm1/e5"},
-  {"d5","/arm1/e4"},
-  {"d6","/arm1/e3"},
-  {"d7","/arm1/e2"},
-  {"d8","/arm1/e1"},
-  {"e1","/arm1/d8"},
-  {"e2","/arm1/d7"},
-  {"e3","/arm1/d6"},
-  {"e4","/arm1/d5"},
-  {"e5","/arm1/d4"},
-  {"e6","/arm1/d3"},
-  {"e7","/arm1/d2"},
-  {"e8","/arm1/d1"},
-  {"f1","/arm1/c8"},
-  {"f2","/arm1/c7"},
-  {"f3","/arm1/c6"},
-  {"f4","/arm1/c5"},
-  {"f5","/arm1/c4"},
-  {"f6","/arm1/c3"},
-  {"f7","/arm1/c2"},
-  {"f8","/arm1/c1"},
-  {"g1","/arm1/b8"},
-  {"g2","/arm1/b7"},
-  {"g3","/arm1/b6"},
-  {"g4","/arm1/b5"},
-  {"g5","/arm1/b4"},
-  {"g6","/arm1/b3"},
-  {"g7","/arm1/b2"},
-  {"g8","/arm1/b1"},
-  {"h1","/arm1/a8"},
-  {"h2","/arm1/a7"},
-  {"h3","/arm1/a6"},
-  {"h4","/arm1/a5"},
-  {"h5","/arm1/a4"},
-  {"h6","/arm1/a3"},
-  {"h7","/arm1/a2"},
-  {"h8","/arm1/a1"},
+  {"a1","/arm2/h8"},
+  {"a2","/arm2/h7"},
+  {"a3","/arm2/h6"},
+  {"a4","/arm2/h5"},
+  {"a5","/arm2/h4"},
+  {"a6","/arm2/h3"},
+  {"a7","/arm2/h2"},
+  {"a8","/arm2/h1"},
+  {"b1","/arm2/g8"},
+  {"b2","/arm2/g7"},
+  {"b3","/arm2/g6"},
+  {"b4","/arm2/g5"},
+  {"b5","/arm2/g4"},
+  {"b6","/arm2/g3"},
+  {"b7","/arm2/g2"},
+  {"b8","/arm2/g1"},
+  {"c1","/arm2/f8"},
+  {"c2","/arm2/f7"},
+  {"c3","/arm2/f6"},
+  {"c4","/arm2/f5"},
+  {"c5","/arm2/f4"},
+  {"c6","/arm2/f3"},
+  {"c7","/arm2/f2"},
+  {"c8","/arm2/f1"},
+  {"d1","/arm2/e8"},
+  {"d2","/arm2/e7"},
+  {"d3","/arm2/e6"},
+  {"d4","/arm2/e5"},
+  {"d5","/arm2/e4"},
+  {"d6","/arm2/e3"},
+  {"d7","/arm2/e2"},
+  {"d8","/arm2/e1"},
+  {"e1","/arm2/d8"},
+  {"e2","/arm2/d7"},
+  {"e3","/arm2/d6"},
+  {"e4","/arm2/d5"},
+  {"e5","/arm2/d4"},
+  {"e6","/arm2/d3"},
+  {"e7","/arm2/d2"},
+  {"e8","/arm2/d1"},
+  {"f1","/arm2/c8"},
+  {"f2","/arm2/c7"},
+  {"f3","/arm2/c6"},
+  {"f4","/arm2/c5"},
+  {"f5","/arm2/c4"},
+  {"f6","/arm2/c3"},
+  {"f7","/arm2/c2"},
+  {"f8","/arm2/c1"},
+  {"g1","/arm2/b8"},
+  {"g2","/arm2/b7"},
+  {"g3","/arm2/b6"},
+  {"g4","/arm2/b5"},
+  {"g5","/arm2/b4"},
+  {"g6","/arm2/b3"},
+  {"g7","/arm2/b2"},
+  {"g8","/arm2/b1"},
+  {"h1","/arm2/a8"},
+  {"h2","/arm2/a7"},
+  {"h3","/arm2/a6"},
+  {"h4","/arm2/a5"},
+  {"h5","/arm2/a4"},
+  {"h6","/arm2/a3"},
+  {"h7","/arm2/a2"},
+  {"h8","/arm2/a1"},
   {"bucket","/arm2/bucket"}
 });
 
@@ -222,7 +222,8 @@ void execute_move(const ros::NodeHandle node_handle){
     std::string move_name_to; 
     moveit::planning_interface::MoveGroupInterface* move_group_gripper;
     std::vector<double> pose_data;
-    
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+
     
     if (control_group == "arm1"){
       move_group = move_group_arm1;
@@ -236,25 +237,84 @@ void execute_move(const ros::NodeHandle node_handle){
       move_name_to = arm2_moves[to];
     } 
 
+    move_group->setPlanningPipelineId("ompl");
+    move_group->setMaxVelocityScalingFactor(VEL_SCALE);
+    move_group->setMaxAccelerationScalingFactor(ACCEL_SCALE);
+    move_group->setPlanningTime(PLANNING_TIME);
+    move_group->setNumPlanningAttempts(PLAN_ATTEMPTS);
+    move_group_gripper->setPlanningPipelineId("ompl");
+    move_group_gripper->setMaxVelocityScalingFactor(VEL_SCALE);
+    move_group_gripper->setMaxAccelerationScalingFactor(ACCEL_SCALE);
+    move_group_gripper->setPlanningTime(PLANNING_TIME);
+    move_group_gripper->setNumPlanningAttempts(PLAN_ATTEMPTS);
+
+
+
+    if(to == "playing"){
+      move_group->setStartStateToCurrentState();
+      // 
+      // move to position from
+      node_handle.getParam("arm1/playing_home", pose_data);
+      move_group->setJointValueTarget(pose_data);
+      success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+      ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+      visual_tools->trigger();
+      if (success) {
+        visual_tools->prompt("Press 'next' to execute plan");
+        move_group->execute(my_plan);
+      }
+      std_msgs::Bool finished;
+      finished.data = true;
+      finished_move_pub.publish(finished);
+
+      return;
+    }else if(to == "notplaying"){
+      ROS_INFO("IN NOT PLAYING!!!!");
+
+      move_group->setStartStateToCurrentState();
+      // 
+      // move to position from
+      node_handle.getParam("arm1/not_playing_home", pose_data);
+      move_group->setJointValueTarget(pose_data);
+      success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+      ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+      visual_tools->trigger();
+      if (success) {
+        visual_tools->prompt("Press 'next' to execute plan");
+        move_group->execute(my_plan);
+      }
+      
+      std_msgs::Bool finished;
+      finished.data = true;
+      finished_move_pub.publish(finished);
+
+
+      return;
+    }
+
     ROS_INFO("Control Group: %s, move_name_from: %s, move_name_to: %s",control_group.c_str(),from.c_str(),to.c_str());
     
-    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-    // move_group->setPlanningPipelineId("ompl");
-    // move_group->setMaxVelocityScalingFactor(VEL_SCALE);
-    // move_group->setMaxAccelerationScalingFactor(ACCEL_SCALE);
-    // move_group->setPlanningTime(PLANNING_TIME);
-    // move_group->setNumPlanningAttempts(PLAN_ATTEMPTS);
-    // move_group_gripper->setPlanningPipelineId("ompl");
-    // move_group_gripper->setMaxVelocityScalingFactor(VEL_SCALE);
-    // move_group_gripper->setMaxAccelerationScalingFactor(ACCEL_SCALE);
-    // move_group_gripper->setPlanningTime(PLANNING_TIME);
-    // move_group_gripper->setNumPlanningAttempts(PLAN_ATTEMPTS);
+  
+
+    move_group->setStartStateToCurrentState();
+    // 
+    // move to position from
+    node_handle.getParam(move_name_from + "_up", pose_data);
+    move_group->setJointValueTarget(pose_data);
+    success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group->execute(my_plan);
+    }
+
 
 
     move_group->setStartStateToCurrentState();
     // 
     // move to position from
-    node_handle.getParam(move_name_from, pose_data);
+    node_handle.getParam(move_name_from + "_down", pose_data);
     move_group->setJointValueTarget(pose_data);
     success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -278,11 +338,10 @@ void execute_move(const ros::NodeHandle node_handle){
       move_group_gripper->execute(my_plan);
     }
 
-
     move_group->setStartStateToCurrentState();
     // 
-    // move to position home
-    node_handle.getParam("/arm1/home", pose_data);
+    // move to position from
+    node_handle.getParam(move_name_from + "_up", pose_data);
     move_group->setJointValueTarget(pose_data);
     success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -297,8 +356,37 @@ void execute_move(const ros::NodeHandle node_handle){
 
     move_group->setStartStateToCurrentState();
     // 
+    // move to position home
+    node_handle.getParam("/arm1/playing_home", pose_data);
+    move_group->setJointValueTarget(pose_data);
+    success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group->execute(my_plan);
+    }
+
+
+    move_group->setStartStateToCurrentState();
+    // 
     // move to position to
-    node_handle.getParam(move_name_to, pose_data);
+    node_handle.getParam(move_name_to + "_up", pose_data);
+    move_group->setJointValueTarget(pose_data);
+    success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group->execute(my_plan);
+    }
+
+
+
+    move_group->setStartStateToCurrentState();
+    // 
+    // move to position to
+    node_handle.getParam(move_name_to + "_down", pose_data);
     move_group->setJointValueTarget(pose_data);
     success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -323,11 +411,24 @@ void execute_move(const ros::NodeHandle node_handle){
       move_group_gripper->execute(my_plan);
     }
 
+    move_group->setStartStateToCurrentState();
+    // 
+    // move to position to
+    node_handle.getParam(move_name_to + "_up", pose_data);
+    move_group->setJointValueTarget(pose_data);
+    success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    visual_tools->trigger();
+    if (success) {
+      visual_tools->prompt("Press 'next' to execute plan");
+      move_group->execute(my_plan);
+    }
+
 
     move_group->setStartStateToCurrentState();
     // 
     // move to position home
-    node_handle.getParam("/arm1/home", pose_data);
+    node_handle.getParam("/arm1/playing_home", pose_data);
     move_group->setJointValueTarget(pose_data);
     success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -349,6 +450,7 @@ void execute_move(const ros::NodeHandle node_handle){
 }
 
 void do_move(const std_msgs::String::ConstPtr& msgs){
+  ROS_INFO("In do move");
   msg = msgs->data.c_str();
   do_move_bool = true;
 }
@@ -364,6 +466,8 @@ int main(int argc, char** argv)
   ros::Rate r(10); // 10 hz
   finished_move_pub = node_handle.advertise<std_msgs::Bool>("move_finished",10);
   move_subscriber = node_handle.subscribe("chess_move",10,do_move);
+  std::vector<double> pose_data;
+
   //****************************************************************************
   // Set up planning interface
   // Set up move group planning interfaces
@@ -375,6 +479,7 @@ int main(int argc, char** argv)
 
   // Set up planning scene to add/remove collision objects in world
   // moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+  bool success;
 
   // Create pointers to planning groups
   joint_model_arm1 = move_group_arm1->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1);
@@ -415,9 +520,50 @@ int main(int argc, char** argv)
   move_group->setNumPlanningAttempts(PLAN_ATTEMPTS);
 
   move_group->setStartStateToCurrentState();
-  move_group->setNamedTarget("rest");
-  move_group->plan(my_plan);
+  // move_group->setNamedTarget("rest");
+
+  node_handle.getParam("arm1_2/not_playing_home", pose_data);
+  move_group->setJointValueTarget(pose_data);
+  success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+  visual_tools->trigger();
+  if (success) {
+    visual_tools->prompt("Press 'next' to execute plan");
+    move_group->execute(my_plan);
+  }
+
+  move_group = move_group_gripper1;
+  move_group->setStartStateToCurrentState();
+  // move_group->setNamedTarget("rest");
+
+  node_handle.getParam("gripper/ungrab_piece", pose_data);
+  move_group->setJointValueTarget(pose_data);
+  success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  //ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+  //visual_tools->trigger();
+  //if (success) {
+    visual_tools->prompt("Press 'next' to execute plan");
+    move_group->execute(my_plan);
+  //}
+
+  move_group = move_group_gripper2;
+  move_group->setStartStateToCurrentState();
+  // move_group->setNamedTarget("rest");
+
+  node_handle.getParam("gripper/ungrab_piece", pose_data);
+  move_group->setJointValueTarget(pose_data);
+  success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+  // visual_tools->trigger();
+  // if (success) {
+  visual_tools->prompt("Press 'next' to execute plan");
   move_group->execute(my_plan);
+  ///}
+
+
+
+  // move_group->plan(my_plan);
+  // move_group->execute(my_plan);
   
   ROS_INFO("BEFORE WHILE");
   while(!game_finished && ros::ok()){
