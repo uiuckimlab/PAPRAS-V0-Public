@@ -32,12 +32,21 @@ namespace open_manipulator_p_hw
     yaml_file_ = priv_node_handle_.param<std::string>("yaml_file", "");
     interface_ = priv_node_handle_.param<std::string>("interface", "position");
 
+    torqueStatusSub = node_handle_.subscribe("torque_status", 1, &HardwareInterface::torqueStatusCallback, this);
+    isTorqueOn = true;
+
     /************************************************************
   ** Register Interfaces
   ************************************************************/
     registerActuatorInterfaces();
     registerControlInterfaces();
   }
+
+  void HardwareInterface::torqueStatusCallback(const std_msgs::BoolConstPtr& torqueStatus){
+    // ROS_INFO_STREAM(torqueStatus->data);
+    isTorqueOn = torqueStatus->data;
+  }
+
 
   void HardwareInterface::registerActuatorInterfaces()
   {
@@ -480,6 +489,17 @@ namespace open_manipulator_p_hw
 
   void HardwareInterface::write()
   {
+
+    // Torque On after setting up all servo
+    if(isTorqueOn){
+      for (auto const &dxl : dynamixel_)
+        dxl_wb_->torqueOn((uint8_t)dxl.second);
+    } 
+    else {
+      for (auto const &dxl : dynamixel_)
+        dxl_wb_->torqueOff((uint8_t)dxl.second);
+    }
+
     bool result = false;
     const char *log = NULL;
 

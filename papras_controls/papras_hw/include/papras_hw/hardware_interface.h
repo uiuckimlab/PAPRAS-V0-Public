@@ -20,6 +20,7 @@
 #define OPEN_MANIPULATOR_P_HARDWARE_INTERFACE_H
 
 #include <yaml-cpp/yaml.h>
+#include <std_msgs/Bool.h>
 
 #include <ros/ros.h>
 #include <ros/callback_queue.h>
@@ -116,6 +117,7 @@ namespace open_manipulator_p_hw
 
     void read();
     void write();
+    bool isTorqueOn;
 
   private:
     void registerActuatorInterfaces();
@@ -126,10 +128,12 @@ namespace open_manipulator_p_hw
     bool initDynamixels(void);
     bool initControlItems(void);
     bool initSDKHandlers(void);
+    void torqueStatusCallback(const std_msgs::BoolConstPtr& str);
 
     // ROS NodeHandle
     ros::NodeHandle node_handle_;
     ros::NodeHandle priv_node_handle_;
+    ros::Subscriber torqueStatusSub;
 
     // ROS Parameters
     std::string port_name_;
