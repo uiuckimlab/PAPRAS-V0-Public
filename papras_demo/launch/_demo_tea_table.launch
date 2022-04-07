@@ -11,7 +11,7 @@
   <!-- Load the URDF into the ROS Parameter Server -->  
   <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
 
-   <!-- startup simulated world and spawn robot-->
+  <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">
     <include file="$(find papras_sim)/launch/sim.launch">
       <arg name="use_sim_time" value="true"/>

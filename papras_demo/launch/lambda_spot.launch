@@ -1,7 +1,10 @@
 <launch>
 
-  <include file="$(find papras)/launch/rviz.launch">
-    <arg name="spot" value="true"/>
+  <include file="$(find spot_mount_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find spot_mount_moveit_config)/launch/moveit.rviz"/>
   </include>
+
+  <node name="spot_button_node" pkg="papras_demo" type="spot_eoh.py" respawn="true" output="screen">
+  </node>
 
 </launch>
