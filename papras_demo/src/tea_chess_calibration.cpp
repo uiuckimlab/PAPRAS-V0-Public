@@ -463,11 +463,11 @@ int main(int argc, char** argv)
   // TODO CONVERT TO C++ FROM PYTHON
   while(!game_finished && ros::ok()){
     ROS_INFO("IN WHILE");
-    std::string letters = "a";
+    std::string letters = "adh";
     for (int i=0; i < letters.length(); i++) {
         for (int j=0; j < 8; j++) {
             std::string square = letters[i] + std::to_string(j+1);
-            execute_move(node_handle, "arm1", square);
+            execute_move(node_handle, "arm2", square);
             ros::spinOnce();
             r.sleep();
         }
