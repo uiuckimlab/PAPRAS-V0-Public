@@ -6,6 +6,27 @@ Kimlab_2020
 ```
 !!! Remove git pull commands for EOH since computers will not have internet access !!!
 
+# Backpack
+
+## Nuc-6
+```
+ssh papras@nuc-6
+```
+```
+cd ~/catkin_ws/src/PAPRAS && git checkout eoh-demo && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://athena:11311/
+```
+```
+roslaunch papras_demo _demo_backpack.launch
+```
+
+## Athena
+```
+export ROS_MASTER_URI=http://athena:11311/ && rosrun papras_demo backpack.py
+```
+
 # Spot
 
 ## Nuc-7
@@ -24,17 +45,14 @@ roslaunch papras_demo _demo_spot_mount.launch rviz:=false
 
 ## Athena
 ```
-cd ~/catkin_ws/src/PAPRAS && git checkout eoh-demo && git pull && cd ~/catkin_ws && catkin_make
-```
-```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://athena:11311/ && roslaunch papras_demo lambda_spot.launch
+export ROS_MASTER_URI=http://athena:11311/ && roslaunch papras_demo lambda_spot.launch
 ```
 
-# Tea Table
+# Tea Table Coffee
 
-## Nuc-8
+## Nuc-3
 ```
-ssh papras@nuc-8
+ssh papras@nuc-3
 ```
 ```
 cd ~/catkin_ws/src/PAPRAS && git checkout eoh-demo && git pull && cd ~/catkin_ws && catkin_make && sudo -s
@@ -48,8 +66,5 @@ roslaunch papras_demo _demo_tea_table.launch rviz:=false
 
 ## Athena
 ```
-cd ~/catkin_ws/src/PAPRAS && git checkout eoh-demo && git pull && cd ~/catkin_ws && catkin_make
-```
-```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://athena:11311 && roslaunch papras_demo lambda_tea_table.launch
+export ROS_MASTER_URI=http://athena:11311 && roslaunch papras_demo lambda_tea_table.launch
 ```
