@@ -156,23 +156,28 @@ def get_arm_cartesians(adjustments):
     for col in chess_board_col:
         for row in range(8):
             x,y,z = adjustments
-            if row > 0:
-                y = 0.013
-            if row > 3:
+            y = 0.013
+            if row == 4:
+                z = 0.015
+            elif row == 5:
                 z = 0.025
+            elif row == 6:
+                z = 0.035
+            elif row == 7:
+                z = 0.045
             x = 0.0125
             c = chess_board_col.index(col)
             cartesian_position_dict[col+str(row+1)+"_down"] = \
                     [chess_board_center_top_left[0] + chess_board_square_side*row+x, \
                      chess_board_center_top_left[1] + -chess_board_square_side*c+y, \
-                     chess_board_center_top_left[2] + pawn_piece_gripper_height+z] 
+                     chess_board_center_top_left[2] + pawn_piece_gripper_height+z]
             cartesian_position_dict[col+str(row+1)+"_up"] = \
                     [cartesian_position_dict[col+str(row+1)+"_down"][0], \
                      cartesian_position_dict[col+str(row+1)+"_down"][1], \
-                     cartesian_position_dict[col+str(row+1)+"_down"][2] + king_piece_height+0.01] 
+                     cartesian_position_dict[col+str(row+1)+"_down"][2] + king_piece_height+0.01]
 
     return cartesian_position_dict
-            
+
 def write_yaml(file_name, dict):
     with open(file_name, 'w+') as outfile:
         yaml.dump(dict, outfile, default_flow_style=False)
@@ -181,7 +186,7 @@ def get_joints(cartesian_point, group, orientation):
 
     group.set_planning_time(5)
     group.set_num_planning_attempts(100)
-    
+
     user_flag = 'n'
     counter = 0
     while user_flag == 'n':
@@ -286,7 +291,7 @@ def collect_positions():
     # joint_goal[4] = 1.6672946214675903
     # joint_goal[5] = 0.010715128853917122
 
-     
+
     # right_arm_move_group.go(joint_goal, wait=True)
 
     # # Calling ``stop()`` ensures that there is no residual movement
@@ -299,13 +304,13 @@ def collect_positions():
     arm1_joint_dict = {}
 
     for square, point in zip(arm1_cartesian_dict.keys(), arm1_cartesian_dict.values()):
-        if square[0] in ['a', 'b', 'c', 'd', 'e'] or (square[0] == 'f' and int(square[1])<7):
-            continue
+        # if square[0] in ['a', 'b', 'c', 'd', 'e'] or (square[0] == 'f' and int(square[1])<7):
+        #     continue
         print("Finding joints for: "+square)
         print(point)
         arm1_joint_dict[square] = get_joints(point, left_arm_move_group, arm1_orientations[square[:2]])
         print("Found joints for: "+square)
-        write_yaml("arm1_joints_chess_new_measurements_adjusted_z8up.yaml", {"arm1":arm1_joint_dict})
+        write_yaml("arm1_joints_chess_new_measurements_newz.yaml", {"arm1":arm1_joint_dict})
         # break
 
     # # ARM 2 Collection
@@ -315,9 +320,9 @@ def collect_positions():
     # for square, point in zip(arm2_cartesian_dict.keys(), arm2_cartesian_dict.values()):
     #     arm2_joint_dict[square] = get_joints(point, right_arm_move_group, arm2_orientations[square[:2]])
     #     print("Found joints for: "+square)
-    
 
-    write_yaml("arm1_joints_chess_new_measurements_adjusted_z8up.yaml", {"arm1":arm1_joint_dict})
+
+    write_yaml("arm1_joints_chess_new_measurements_newz.yaml", {"arm1":arm1_joint_dict})
 
 def main():
     rospy.init_node('move_group_python_chess_pieces')
