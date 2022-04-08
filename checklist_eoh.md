@@ -4,7 +4,6 @@ export ROS_MASTER_URI=http://athena:11311/ && roscore
 ```
 Kimlab_2020
 ```
-!!! Remove git pull commands for EOH since computers will not have internet access !!!
 
 # Backpack
 
@@ -13,7 +12,7 @@ Kimlab_2020
 ssh papras@nuc-6
 ```
 ```
-cd ~/catkin_ws/src/PAPRAS && git checkout eoh-demo && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+cd ~/catkin_ws && sudo -s
 ```
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://athena:11311/
@@ -34,7 +33,7 @@ export ROS_MASTER_URI=http://athena:11311/ && rosrun papras_demo backpack.py
 ssh papras@nuc-7
 ```
 ```
-cd ~/catkin_ws/src/PAPRAS && git checkout eoh-demo && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+cd ~/catkin_ws && sudo -s
 ```
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://athena:11311/
@@ -55,7 +54,7 @@ export ROS_MASTER_URI=http://athena:11311/ && roslaunch papras_demo lambda_spot.
 ssh papras@nuc-3
 ```
 ```
-cd ~/catkin_ws/src/PAPRAS && git checkout eoh-demo && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+cd ~/catkin_ws && sudo -s
 ```
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://athena:11311/
