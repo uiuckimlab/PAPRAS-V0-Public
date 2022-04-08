@@ -14,6 +14,7 @@ mode = 'rr'
 class ChessEngine:
     def __init__(self):
         self.engine = Stockfish()
+        self.engine.set_skill_level(5)
         self.board_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
         self.piece_dict = {'q':'Queen', 'Q':'Queen', 'k':'King', 'K':'King', \
                            'b':'Bishop', 'B':'Bishop', 'n':'Knight', 'N':'Knight', \
