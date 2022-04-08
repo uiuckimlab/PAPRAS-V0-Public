@@ -77,5 +77,8 @@ Nuc 3 Controller is already live
 export ROS_MASTER_URI=http://athena:11311 && roslaunch papras_demo tea_tasks_chess.launch
 ```
 ```
-export ROS_MASTER_URI=http://athena:11311 && roslaunch papras_demo tea_rviz.launch
+rosrun rviz rviz
+```
+```
+rostopic pub /chess_move std_msgs/String "data: 'arm1,00,playing'"
 ```
