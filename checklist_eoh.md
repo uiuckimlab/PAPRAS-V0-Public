@@ -67,3 +67,15 @@ roslaunch papras_demo _demo_tea_table.launch rviz:=false
 ```
 export ROS_MASTER_URI=http://athena:11311 && roslaunch papras_demo lambda_tea_table.launch
 ```
+
+# Tea Table Chess
+
+Nuc 3 Controller is already live
+
+## Athena
+```
+export ROS_MASTER_URI=http://athena:11311 && roslaunch papras_demo tea_tasks_chess.launch
+```
+```
+export ROS_MASTER_URI=http://athena:11311 && roslaunch papras_demo tea_rviz.launch
+```
