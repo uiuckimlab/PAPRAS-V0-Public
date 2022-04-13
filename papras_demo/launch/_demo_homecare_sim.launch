@@ -12,7 +12,17 @@
   <arg name="demo_env" default="papras"/>
   <arg name="verbose" value="true" />
 
-  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <!-- Model spawn locations -->
+  <arg name="model" default="kitchen" doc="model type [kitchen, big_table, tea_table, spot, roomba]"/>
+  <arg name="tea_table_pos_x" default="-1"/>
+  <arg name="tea_table_pos_y" default=" -1"/>
+  <arg name="kitchen_pos_x" default="-2"/>
+  <arg name="kitchen_pos_y" default="0.0"/>
+  <arg name="spot_mount_pos_x" default="-1"/>
+  <arg name="spot_mount_pos_y" default="1"/>
+  <arg name="spot_mount_pos_yaw" default="1.57"/>
+
+  <!-- startup Gazebo related -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="gui" value="$(arg gazebo_gui)"/>
     <arg name="paused" value="$(arg paused)"/>
@@ -20,22 +30,14 @@
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
-    <arg name="model" default="kitchen" doc="model type [kitchen, big_table, tea_table, spot, roomba]"/>
-    <arg name="tea_table_pos_x" default="-1"/>
-    <arg name="tea_table_pos_y" default=" -1"/>
-    <arg name="kitchen_pos_x" default="-2"/>
-    <arg name="kitchen_pos_y" default="0.0"/>
-    <arg name="spot_mount_pos_x" default="-1"/>
-    <arg name="spot_mount_pos_y" default="1"/>
-    <arg name="spot_mount_pos_yaw" default="1.57"/>
-
   <group ns="tea_table">
-      <!-- startup Gazebo related -->
+      <!-- startup robot_description related -->
       <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="tea_table" />
       </node>
+
       <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model seeker -x $(arg tea_table_pos_x) -y $(arg tea_table_pos_y) -z 0 -param robot_description" />
       
       <!-- startup ROS control related -->
