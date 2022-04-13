@@ -6,9 +6,7 @@
   <node pkg="tf" type="static_transform_publisher" name="world2spot_mount" args="0 0 0 0 0 0 /world /spot_mount/world 100"/> 
 
   <!-- startup rviz visulization -->
-  <group if="$(arg rviz)">
-    <include file="$(find tea_table_moveit_config)/launch/moveit_rviz.launch">
-      <arg name="rviz_config" value="$(find papras_utils)/rviz/homecare.rviz"/>
-    </include>
-  </group>
+  <include file="$(find tea_table_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find papras_utils)/rviz/homecare.rviz"/>
+  </include>
 </launch>
