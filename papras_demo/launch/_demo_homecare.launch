@@ -3,34 +3,45 @@
   <arg name="sim" default="false"/>
   <arg name="usb_port" default="/dev/ttyUSB0" />
   <arg name="pipeline" default="ompl"/>
-  <arg name="gazebo_gui" default="true"/>
   <arg name="rviz" default="true"/>
 
   <!-- Gazebo args -->
-  <arg name="gui" default="true"/>
   <arg name="paused" default="false"/>
+  <arg name="gazebo_gui" default="true"/>
   <arg name="use_sim_time" default="true"/>
   <arg name="demo_env" default="papras"/>
   <arg name="verbose" value="true" />
 
-  <!-- Load the URDF into the ROS Parameter Server -->  
-  <param name="/tea_table/robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
-  <param name="/kitchen/robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/kitchen.urdf.xacro'"/>
-
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find papras_sim)/worlds/papras_system.world"/>
-    <arg name="gui" value="$(arg gui)"/>
+    <arg name="gui" value="$(arg gazebo_gui)"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
-  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args=" -urdf -param /tea_table/robot_description -model $(arg demo_env) -x 0.0 -y 0.0 -z 0.0"/>
+    <arg name="model" default="kitchen" doc="model type [kitchen, big_table, tea_table, spot, roomba]"/>
+    <arg name="tea_table_pos_x" default="3"/>
+    <arg name="tea_table_pos_y" default=" -3"/>
+    <arg name="kitchen_pos_x" default="0"/>
+    <arg name="kitchen_pos_y" default="0.0"/>
 
-  <!-- <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args=" -urdf -param /kitchen/robot_description -model $(arg demo_env) -x 3.0 -y 3.0 -z 0.0"/> -->
+  <group ns="tea_table">
+      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+          <param name="publish_frequency" type="double" value="50.0" />
+          <param name="tf_prefix" value="tea_table" />
+      </node>
+      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model seeker -x $(arg tea_table_pos_x) -y $(arg tea_table_pos_y) -z 0 -param robot_description" />
+  </group>
+  <group ns="kitchen">
+      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/kitchen.urdf.xacro'"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+          <param name="publish_frequency" type="double" value="50.0" />
+          <param name="tf_prefix" value="kitchen" />
+      </node>
+      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model kitchen -x $(arg kitchen_pos_x) -y $(arg kitchen_pos_y) -z 0 -param robot_description" />
+  </group>
 
 </launch>
