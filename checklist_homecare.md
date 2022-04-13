@@ -6,7 +6,20 @@ Kimlab_2020
 ```
 
 # Homecare Service Robot
-
+## Big Table PC 
+```
+sudo setserial /dev/ttyUSB0 low_latency
+```
+*enter pass for setting usb low latency*
+```
+cd ~/catkin_ws/src/PAPRAS && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+```
+```
+roslaunch papras_demo _demo_homecare_hw_big_table.launch
+```
 ## Kitchen PC NUC5
 ```
 ssh papras@nuc-5
@@ -40,5 +53,5 @@ roslaunch papras_demo _demo_homecare_hw_tea_table.launch
 cd ~/catkin_ws/src/PAPRAS && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras _demo_homecare_hw_OPC.launch
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_OPC.launch
 ```
