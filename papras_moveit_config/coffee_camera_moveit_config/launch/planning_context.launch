@@ -9,7 +9,7 @@
   <param if="$(arg load_robot_description)" name="$(arg robot_description)" command="xacro  '$(find papras_description)/urdf/coffee_camera.urdf.xacro'"/>
 
   <!-- The semantic description that corresponds to the URDF -->
-  <param name="$(arg robot_description)_semantic" textfile="$(find coffee_camera_moveit_config)/config/open_manipulator_p.srdf" />
+  <param name="$(arg robot_description)_semantic" textfile="$(find coffee_camera_moveit_config)/config/coffee_camera.srdf" />
 
   <!-- Load updated joint limits (override information from URDF) -->
   <group ns="$(arg robot_description)_planning">

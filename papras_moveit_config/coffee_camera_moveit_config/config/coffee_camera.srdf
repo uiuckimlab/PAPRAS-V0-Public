@@ -3,7 +3,7 @@
     This is a format for representing semantic information about the robot structure.
     A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
 -->
-<robot name="open_manipulator_p">
+<robot name="coffee_camera">
     <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
     <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
     <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
@@ -26,6 +26,10 @@
     <group name="gripper3">
         <joint name="robot3/gripper"/>
         <joint name="robot3/gripper_sub"/>
+    </group>
+    <group name="gripper1_3">
+        <group name="gripper1"/>
+        <group name="gripper3"/>
     </group>
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="init" group="arm1">
@@ -133,16 +137,16 @@
         <joint name="robot3/joint6" value="0"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="hand1" parent_link="robot1/end_effector_link" group="gripper1" parent_group="arm1"/>
-    <end_effector name="hand3" parent_link="robot3/end_effector_link" group="gripper3" parent_group="arm3"/>
+    <end_effector name="eef1" parent_link="robot1/end_effector_link" group="gripper1"/>
+    <end_effector name="eef3" parent_link="robot3/end_effector_link" group="gripper3"/>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
     <passive_joint name="robot1/gripper_sub"/>
     <passive_joint name="robot3/gripper_sub"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
-    <disable_collisions link1="papras_desk" link2="robot1/link1" reason="Adjacent"/>
-    <disable_collisions link1="papras_desk" link2="robot1/link2" reason="Never"/>
-    <disable_collisions link1="papras_desk" link2="robot3/link1" reason="Adjacent"/>
-    <disable_collisions link1="papras_desk" link2="robot3/link2" reason="Never"/>
+    <disable_collisions link1="env" link2="robot1/link1" reason="Adjacent"/>
+    <disable_collisions link1="env" link2="robot1/link2" reason="Never"/>
+    <disable_collisions link1="env" link2="robot3/link1" reason="Adjacent"/>
+    <disable_collisions link1="env" link2="robot3/link2" reason="Never"/>
     <disable_collisions link1="robot1/camera_link" link2="robot1/end_effector_link" reason="Never"/>
     <disable_collisions link1="robot1/camera_link" link2="robot1/end_link" reason="Never"/>
     <disable_collisions link1="robot1/camera_link" link2="robot1/gripper_link" reason="Never"/>
@@ -163,7 +167,6 @@
     <disable_collisions link1="robot1/end_effector_link" link2="robot1/link5" reason="Never"/>
     <disable_collisions link1="robot1/end_effector_link" link2="robot1/link6" reason="Never"/>
     <disable_collisions link1="robot1/end_effector_link" link2="robot3/end_effector_link" reason="Never"/>
-    <disable_collisions link1="robot1/end_effector_link" link2="robot3/end_link" reason="Never"/>
     <disable_collisions link1="robot1/end_link" link2="robot1/gripper_link" reason="Never"/>
     <disable_collisions link1="robot1/end_link" link2="robot1/gripper_main_link" reason="Adjacent"/>
     <disable_collisions link1="robot1/end_link" link2="robot1/gripper_sub_link" reason="Never"/>

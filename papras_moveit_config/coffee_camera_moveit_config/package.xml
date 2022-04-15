@@ -3,7 +3,7 @@
   <name>coffee_camera_moveit_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the open_manipulator_p with the MoveIt Motion Planning Framework
+     An automatically generated package with all the configuration and launch files for using the coffee_camera with the MoveIt Motion Planning Framework
   </description>
   <author email="dmathur2@illinois.edu">Dhruv Mathur</author>
   <maintainer email="dmathur2@illinois.edu">Dhruv Mathur</maintainer>
