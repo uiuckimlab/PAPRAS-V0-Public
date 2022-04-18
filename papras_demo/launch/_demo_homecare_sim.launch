@@ -14,6 +14,8 @@
 
   <!-- Model spawn locations -->
   <arg name="model" default="kitchen" doc="model type [kitchen, big_table, tea_table, spot, roomba]"/>
+  <arg name="big_table_pos_x" default="-1"/>
+  <arg name="big_table_pos_y" default=" -3"/>
   <arg name="tea_table_pos_x" default="-1"/>
   <arg name="tea_table_pos_y" default=" -1"/>
   <arg name="kitchen_pos_x" default="-2"/>
@@ -30,6 +32,25 @@
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
+  <group ns="big_table">
+      <!-- startup robot_description related -->
+      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/coffee_camera.urdf.xacro'"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+          <param name="publish_frequency" type="double" value="50.0" />
+          <param name="tf_prefix" value="tea_table" />
+      </node>
+
+      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model big_table -x $(arg big_table_pos_x) -y $(arg big_table_pos_y) -z 0 -param robot_description -J /robot2/joint1 -1.57"/>
+      
+      <!-- startup ROS control related -->
+      <include file="$(find papras_controllers)/launch/controller_utils.launch"/>
+      <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
+      <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
+      <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/>
+      <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
+      <node name="gripper3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper3_controller"/>
+  </group>
+
   <group ns="tea_table">
       <!-- startup robot_description related -->
       <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
@@ -38,7 +59,7 @@
           <param name="tf_prefix" value="tea_table" />
       </node>
 
-      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model seeker -x $(arg tea_table_pos_x) -y $(arg tea_table_pos_y) -z 0 -param robot_description" />
+      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model tea_table -x $(arg tea_table_pos_x) -y $(arg tea_table_pos_y) -z 0 -param robot_description" />
       
       <!-- startup ROS control related -->
       <include file="$(find papras_controllers)/launch/controller_utils.launch"/>
@@ -99,6 +120,7 @@
       </include>
   </group>
 
+  <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="0 0 0 0 0 0 /world /big_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2tea_table" args="0 0 0 0 0 0 /world /tea_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="0 0 0 0 0 0 /world /kitchen/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2spot_mount" args="0 0 0 0 0 0 /world /spot_mount/world 100"/> 
