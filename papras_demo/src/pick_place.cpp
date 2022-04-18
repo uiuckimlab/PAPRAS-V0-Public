@@ -33,11 +33,11 @@
 #include <sstream>
 
 // Grasp 
-#include <moveit_grasps/two_finger_grasp_generator.h>
-#include <moveit_grasps/two_finger_grasp_data.h>
-#include <moveit_grasps/two_finger_grasp_filter.h>
-#include <moveit_grasps/grasp_planner.h>
-#include <moveit_grasps/grasp_generator.h>
+// #include <moveit_grasps/two_finger_grasp_generator.h>
+// #include <moveit_grasps/two_finger_grasp_data.h>
+// #include <moveit_grasps/two_finger_grasp_filter.h>
+// #include <moveit_grasps/grasp_planner.h>
+// #include <moveit_grasps/grasp_generator.h>
 
 // Aruco
 #include <aruco_msgs/Marker.h>
@@ -617,14 +617,19 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
 {
     // get objects from object detection
     bool found_obj = false;
+    tf2_ros::Buffer tf_buffer;
+    tf2_ros::TransformListener tf2_listener(tf_buffer);
+    geometry_msgs::TransformStamped world_to_camera_link; // My frames are named "base_link" and "leap_motion"
+
+    
     while (!found_obj)
     {
         if (!ros::ok())
             return 0;
 
-        aruco_msgs::MarkerArrayConstPtr detections =
-            ros::topic::waitForMessage<aruco_msgs::MarkerArray>("/aruco_marker_publisher/markers", nh, ros::Duration(30.0));
-        if (detections == NULL)
+        vision_msgs::Detection3DArrayConstPtr detections =
+            ros::topic::waitForMessage<vision_msgs::Detection3DArray>("/dope/detected_objects", nh, ros::Duration(30.0));
+        if (!detections)
         {
             ROS_ERROR("Timed out while waiting for a message on topic detected_objects!");
             return 1;
@@ -632,37 +637,41 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
 
         // add objects to planning scene
         std::vector<moveit_msgs::CollisionObject> collision_objects;
-
-        if (detections->markers.empty())
+        for (auto &&det3d : detections->detections)
         {
-            ROS_ERROR("/aruco_marker_publisher/markers message has empty results!");
-            return 1;
-        }
-        
-        for (auto &&det3d : detections->markers)
-        {
+            if (det3d.results.empty())
+            {
+                ROS_ERROR("Detections3D message has empty results!");
+                return 1;
+            }
 
-            if (det3d.id == OBJECT_TO_GRASP)
+            if (det3d.results[0].id == ObjectID::ABETSOUP)
                 found_obj = true;
             
+            geometry_msgs::PoseStamped to_world_frame;
+            to_world_frame.header = detections->header;
+            to_world_frame.header.frame_id = "robot1/camera_link";
+            to_world_frame.pose = det3d.bbox.center;
+            geometry_msgs::PoseStamped in_world;
+            world_to_camera_link = tf_buffer.lookupTransform("world", "robot1/camera_link", ros::Time(0), ros::Duration(10.0));
+            tf2::doTransform(to_world_frame, in_world, world_to_camera_link);
             // spawnGazeboModel(det3d, gazebo_spawn_sdf_obj);
-            ROS_INFO_STREAM("det3d" << det3d);
-
+            ROS_INFO("Adding to planning scene");
             // add collision object to planning scene 
             moveit_msgs::CollisionObject co;
             co.header = detections->header;
-            co.header.frame_id = detections->header.frame_id;
-            co.id = id_to_string(det3d.id);
+            co.header.frame_id = "world";
+            co.id = id_to_string(det3d.results[0].id);
             co.operation = moveit_msgs::CollisionObject::ADD;
             co.primitives.resize(1);
             co.primitives[0].type = shape_msgs::SolidPrimitive::BOX;
             co.primitives[0].dimensions.resize(geometric_shapes::solidPrimitiveDimCount<shape_msgs::SolidPrimitive::BOX>());
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = 0.02; //det3d.bbox.size.x - 0.02;
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = 0.02;//det3d.bbox.size.y - 0.02;
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = 0.02; //det3d.bbox.size.z - 0.02;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = det3d.bbox.size.x + 0.01;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = det3d.bbox.size.y + 0.01;
+            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = det3d.bbox.size.z + 0.01;
             co.primitive_poses.resize(1);
-            co.primitive_poses[0] = det3d.pose.pose;
-
+            co.primitive_poses[0] = in_world.pose;
+            // co.pose = t.pose; 
             collision_objects.push_back(co);
 
         }
@@ -670,7 +679,7 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
         if (!found_obj)
             ROS_INFO_THROTTLE(1.0, "Still waiting for obj...");
 
-        planning_scene_interface.applyCollisionObjects(collision_objects);
+        planning_scene_interface.addCollisionObjects(collision_objects);
     }
 
     // detach all objects
@@ -935,10 +944,11 @@ int main(int argc, char** argv)
             failed = true;
             break;
           }
+          return 0;
 
           // error_code = group.planGraspsAndPick("bowl");
           // error_code = pick(group);
-          error_code = pick_place_object(group, hand_group, OBJECT_TO_GRASP);
+          // error_code = pick_place_object(group, hand_group, OBJECT_TO_GRASP);
           ++pickPlanAttempts;
 
           if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
