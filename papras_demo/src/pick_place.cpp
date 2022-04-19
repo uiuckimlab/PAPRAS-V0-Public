@@ -128,7 +128,7 @@ enum ObjectID
     TABLE = 0
 };
 
-auto OBJECT_TO_GRASP = ObjectID::ABETSOUP;
+auto OBJECT_TO_GRASP = ObjectID::TOMATOSAUCE;
 
 
 std::string id_to_string(int id)
@@ -149,6 +149,8 @@ std::string id_to_string(int id)
         return "abetSoup";
     case ObjectID::TABLE:
         return "table";
+    case ObjectID::TOMATOSAUCE:
+        return "tomatoSauce";
     default:
         std::cerr << "No such ObjectID: " << id << std::endl;
         return "";
@@ -225,13 +227,13 @@ int shake(float theta, float duration, bool isPitch, actionlib::SimpleActionClie
 int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, moveit::planning_interface::MoveGroupInterface& hand_group, ObjectID object_id){
   // get pose of detected object
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
-  group.setPlanningTime(10.0);
-  group.setNumPlanningAttempts(10.0);
+  group.setPlanningTime(30.0);
+  group.setNumPlanningAttempts(50.0);
   group.setMaxAccelerationScalingFactor(0.05);
   group.setMaxVelocityScalingFactor(0.05);
   group.setPlannerId("RRTConnect");
 
-  std::string frame_id = "world";
+  std::string frame_id = "roboot1/camera_link";
   std::string object_name = id_to_string(object_id);
 
   geometry_msgs::Pose objPose;
@@ -251,11 +253,12 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
       pre_grasp_pose.pose.orientation.w = 0.6689;
       break;
     case ObjectID::ABETSOUP:
+    case ObjectID::TOMATOSAUCE:
     case ObjectID::OJ:
     case ObjectID::CUP :
-      pre_grasp_pose.pose.position.x = objPose.position.x + 0.07;
-      pre_grasp_pose.pose.position.y = objPose.position.y + 0.02;
-      pre_grasp_pose.pose.position.z = objPose.position.z + 0.04;
+      pre_grasp_pose.pose.position.x = objPose.position.x - 0.02;
+      pre_grasp_pose.pose.position.y = objPose.position.y;
+      pre_grasp_pose.pose.position.z = objPose.position.z + 0.1;
       break;
     case ObjectID::SPOON :
       pre_grasp_pose.pose.position.x = objPose.position.x + 0.02; 
@@ -289,84 +292,95 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   hand_group.plan(my_plan);
   hand_group.execute(my_plan);
   ros::Duration(3).sleep();
-
+  
+  
+  
+  std::cerr << "x: " << pre_grasp_pose.pose.position.x  << std::endl;
+  std::cerr << "y: " << pre_grasp_pose.pose.position.y  << std::endl;
+  std::cerr << "z: " << pre_grasp_pose.pose.position.z  << std::endl;
+  // 
+  // hand_group.attachObject(object_name);
   bool success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful pregrasp plan %s", success ? "" : "FAILED");
   moveit_visual_tools::MoveItVisualTools visual_tools("world");
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
   group.execute(my_plan);
-  group.attachObject(object_name, frame_id);
   ros::Duration(0.5).sleep();
+  group.attachObject(object_name);
 
-  // // <<< ----- GRASP  ----- >>> // hand_group.setNamedTarget("open");
-  // hand_group.plan(my_plan);
-  // hand_group.execute(my_plan);
-  // ros::Duration(3).sleep();
-
-  // bool success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  // ROS_INFO_NAMED("tutorial", "Successful pregrasp plan %s", success ? "" : "FAILED");
-  // moveit_visual_tools::MoveItVisualTools visual_tools("world");
-  // visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
-  // group.execute(my_plan);
-  // group.attachObject(object_name, frame_id);
-  // ros::Duration(0.5).sleep();
 
   // // <<< ----- GRASP  ----- >>>
-  // geometry_msgs::PoseStamped grasp_pose;
-  // grasp_pose = group.getCurrentPose();
-  // switch(object_id){
-  //   case ObjectID::BOWL :
-  //     grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
-  //     grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y - 0.05;
-  //     grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.015;
-  //     break;
-  //   case ObjectID::OJ:
-  //     grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
-  //     grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y - 0.05;
-  //     grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.02;
-  //     break;
-  //   case ObjectID::BOTTLE:
-  //     grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x - 0.02;
-  //     grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y - 0.07;
-  //     grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z;
-  //     break;
-  //   case ObjectID::ABETSOUP:
-  //   case ObjectID::SPRITE:
-  //   case ObjectID::CUP :
-  //     grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
-  //     grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y - 0.07;
-  //     grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.02;
-  //     break;
-  //   case ObjectID::SPOON :
-  //     grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
-  //     grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y;
-  //     grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.03;
-  //     break;
-  //   case ObjectID::BUTTER :
-  //     grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
-  //     grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y;
-  //     grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.03;
-  //     break;
-  //   case ObjectID::PLATE : 
-  //     grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x - 0.05;
-  //     grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y - 0.08;
-  //     grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z;
-  //     break;
-  //   default:
-  //     ROS_INFO("object not in list");
-  //     return 0;
-  // }
+  geometry_msgs::PoseStamped grasp_pose;
+  grasp_pose = group.getCurrentPose();
+  switch(object_id){
+    case ObjectID::BOWL :
+      grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
+      grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y - 0.05;
+      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.015;
+      break;
+    case ObjectID::OJ:
+      grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
+      grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y - 0.05;
+      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.02;
+      break;
+    case ObjectID::ABETSOUP:
+    case ObjectID::TOMATOSAUCE:
+    case ObjectID::CUP :
+      grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
+      grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y;
+      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.04;
+      break;
+    case ObjectID::SPOON :
+      grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
+      grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y;
+      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.03;
+      break;
+    case ObjectID::BUTTER :
+      grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
+      grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y;
+      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.03;
+      break;
+    default:
+      ROS_INFO("object not in list");
+      return 0;
+  }
 
-  // group.setStartState(*group.getCurrentState());
-  // group.setPoseTarget(grasp_pose);
-  // success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  // ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
-  // visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
-  // group.execute(my_plan);
+  group.setStartState(*group.getCurrentState());
+  group.setPoseTarget(grasp_pose);
+  success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
+  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  group.execute(my_plan);
 
-  // hand_group.setNamedTarget("close_tight");
-  // hand_group.plan(my_plan);
-  // hand_group.execute(my_plan);
+  hand_group.setNamedTarget("close");
+  hand_group.plan(my_plan);
+  hand_group.execute(my_plan);
+
+
+  group.setStartState(*group.getCurrentState());
+  group.setPoseTarget(pre_grasp_pose.pose);
+
+  success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO_NAMED("tutorial", "Successful pregrasp plan %s", success ? "" : "FAILED");
+  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  group.execute(my_plan);
+  ros::Duration(0.5).sleep();
+  // group.attachObject(object_name);
+
+
+
+  group.setStartState(*group.getCurrentState());
+  hand_group.setStartState(*hand_group.getCurrentState());
+  group.setNamedTarget("observe_table_right");
+  success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO_NAMED("tutorial", "Successful observe table plan %s", success ? "" : "FAILED");
+  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  group.execute(my_plan);
+
+  hand_group.setNamedTarget("open");
+  hand_group.plan(my_plan);
+  hand_group.execute(my_plan);
+  group.detachObject(object_name);
 
   // group.setStartState(*group.getCurrentState());
   // group.setNamedTarget("init");
@@ -633,7 +647,7 @@ int updateScene(moveit::planning_interface::PlanningSceneInterface &planning_sce
                 return 1;
             }
 
-            if (det3d.results[0].id == ObjectID::ABETSOUP)
+            if (det3d.results[0].id == OBJECT_TO_GRASP)
                 found_obj = true;
             
             geometry_msgs::PoseStamped to_world_frame;
@@ -796,6 +810,10 @@ int main(int argc, char** argv)
         hand_group.setMaxAccelerationScalingFactor(0.05);
         hand_group.setMaxVelocityScalingFactor(0.05);
 
+        hand_group.setNamedTarget("open");
+        hand_group.plan(plan);
+        hand_group.execute(plan);
+
         hand_group.setNamedTarget("close");
         hand_group.plan(plan);
         hand_group.execute(plan);
@@ -878,7 +896,7 @@ int main(int argc, char** argv)
         if (OBJECT_TO_GRASP == ObjectID::SPOON || OBJECT_TO_GRASP == ObjectID::BUTTER)
           group.setNamedTarget("observe_spoon");
         else
-          group.setNamedTarget("observe_table_left");
+          group.setNamedTarget("observe_table_waypoint1");
         // group.setNamedTarget("observe_table_waypoint1");
         moveit::core::MoveItErrorCode error_code = group.plan(plan);
         if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
@@ -931,7 +949,6 @@ int main(int argc, char** argv)
             failed = true;
             break;
           }
-          return 0;
 
           // error_code = group.planGraspsAndPick("bowl");
           // error_code = pick(group);
