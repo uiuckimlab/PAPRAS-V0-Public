@@ -1,0 +1,6 @@
+echo ---
+echo Generating URDF...
+rosrun xacro xacro -o iRobot.urdf iRobot.urdf.xacro
+echo Generating SDF...
+gz sdf -p iRobot.urdf > iRobot.sdf
+echo ---
