@@ -128,13 +128,15 @@ enum ObjectID
     TABLE = 0
 };
 
-auto OBJECT_TO_GRASP = ObjectID::TOMATOSAUCE;
+auto OBJECT_TO_GRASP = ObjectID::MILK;
 
 
 std::string id_to_string(int id)
 {
     switch (id)
     {
+    case ObjectID::MILK:
+        return "milk";
     case ObjectID::CUP:
         return "cup";
     case ObjectID::SPOON:
@@ -252,9 +254,14 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
       pre_grasp_pose.pose.orientation.z = -0.6677;
       pre_grasp_pose.pose.orientation.w = 0.6689;
       break;
+    case ObjectID::OJ:
+    case ObjectID::MILK:
+      pre_grasp_pose.pose.position.x = objPose.position.x;
+      pre_grasp_pose.pose.position.y = objPose.position.y;
+      pre_grasp_pose.pose.position.z = objPose.position.z + 0.15;
+      break;
     case ObjectID::ABETSOUP:
     case ObjectID::TOMATOSAUCE:
-    case ObjectID::OJ:
     case ObjectID::CUP :
       pre_grasp_pose.pose.position.x = objPose.position.x - 0.02;
       pre_grasp_pose.pose.position.y = objPose.position.y;
@@ -319,9 +326,10 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
       grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.015;
       break;
     case ObjectID::OJ:
+    case ObjectID::MILK:
       grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
-      grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y - 0.05;
-      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.02;
+      grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y;
+      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.1;
       break;
     case ObjectID::ABETSOUP:
     case ObjectID::TOMATOSAUCE:
