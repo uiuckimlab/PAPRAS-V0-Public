@@ -13,8 +13,13 @@ list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 ################################################################################
 find_package(catkin REQUIRED
   COMPONENTS
+    roslib
     roscpp
+    rospy
     std_msgs
+    message_generation
+    serial
+    tf
     gazebo_ros
     gazebo_ros_control
     controller_manager
@@ -57,6 +62,32 @@ find_package(Qt5Widgets REQUIRED)
 ################################################################################
 # Declare ROS messages, services and actions
 ################################################################################
+
+# Generate messages in the 'msg' folder
+add_message_files(
+  FILES
+  Battery.msg
+  Brushes.msg
+  Bumper.msg
+  Buttons.msg
+  Diagnostic.msg
+  DigitLeds.msg
+  IRCharacter.msg
+  Leds.msg
+  Note.msg
+  PlaySong.msg
+  RoombaIR.msg
+  RoombaSwitch.msg
+  ScheduleLeds.msg
+  Song.msg
+  WheelDrop.msg
+)
+
+# Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
 
 ################################################################################
 # Declare ROS dynamic reconfigure parameters
@@ -131,9 +162,28 @@ add_executable(command_operator src/command_operator.cpp)
 target_link_libraries(command_operator Qt5::Widgets ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES})
 install(TARGETS command_operator DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-# add_executable(pick_place src/pick_place.cpp)
-# target_link_libraries(pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-# install(TARGETS pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+add_executable(pick_place src/pick_place.cpp)
+target_link_libraries(pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+# add_executable(papras_irobotcreate2_lightweight src/irobotcreate2/OpenInterface.cpp src/irobotcreate2/odometry.cpp src/irobotcreate2/irobotcreate2_lightweight.cpp)
+# add_dependencies(papras_irobotcreate2_lightweight papras_irobotcreate2_lightweight_generate_messages_cpp)
+# target_link_libraries(papras_irobotcreate2_lightweight ${catkin_LIBRARIES})
+
+# add_executable(papras_irobotcreate2 src/irobotcreate2/OpenInterface.cpp src/irobotcreate2/odometry.cpp src/irobotcreate2/irobotcreate2.cpp)
+# add_dependencies(papras_irobotcreate2 papras_irobotcreate2_generate_messages_cpp)
+# target_link_libraries(papras_irobotcreate2 ${catkin_LIBRARIES})
+
+# add_executable(papras_joy_node src/irobotcreate2/joy_node.cpp)
+# add_dependencies(papras_joy_node papras_irobotcreate2_generate_messages_cpp)
+# target_link_libraries(papras_joy_node ${catkin_LIBRARIES})
+
+# add_executable(papras_keyboard_node src/irobotcreate2/keyboard_node.cpp)
+# add_dependencies(papras_keyboard_node irobotcreate2_generate_messages_cpp)
+# target_link_libraries(papras_keyboard_node ${catkin_LIBRARIES})
+
+# add_executable(papras_basic_commands src/irobotcreate2/OpenInterface.cpp src/irobotcreate2/odometry.cpp src/irobotcreate2/basic_commands.cpp)
+# target_link_libraries(papras_basic_commands ${catkin_LIBRARIES})
 
 # add_executable(plan_grasps_service src/plan_grasps_service.cpp)
 # target_link_libraries(plan_grasps_service ${catkin_LIBRARIES} ${Boost_LIBRARIES})

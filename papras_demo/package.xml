@@ -27,6 +27,17 @@
   <depend>eigen</depend>
   <depend>eigen_conversions</depend>
 
+  <!-- <build_depend>roslib</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>serial</build_depend>
+  <build_depend>tf</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>serial</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>roslib</exec_depend> -->
+
   <build_depend>pluginlib</build_depend>
   <build_depend>moveit_core</build_depend>
   <build_depend>moveit_ros_planning</build_depend>
