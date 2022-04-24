@@ -29,29 +29,8 @@ void timerCallback(open_manipulator_p_hw::HardwareInterface &hardware_interface,
   last_time = curr_time;
 
   hardware_interface.read();
-  ros::Time read_time = ros::Time::now();
-
   cm.update(ros::Time::now(), elapsed_time);
-  ros::Time update_time = ros::Time::now();
-  
-  hardware_interface.write();
-  ros::Time write_time = ros::Time::now();
-
-  std_msgs::Float32 controlT_msg;
-  controlT_msg.data = (write_time - curr_time).toSec();
-  controlT_pub.publish(controlT_msg);
-
-  std_msgs::Float32 readT_msg;
-  readT_msg.data = (read_time - curr_time).toSec();
-  readT_pub.publish(readT_msg);
-
-  std_msgs::Float32 updateT_msg;
-  updateT_msg.data = (update_time - read_time).toSec();
-  updateT_pub.publish(updateT_msg);
-
-  std_msgs::Float32 writeT_msg;
-  writeT_msg.data = (write_time - update_time).toSec();
-  writeT_pub.publish(writeT_msg);
+  // hardware_interface.write();
 }
 
 int main(int argc, char **argv)

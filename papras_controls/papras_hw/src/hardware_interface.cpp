@@ -38,7 +38,8 @@ namespace open_manipulator_p_hw
     registerActuatorInterfaces();
     registerControlInterfaces();
 
-    motorsMissing = False;
+    isMotorsMissing = false;
+    isTorqueOn = false;
     controlLoopCnt = 0;
   }
 
@@ -170,6 +171,7 @@ namespace open_manipulator_p_hw
     for (auto const &dxl : dynamixel_)
     {
       dxl_wb_->torqueOff((uint8_t)dxl.second);
+      isTorqueOn = false;
 
       // Indirect Address Setup
       for (int j = 0; j < LEN_READ_POS; j++)
@@ -217,6 +219,21 @@ namespace open_manipulator_p_hw
           return false;
         }
       }
+      for (int j = 0; j < LEN_READ_MOV; j++)
+      {
+        // write data () to address () 
+        uint16_t data = ADDR_READ_MOV + j;
+        uint8_t data_write[2] = { DXL_LOBYTE(data), DXL_HIBYTE(data) };
+        uint16_t address = ADDR_INDADDR_READ_MOV + 2 * j;
+
+        bool result = dxl_wb_->writeRegister((uint8_t)dxl.second, address, 2, data_write, &log);
+        if (result == false)
+        {
+          ROS_ERROR("%s", log);
+          ROS_ERROR("Failed to write ADDR_INDADDR_READ_MOV for %s, ID : %d", dxl.first.c_str(), dxl.second);
+          return false;
+        }
+      }
       ROS_INFO("Indirect Address setup successful for %s, ID : %d", dxl.first.c_str(), dxl.second);
 
       for (auto const &info : dynamixel_info_)
@@ -237,9 +254,10 @@ namespace open_manipulator_p_hw
       }
     }
 
-    // // Torque On after setting up all servo
+    // Torque On after setting up all servo
     for (auto const &dxl : dynamixel_)
       dxl_wb_->torqueOn((uint8_t)dxl.second);
+    isTorqueOn = true;
 
     return true;
   }
@@ -340,7 +358,7 @@ namespace open_manipulator_p_hw
 
       /* As some models have an empty space between Present_Velocity and Present Current, read_length is modified as below.*/
       // uint16_t read_length = control_items_["Present_Position"]->data_length + control_items_["Present_Velocity"]->data_length + control_items_["Present_Current"]->data_length;
-      uint16_t read_length = control_items_["Present_Position"]->data_length + control_items_["Present_Velocity"]->data_length + control_items_["Present_Current"]->data_length + 2;
+      // uint16_t read_length = control_items_["Present_Position"]->data_length + control_items_["Present_Velocity"]->data_length + control_items_["Present_Current"]->data_length + 2;
 
       result = dxl_wb_->addSyncReadHandler(ADDR_INDDATA_READ_POS,
                                            LEN_IND_READ,
@@ -395,7 +413,7 @@ namespace open_manipulator_p_hw
     registerInterface(&effort_joint_interface_);
   }
 
-  bool HardwareInterface::checkMotorIDs()
+  void HardwareInterface::checkMotorIDs()
   {
     uint8_t dxl_cnt = 0;
     uint8_t scan_range = 50;
@@ -412,14 +430,30 @@ namespace open_manipulator_p_hw
     {
       printf("%s\n", log);
       printf("Failed to scan\n");
-      return false;
-      motorsMissing = true;
+      isMotorsMissing = true;
     }
     else
     {
       printf("Found %d Dynamixels\n", dxl_cnt);
-      motorsMissing = dxl_cnt < num_motor_ids;
+      isMotorsMissing = dxl_cnt < num_motor_ids;
     }
+  }
+
+  bool HardwareInterface::motorsStopped()
+  {
+    uint8_t id_array[dynamixel_.size()];
+    uint8_t id_cnt = 0;
+
+    for (auto const &dxl : dynamixel_)
+      id_array[id_cnt++] = (uint8_t)dxl.second;
+    
+    // if any motor velocities are above threshold
+    for (uint8_t index = 0; index < id_cnt; index++)
+    {
+      if (joints_[id_array[index] - 1].isMoving)
+        return false;
+    }
+    return true;
   }
 
   void HardwareInterface::read()
@@ -427,10 +461,11 @@ namespace open_manipulator_p_hw
     controlLoopCnt++;
 
     // every few sec, check motor ids if the motors are not moving
-    if (controlLoopCnt % 500 == 0 )
+    if (controlLoopCnt % 500 == 0 and motorsStopped())
+      checkMotorIDs();
 
-    // Exit read() if motor ids missing
-    if(motorsMissing)
+    // exit if motor ids missing
+    if (isMotorsMissing)
       return;
 
     ros::Time start_time = ros::Time::now();
@@ -440,6 +475,7 @@ namespace open_manipulator_p_hw
     int32_t get_position[dynamixel_.size()];
     int32_t get_velocity[dynamixel_.size()];
     int32_t get_current[dynamixel_.size()];
+    int32_t get_moving[dynamixel_.size()];
 
     uint8_t id_array[dynamixel_.size()];
     std::string name_array[dynamixel_.size()];
@@ -499,6 +535,18 @@ namespace open_manipulator_p_hw
       ROS_ERROR("%s", log);
     }
 
+    result = dxl_wb_->getSyncReadData(sync_read_handler,
+                                      id_array,
+                                      id_cnt,
+                                      ADDR_INDDATA_READ_MOV,
+                                      LEN_READ_MOV,
+                                      get_moving,
+                                      &log);
+    if (result == false)
+    {
+      ROS_ERROR("%s", log);
+    }
+
     for (uint8_t index = 0; index < id_cnt; index++)
     {
       // Position
@@ -513,12 +561,46 @@ namespace open_manipulator_p_hw
       else
         joints_[id_array[index] - 1].effort = dxl_wb_->convertValue2Current((int16_t)get_current[index]) * (1.78e-03);
 
+      // isMoving
+      joints_[id_array[index] - 1].isMoving = (bool)get_moving[index];
+
       joints_[id_array[index] - 1].position_command = joints_[id_array[index] - 1].position;
     }
   }
 
   void HardwareInterface::write()
   {
+
+    // reset cnt if arms missing, exit
+    if(isMotorsMissing) {
+      controlLoopCnt = 0;
+      return;
+    }
+    
+    // torqueOn N secs after arm is plugged in
+    if (!isMotorsMissing && controlLoopCnt == 1000){
+      bool result = initDynamixels();
+      if (result == false)
+      {
+        ROS_ERROR("Please check control table (http://emanual.robotis.com/#control-table)");
+        return;
+      }
+
+      result = initControlItems();
+      if (result == false)
+      {
+        ROS_ERROR("Please check control items");
+        return;
+      }
+
+      result = initSDKHandlers();
+      if (result == false)
+      {
+        ROS_ERROR("Failed to set Dynamixel SDK Handler");
+        return;
+      }
+    }
+    
     bool result = false;
     const char *log = NULL;
 
@@ -534,7 +616,13 @@ namespace open_manipulator_p_hw
       for (auto const &dxl : dynamixel_)
       {
         id_array[id_cnt] = (uint8_t)dxl.second;
-        dynamixel_position[id_cnt] = dxl_wb_->convertRadian2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].position_command);
+
+        // if torqueOn write pos command, if torqueOff write current pos val
+        if (isTorqueOn){
+          dynamixel_position[id_cnt] = dxl_wb_->convertRadian2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].position_command);
+        } else {
+          dynamixel_position[id_cnt] = dxl_wb_->convertRadian2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].position);
+        }
 
         id_cnt++;
       }
@@ -543,15 +631,29 @@ namespace open_manipulator_p_hw
     }
     else if (strcmp(interface_.c_str(), "effort") == 0)
     {
-      for (auto const &dxl : dynamixel_)
-      {
-        id_array[id_cnt] = (uint8_t)dxl.second;
-        dynamixel_effort[id_cnt] = dxl_wb_->convertCurrent2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].effort_command / (1.78e-03));
+      // if torqueOn write effort command, if torqueOff write current effort val
+      if (isTorqueOn) {
+          for (auto const &dxl : dynamixel_)
+          {
+            id_array[id_cnt] = (uint8_t)dxl.second;
+            dynamixel_effort[id_cnt] = dxl_wb_->convertCurrent2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].effort_command / (1.78e-03));
 
-        if (strcmp(dxl.first.c_str(), "gripper") == 0)
-          dynamixel_position[id_cnt] = dxl_wb_->convertRadian2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].position_command * 150.0);
-        id_cnt++;
+            if (strcmp(dxl.first.c_str(), "gripper") == 0)
+              dynamixel_position[id_cnt] = dxl_wb_->convertRadian2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].position_command * 150.0);
+            id_cnt++;
+          }
+      } else {
+          for (auto const &dxl : dynamixel_)
+          {
+            id_array[id_cnt] = (uint8_t)dxl.second;
+            dynamixel_effort[id_cnt] = dxl_wb_->convertCurrent2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].effort / (1.78e-03));
+
+            if (strcmp(dxl.first.c_str(), "gripper") == 0)
+              dynamixel_position[id_cnt] = dxl_wb_->convertRadian2Value((uint8_t)dxl.second, joints_[(uint8_t)dxl.second - 1].position * 150.0);
+            id_cnt++;
+          }
       }
+      
       uint8_t sync_write_handler = 2; // 0: position, 1: velocity, 2: effort
       result = dxl_wb_->syncWrite(sync_write_handler, id_array, id_cnt, dynamixel_effort, 1, &log);
     }
@@ -560,5 +662,7 @@ namespace open_manipulator_p_hw
     {
       ROS_ERROR("%s", log);
     }
+    
+  
   }
 } // namespace open_manipulator_p_hw

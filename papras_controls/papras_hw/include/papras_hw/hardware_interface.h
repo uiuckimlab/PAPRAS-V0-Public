@@ -55,6 +55,7 @@
 #define ADDR_PROFILE_ACCL 556
 #define ADDR_PROFILE_VEL 560
 #define ADDR_GOAL_POS 564
+#define ADDR_READ_MOV 570
 #define ADDR_READ_PWM 572
 #define ADDR_READ_CUR 574
 #define ADDR_READ_VEL 576
@@ -66,17 +67,20 @@
 #define LEN_READ_POS 4
 #define LEN_READ_VEL 4
 #define LEN_READ_CUR 2
+#define LEN_READ_MOV 1
 #define LEN_INT 2
-#define LEN_IND_READ (LEN_READ_POS + LEN_READ_CUR + LEN_READ_VEL)
+#define LEN_IND_READ (LEN_READ_POS + LEN_READ_CUR + LEN_READ_VEL + LEN_READ_MOV)
 
 // Indirect Address Parameters
 #define ADDR_INDADDR_READ_POS 168
 #define ADDR_INDADDR_READ_VEL (ADDR_INDADDR_READ_POS + 2 * LEN_READ_POS)
 #define ADDR_INDADDR_READ_CUR (ADDR_INDADDR_READ_VEL + 2 * LEN_READ_VEL)
+#define ADDR_INDADDR_READ_MOV (ADDR_INDADDR_READ_CUR + 2 * LEN_READ_CUR)
 
 #define ADDR_INDDATA_READ_POS 634
 #define ADDR_INDDATA_READ_VEL (ADDR_INDDATA_READ_POS + LEN_READ_POS)
 #define ADDR_INDDATA_READ_CUR (ADDR_INDDATA_READ_VEL + LEN_READ_VEL)
+#define ADDR_INDDATA_READ_MOV (ADDR_INDDATA_READ_CUR + LEN_READ_CUR)
 
 // Protocol version
 #define PROTOCOL_VERSION 2.0 // See which protocol version is used in the Dynamixel
@@ -104,6 +108,8 @@ typedef struct _Joint
   double position_command;
   double velocity_command;
   double effort_command;
+  bool isMoving;
+
 } Joint;
 
 namespace open_manipulator_p_hw
@@ -116,7 +122,6 @@ namespace open_manipulator_p_hw
 
     void read();
     void write();
-    bool checkMotorIDs();
 
   private:
     void registerActuatorInterfaces();
@@ -127,6 +132,9 @@ namespace open_manipulator_p_hw
     bool initDynamixels(void);
     bool initControlItems(void);
     bool initSDKHandlers(void);
+
+    void checkMotorIDs();
+    bool motorsStopped();
 
     // ROS NodeHandle
     ros::NodeHandle node_handle_;
@@ -145,7 +153,8 @@ namespace open_manipulator_p_hw
     std::vector<std::pair<std::string, ItemValue>> dynamixel_info_;
     std::vector<Joint> joints_;
     
-    bool motorsMissing;
+    bool isMotorsMissing;
+    bool isTorqueOn;
     int controlLoopCnt;
 
     // ROS Control interfaces
