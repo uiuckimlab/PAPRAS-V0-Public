@@ -116,6 +116,7 @@ namespace open_manipulator_p_hw
 
     void read();
     void write();
+    bool checkMotorIDs();
 
   private:
     void registerActuatorInterfaces();
@@ -143,6 +144,9 @@ namespace open_manipulator_p_hw
     std::map<std::string, const ControlItem *> control_items_;
     std::vector<std::pair<std::string, ItemValue>> dynamixel_info_;
     std::vector<Joint> joints_;
+    
+    bool motorsMissing;
+    int controlLoopCnt;
 
     // ROS Control interfaces
     hardware_interface::JointStateInterface joint_state_interface_;

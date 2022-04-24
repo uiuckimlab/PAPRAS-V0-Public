@@ -37,6 +37,9 @@ namespace open_manipulator_p_hw
   ************************************************************/
     registerActuatorInterfaces();
     registerControlInterfaces();
+
+    motorsMissing = False;
+    controlLoopCnt = 0;
   }
 
   void HardwareInterface::registerActuatorInterfaces()
@@ -392,8 +395,44 @@ namespace open_manipulator_p_hw
     registerInterface(&effort_joint_interface_);
   }
 
+  bool HardwareInterface::checkMotorIDs()
+  {
+    uint8_t dxl_cnt = 0;
+    uint8_t scan_range = 50;
+    uint8_t num_motor_ids = 6;
+    const char *log;
+    bool result = false;
+    // get list of ids from dynamixel_ map
+    // range should be max val of scanned_id
+    uint8_t scanned_id[num_motor_ids] = {1,2,3,4,5,6};
+
+    printf("Wait for scan...\n");
+    result = dxl_wb_->scan(scanned_id, &dxl_cnt, scan_range, &log);
+    if (result == false)
+    {
+      printf("%s\n", log);
+      printf("Failed to scan\n");
+      return false;
+      motorsMissing = true;
+    }
+    else
+    {
+      printf("Found %d Dynamixels\n", dxl_cnt);
+      motorsMissing = dxl_cnt < num_motor_ids;
+    }
+  }
+
   void HardwareInterface::read()
   {
+    controlLoopCnt++;
+
+    // every few sec, check motor ids if the motors are not moving
+    if (controlLoopCnt % 500 == 0 )
+
+    // Exit read() if motor ids missing
+    if(motorsMissing)
+      return;
+
     ros::Time start_time = ros::Time::now();
     bool result = false;
     const char *log = NULL;
