@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<launch>
+  <arg name="usb_port" default="/dev/ttyUSB0" />
+  <arg name="pipeline" default="ompl"/>
+
+  <group ns="wall_mount">
+      <!-- startup robot_description related -->
+      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/wall_mount.urdf.xacro'"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+          <param name="publish_frequency" type="double" value="50.0" />
+          <param name="tf_prefix" value="wall_mount" />
+      </node>
+
+      <include file="$(find papras_hw)/launch/papras_hw.launch">
+        <arg name="usb_port" value="$(arg usb_port)"/>
+        <arg name="yaml_file" value="$(find papras_hw)/config/hardware_wall_mount.yaml"/>
+        <arg name="baud_rate" value="1000000" />
+      </include>
+      
+      <!-- startup ROS control related -->
+      <include file="$(find papras_controllers)/launch/controller_utils.launch"/>
+      <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller.yaml" command="load"/>
+      <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
+      <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
+ 
+      <!-- startup move_group related -->
+      <include file="$(find wall_mount_moveit_config)/launch/move_group.launch">
+        <arg name="pipeline" value="$(arg pipeline)"/>
+        <arg name="load_robot_description" value="true" />
+      </include>
+  </group>
+</launch>

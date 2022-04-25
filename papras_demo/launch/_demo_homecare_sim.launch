@@ -13,7 +13,7 @@
   <arg name="verbose" value="true" />
 
   <!-- Model spawn locations -->
-  <arg name="model" default="kitchen" doc="model type [kitchen, big_table, tea_table, spot, roomba]"/>
+  <arg name="model" default="kitchen" doc="model type [kitchen, big_table, tea_table, spot, roomba, wall_mount]"/>
   <arg name="big_table_pos_x" default="1"/>
   <arg name="big_table_pos_y" default=" -4"/>
   <arg name="big_table_pos_yaw" default=" 3.14"/>
@@ -23,6 +23,8 @@
   <arg name="kitchen_pos_y" default="0.0"/>
   <arg name="roomba_pos_x" default="0"/>
   <arg name="roomba_pos_y" default="0"/>
+  <arg name="wall_mount_pos_x" default="2"/>
+  <arg name="wall_mount_pos_y" default="1"/>
 
   <!-- startup Gazebo related -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -108,10 +110,32 @@
       <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model roomba -x $(arg roomba_pos_x) -y $(arg roomba_pos_y) -z 0  -param robot_description"/>
   </group>
 
+  <group ns="wall_mount">
+      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/wall_mount.urdf.xacro'"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+          <param name="publish_frequency" type="double" value="50.0" />
+          <param name="tf_prefix" value="wall_mount" />
+      </node>
+      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model wall_mount -x $(arg wall_mount_pos_x) -y $(arg wall_mount_pos_y) -z 0 -param robot_description" />
+
+      <!-- startup ROS control related -->
+      <include file="$(find papras_controllers)/launch/controller_utils.launch"/>
+      <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
+      <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
+      <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
+ 
+      <!-- startup move_group related -->
+      <include file="$(find wall_mount_moveit_config)/launch/move_group.launch">
+        <arg name="pipeline" value="$(arg pipeline)"/>
+        <arg name="load_robot_description" value="true" />
+      </include>
+  </group>
+
   <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="0 0 0 0 0 0 /world /big_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2tea_table" args="0 0 0 0 0 0 /world /tea_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="0 0 0 0 0 0 /world /kitchen/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2roomba" args="0 0 0 0 0 0 /world /roomba/odom 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="0 0 0 0 0 0 /world /wall_mount/world 100"/> 
 
   <!-- startup rviz visulization -->
   <group if="$(arg rviz)">
