@@ -5,7 +5,7 @@
 
   <group ns="big_table">
       <!-- startup robot_description related -->
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/coffee_camera.urdf.xacro'"/>
+      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/big_table.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="big_table" />
@@ -13,7 +13,7 @@
 
       <include file="$(find papras_hw)/launch/papras_hw.launch">
         <arg name="usb_port" value="$(arg usb_port)"/>
-        <arg name="yaml_file" value="$(find papras_hw)/config/hardware_coffee_camera.yaml"/>
+        <arg name="yaml_file" value="$(find papras_hw)/config/hardware_big_table.yaml"/>
         <arg name="baud_rate" value="1000000" />
       </include>
       
@@ -21,12 +21,12 @@
       <include file="$(find papras_controllers)/launch/controller_utils.launch"/>
       <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller.yaml" command="load"/>
       <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
-      <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/>
+      <node name="arm2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm2_controller"/>
       <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
-      <node name="gripper3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper3_controller"/>
+      <node name="gripper2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper2_controller"/>
  
       <!-- startup move_group related -->
-      <include file="$(find coffee_camera_moveit_config)/launch/move_group.launch">
+      <include file="$(find big_table_moveit_config)/launch/move_group.launch">
         <arg name="pipeline" value="$(arg pipeline)"/>
         <arg name="load_robot_description" value="true" />
       </include>

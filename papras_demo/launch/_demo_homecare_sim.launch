@@ -37,21 +37,27 @@
 
   <group ns="big_table">
       <!-- startup robot_description related -->
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/coffee_camera.urdf.xacro'"/>
+      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/big_table.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
-          <param name="tf_prefix" value="tea_table" />
+          <param name="tf_prefix" value="big_table" />
       </node>
 
-      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model big_table -x $(arg big_table_pos_x) -y $(arg big_table_pos_y) -z 0 -Y $(arg big_table_pos_yaw) -param robot_description -J /robot2/joint1 -1.57"/>
+      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model big_table -x $(arg big_table_pos_x) -y $(arg big_table_pos_y) -z 0 -Y $(arg big_table_pos_yaw) -param robot_description"/>
       
       <!-- startup ROS control related -->
       <include file="$(find papras_controllers)/launch/controller_utils.launch"/>
       <rosparam file="$(find papras_controllers)/config/joint_trajectory_controller_gazebo.yaml" command="load"/>
       <node name="arm1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm1_controller"/>
-      <node name="arm3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm3_controller"/>
+      <node name="arm2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn arm2_controller"/>
       <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
-      <node name="gripper3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper3_controller"/>
+      <node name="gripper2_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper2_controller"/>
+
+      <!-- startup move_group related -->
+      <include file="$(find big_table_moveit_config)/launch/move_group.launch">
+        <arg name="pipeline" value="$(arg pipeline)"/>
+        <arg name="load_robot_description" value="true" />
+      </include>
   </group>
 
   <group ns="tea_table">
@@ -124,7 +130,6 @@
   <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="0 0 0 0 0 0 /world /big_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2tea_table" args="0 0 0 0 0 0 /world /tea_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="0 0 0 0 0 0 /world /kitchen/world 100"/> 
-  <node pkg="tf" type="static_transform_publisher" name="world2roomba" args="0 0 0 0 0 0 /world /roomba/odom 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="0 0 0 0 0 0 /world /wall_mount/world 100"/> 
 
   <!-- startup rviz visulization -->
