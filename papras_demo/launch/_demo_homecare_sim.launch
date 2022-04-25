@@ -15,16 +15,17 @@
   <!-- Model spawn locations -->
   <arg name="model" default="kitchen" doc="model type [kitchen, big_table, tea_table, spot, roomba, wall_mount]"/>
   <arg name="big_table_pos_x" default="1"/>
-  <arg name="big_table_pos_y" default=" -4"/>
-  <arg name="big_table_pos_yaw" default=" 3.14"/>
+  <arg name="big_table_pos_y" default="-4"/>
+  <arg name="big_table_pos_yaw" default="$(eval pi)"/>
   <arg name="tea_table_pos_x" default="1"/>
   <arg name="tea_table_pos_y" default=" 0"/>
   <arg name="kitchen_pos_x" default="-2"/>
   <arg name="kitchen_pos_y" default="0.0"/>
   <arg name="roomba_pos_x" default="0"/>
   <arg name="roomba_pos_y" default="0"/>
-  <arg name="wall_mount_pos_x" default="2"/>
-  <arg name="wall_mount_pos_y" default="1"/>
+  <arg name="wall_mount_pos_x" default="1"/>
+  <arg name="wall_mount_pos_y" default="2"/>
+  <arg name="wall_mount_pos_yaw" default="$(eval -0.5*pi)"/>
 
   <!-- startup Gazebo related -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -99,24 +100,13 @@
       </include>
   </group>
 
-  <group ns="roomba">
-      <!-- startup robot_description related -->
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find irobotcreate2)/iRobot/iRobot.urdf'"/>
-      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
-          <param name="publish_frequency" type="double" value="50.0" />
-          <param name="tf_prefix" value="roomba" />
-      </node>
-
-      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model roomba -x $(arg roomba_pos_x) -y $(arg roomba_pos_y) -z 0  -param robot_description"/>
-  </group>
-
   <group ns="wall_mount">
       <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/wall_mount.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="wall_mount" />
       </node>
-      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model wall_mount -x $(arg wall_mount_pos_x) -y $(arg wall_mount_pos_y) -z 0 -param robot_description" />
+      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model wall_mount -x $(arg wall_mount_pos_x) -y $(arg wall_mount_pos_y) -z 0 -Y $(arg wall_mount_pos_yaw) -param robot_description" />
 
       <!-- startup ROS control related -->
       <include file="$(find papras_controllers)/launch/controller_utils.launch"/>

@@ -1,2 +1,0 @@
-RoombaSwitch left
-RoombaSwitch right
