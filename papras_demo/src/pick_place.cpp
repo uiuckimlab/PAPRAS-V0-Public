@@ -40,8 +40,8 @@
 // #include <moveit_grasps/grasp_generator.h>
 
 // Aruco
-#include <aruco_msgs/Marker.h>
-#include <aruco_msgs/MarkerArray.h>
+// #include <aruco_msgs/Marker.h>
+// #include <aruco_msgs/MarkerArray.h>
 
 //Action Client
 #include <actionlib/client/simple_action_client.h>
