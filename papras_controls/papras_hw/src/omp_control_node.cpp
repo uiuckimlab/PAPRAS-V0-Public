@@ -30,7 +30,8 @@ void timerCallback(open_manipulator_p_hw::HardwareInterface &hardware_interface,
 
   hardware_interface.read();
   cm.update(ros::Time::now(), elapsed_time);
-  // hardware_interface.write();
+  hardware_interface.controlLoopCnt++;
+  hardware_interface.write();
 }
 
 int main(int argc, char **argv)

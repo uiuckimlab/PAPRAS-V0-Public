@@ -28,6 +28,8 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
 
+#include "controller_manager_msgs/SwitchController.h"
+
 #include "dynamixel_workbench_toolbox/dynamixel_workbench.h"
 
 // Control table address
@@ -122,6 +124,7 @@ namespace open_manipulator_p_hw
 
     void read();
     void write();
+    int controlLoopCnt;
 
   private:
     void registerActuatorInterfaces();
@@ -133,7 +136,7 @@ namespace open_manipulator_p_hw
     bool initControlItems(void);
     bool initSDKHandlers(void);
 
-    void checkMotorIDs();
+    bool checkMotorIDs();
     bool motorsStopped();
 
     // ROS NodeHandle
@@ -155,13 +158,14 @@ namespace open_manipulator_p_hw
     
     bool isMotorsMissing;
     bool isTorqueOn;
-    int controlLoopCnt;
 
     // ROS Control interfaces
     hardware_interface::JointStateInterface joint_state_interface_;
     hardware_interface::PositionJointInterface position_joint_interface_;
     hardware_interface::VelocityJointInterface velocity_joint_interface_;
     hardware_interface::EffortJointInterface effort_joint_interface_;
+
+    ros::ServiceClient client;
   };
 
 } // namespace open_manipulator_p_hw

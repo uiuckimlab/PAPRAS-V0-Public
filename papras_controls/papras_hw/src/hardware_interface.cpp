@@ -32,6 +32,8 @@ namespace open_manipulator_p_hw
     yaml_file_ = priv_node_handle_.param<std::string>("yaml_file", "");
     interface_ = priv_node_handle_.param<std::string>("interface", "position");
 
+    client = nh.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
+
     /************************************************************
   ** Register Interfaces
   ************************************************************/
@@ -413,55 +415,50 @@ namespace open_manipulator_p_hw
     registerInterface(&effort_joint_interface_);
   }
 
-  void HardwareInterface::checkMotorIDs()
-  {
-    uint8_t dxl_cnt = 0;
-    uint8_t scan_range = 50;
-    uint8_t num_motor_ids = 6;
-    const char *log;
-    bool result = false;
-    // get list of ids from dynamixel_ map
-    // range should be max val of scanned_id
-    uint8_t scanned_id[num_motor_ids] = {1,2,3,4,5,6};
-
-    printf("Wait for scan...\n");
-    result = dxl_wb_->scan(scanned_id, &dxl_cnt, scan_range, &log);
-    if (result == false)
-    {
-      printf("%s\n", log);
-      printf("Failed to scan\n");
-      isMotorsMissing = true;
-    }
-    else
-    {
-      printf("Found %d Dynamixels\n", dxl_cnt);
-      isMotorsMissing = dxl_cnt < num_motor_ids;
-    }
-  }
-
   bool HardwareInterface::motorsStopped()
   {
-    uint8_t id_array[dynamixel_.size()];
-    uint8_t id_cnt = 0;
-
-    for (auto const &dxl : dynamixel_)
-      id_array[id_cnt++] = (uint8_t)dxl.second;
+    // get list of ids from dynamixel_ map
+    // range should be max val of scanned_id
+    uint8_t id_array[dynamixel_.size()] = {43,44,45,46,47,48};
     
     // if any motor velocities are above threshold
-    for (uint8_t index = 0; index < id_cnt; index++)
+    for (uint8_t index = 0; index < dynamixel_.size(); index++)
     {
-      if (joints_[id_array[index] - 1].isMoving)
+      if (joints_[id_array[index] - 1].isMoving){
         return false;
+      } 
     }
     return true;
   }
 
+  bool HardwareInterface::checkMotorIDs(void)
+  {
+    bool result = false;
+    const char *log;
+
+    for (auto const &dxl : dynamixel_)
+    {
+      uint16_t model_number = 0;
+      result = dxl_wb_->ping((uint8_t)dxl.second, &model_number, &log);
+      if (result == false)
+      {
+        isMotorsMissing = true;
+        isTorqueOn = false;
+        return result;
+      }
+      else
+      {
+        isMotorsMissing = false;
+      }
+    }
+
+    return result;
+  }
+
   void HardwareInterface::read()
   {
-    controlLoopCnt++;
-
     // every few sec, check motor ids if the motors are not moving
-    if (controlLoopCnt % 500 == 0 and motorsStopped())
+    if (controlLoopCnt % 50 == 0 && motorsStopped())
       checkMotorIDs();
 
     // exit if motor ids missing
@@ -480,6 +477,7 @@ namespace open_manipulator_p_hw
     uint8_t id_array[dynamixel_.size()];
     std::string name_array[dynamixel_.size()];
     uint8_t id_cnt = 0;
+
 
     uint8_t sync_read_handler = 0; // 0 for present position, velocity, current
     for (auto const &dxl : dynamixel_)
@@ -547,13 +545,18 @@ namespace open_manipulator_p_hw
       ROS_ERROR("%s", log);
     }
 
+    if (result == false) isMotorsMissing = true;
+
+
     for (uint8_t index = 0; index < id_cnt; index++)
     {
       // Position
       joints_[id_array[index] - 1].position = dxl_wb_->convertValue2Radian((uint8_t)id_array[index], (int32_t)get_position[index]);
 
+    
       // Velocity
       joints_[id_array[index] - 1].velocity = dxl_wb_->convertValue2Velocity((uint8_t)id_array[index], (int32_t)get_velocity[index]);
+
 
       // Effort
       if (strcmp(dxl_wb_->getModelName((uint8_t)id_array[index]), "XL-320") == 0)
@@ -561,46 +564,18 @@ namespace open_manipulator_p_hw
       else
         joints_[id_array[index] - 1].effort = dxl_wb_->convertValue2Current((int16_t)get_current[index]) * (1.78e-03);
 
+
       // isMoving
-      joints_[id_array[index] - 1].isMoving = (bool)get_moving[index];
+      joints_[id_array[index] - 1].isMoving = (bool) get_moving[index];
 
       joints_[id_array[index] - 1].position_command = joints_[id_array[index] - 1].position;
+      // ROS_INFO_STREAM("position_command: " << joints_[43].position_command);
     }
   }
 
   void HardwareInterface::write()
   {
 
-    // reset cnt if arms missing, exit
-    if(isMotorsMissing) {
-      controlLoopCnt = 0;
-      return;
-    }
-    
-    // torqueOn N secs after arm is plugged in
-    if (!isMotorsMissing && controlLoopCnt == 1000){
-      bool result = initDynamixels();
-      if (result == false)
-      {
-        ROS_ERROR("Please check control table (http://emanual.robotis.com/#control-table)");
-        return;
-      }
-
-      result = initControlItems();
-      if (result == false)
-      {
-        ROS_ERROR("Please check control items");
-        return;
-      }
-
-      result = initSDKHandlers();
-      if (result == false)
-      {
-        ROS_ERROR("Failed to set Dynamixel SDK Handler");
-        return;
-      }
-    }
-    
     bool result = false;
     const char *log = NULL;
 
@@ -610,6 +585,59 @@ namespace open_manipulator_p_hw
     int32_t dynamixel_position[dynamixel_.size()];
     int32_t dynamixel_velocity[dynamixel_.size()];
     int32_t dynamixel_effort[dynamixel_.size()];
+
+    // ROS_INFO_STREAM("controlLoopCnt: " << controlLoopCnt);
+
+    // reset cnt if arms missing, exit
+    if(isMotorsMissing) {
+      controlLoopCnt = 0;
+      return;
+    }
+
+    // if (controlLoopCnt == 299){
+    //   controller_manager_msgs::SwitchController::Request req;
+    //   controller_manager_msgs::SwitchController::Response resp;
+    //   std::vector<std::string> controller;
+    //   controller.push_back("arm1_controller");
+    //   req.start_controllers = controller;
+    //   req.stop_controllers = controller;
+    //   req.strictness = 2;
+    //   req.start_asap = false;
+    //   req.timeout = 0.0;
+    //   ros::service::waitForService("controller_manager/switch_controller", ros::Duration(5));
+    //   bool success = client.call(req, resp);
+
+    //   if (success)
+    //   {
+    //     ROS_INFO_STREAM("srv response ok: " << (bool) resp.ok);
+    //   }
+    //   else
+    //   {
+    //     ROS_ERROR("Failed to call service SwitchController");
+    //   }
+    // }
+
+    if (controlLoopCnt < 100){
+      // rosservice call /controller_manager/switch_controller "start_controllers: ['arm1_controller']
+      // stop_controllers: ['arm1_controller']
+      // strictness: 2
+      // start_asap: false
+      // timeout: 0.0" 
+      // ok: True
+      return;
+    }
+
+    // torqueOn N secs after arm is plugged in
+    if (controlLoopCnt == 100){
+      bool result = initDynamixels();
+      if (result == false)
+      {
+        ROS_ERROR("Please check control table (http://emanual.robotis.com/#control-table)");
+        return;
+      }
+    } 
+    
+    id_cnt = 0;
 
     if (strcmp(interface_.c_str(), "position") == 0)
     {
@@ -628,6 +656,8 @@ namespace open_manipulator_p_hw
       }
       uint8_t sync_write_handler = 0; // 0: position, 1: velocity, 2: effort
       result = dxl_wb_->syncWrite(sync_write_handler, id_array, id_cnt, dynamixel_position, 1, &log);
+
+      // ROS_INFO_STREAM("position_command: " << joints_[43].position_command);
     }
     else if (strcmp(interface_.c_str(), "effort") == 0)
     {
