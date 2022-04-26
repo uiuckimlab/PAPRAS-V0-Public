@@ -37,7 +37,7 @@
                 " />
   -->
 
-  <arg name="load_robot_description" default="true" />
+  <arg name="load_robot_description" default="false" />
   <!-- load URDF, SRDF and joint_limits configuration -->
   <include file="$(dirname)/planning_context.launch">
     <arg name="load_robot_description" value="$(arg load_robot_description)" />
@@ -77,7 +77,7 @@
 
   <!-- Sensors Functionality -->
   <include ns="move_group" file="$(dirname)/sensor_manager.launch.xml" if="$(arg allow_trajectory_execution)">
-    <arg name="moveit_sensor_manager" value="papras kitchen" />
+    <arg name="moveit_sensor_manager" value="kitchen" />
   </include>
 
   <!-- Start the actual move_group node/action server -->

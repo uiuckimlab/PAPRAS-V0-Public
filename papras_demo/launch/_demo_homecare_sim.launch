@@ -127,10 +127,10 @@
       </include>
   </group>
 
-  <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="0 0 0 0 0 0 /world /big_table/world 100"/> 
-  <node pkg="tf" type="static_transform_publisher" name="world2tea_table" args="0 0 0 0 0 0 /world /tea_table/world 100"/> 
-  <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="0 0 0 0 0 0 /world /kitchen/world 100"/> 
-  <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="0 0 0 0 0 0 /world /wall_mount/world 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="$(arg big_table_pos_x) $(arg big_table_pos_y) 0 $(arg big_table_pos_yaw) 0 0 /world /big_table/world 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="world2tea_table" args="$(arg tea_table_pos_x) $(arg tea_table_pos_y) 0 0 0 0 /world /tea_table/world 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="$(arg kitchen_pos_x) $(arg kitchen_pos_y) 0 0 0 0 /world /kitchen/world 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="$(arg wall_mount_pos_x) $(arg wall_mount_pos_y) 0 $(arg wall_mount_pos_yaw) 0 0 /world /wall_mount/world 100"/> 
 
   <!-- startup rviz visulization -->
   <group if="$(arg rviz)">

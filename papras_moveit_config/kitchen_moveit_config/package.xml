@@ -3,10 +3,10 @@
   <name>kitchen_moveit_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the papras kitchen with the MoveIt Motion Planning Framework
+     An automatically generated package with all the configuration and launch files for using the kitchen with the MoveIt Motion Planning Framework
   </description>
-  <author email="kazukis2@illinois.edu">Kazuki Shin</author>
-  <maintainer email="kazukis2@illinois.edu">Kazuki Shin</maintainer>
+  <author email="dmathur2@illinois.edu">Dhruv Mathur</author>
+  <maintainer email="dmathur2@illinois.edu">Dhruv Mathur</maintainer>
 
   <license>BSD</license>
 

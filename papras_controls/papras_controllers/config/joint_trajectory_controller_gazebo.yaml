@@ -58,7 +58,7 @@ gripper1_controller:
   state_publish_rate:  25
   action_monitor_rate: 10
   gains: # Required because we're controlling an effort interface
-    robot1/gripper: {p: 100,  d: 1, i: 1, i_clamp: 1}
+    robot1/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
 
 gripper2_controller:
   type: effort_controllers/JointTrajectoryController
@@ -68,7 +68,7 @@ gripper2_controller:
   state_publish_rate:  25
   action_monitor_rate: 10
   gains: # Required because we're controlling an effort interface
-    robot2/gripper: {p: 100,  d: 1, i: 1, i_clamp: 1}
+    robot2/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
 
 gripper4_controller:
   type: effort_controllers/JointTrajectoryController
@@ -78,7 +78,7 @@ gripper4_controller:
   state_publish_rate:  25
   action_monitor_rate: 10
   gains: # Required because we're controlling an effort interface
-    robot4/gripper: {p: 100,  d: 1, i: 1, i_clamp: 1}
+    robot4/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
 
 gripper3_controller:
   type: effort_controllers/JointTrajectoryController
@@ -88,5 +88,5 @@ gripper3_controller:
   state_publish_rate:  25
   action_monitor_rate: 10
   gains: # Required because we're controlling an effort interface
-    robot3/gripper: {p: 100,  d: 1, i: 1, i_clamp: 1}
+    robot3/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
 

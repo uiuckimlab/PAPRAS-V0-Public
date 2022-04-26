@@ -4,8 +4,8 @@ moveit_setup_assistant_config:
     relative_path: urdf/kitchen.urdf.xacro
     xacro_args: ""
   SRDF:
-    relative_path: config/papras kitchen.srdf
+    relative_path: config/kitchen.srdf
   CONFIG:
-    author_name: Kazuki Shin
-    author_email: kazukis2@illinois.edu
-    generated_timestamp: 1642359605
+    author_name: Dhruv Mathur
+    author_email: dmathur2@illinois.edu
+    generated_timestamp: 1650937421
