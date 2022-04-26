@@ -29,6 +29,7 @@
 #include <hardware_interface/robot_hw.h>
 
 #include "controller_manager_msgs/SwitchController.h"
+#include "std_msgs/Bool.h"
 
 #include "dynamixel_workbench_toolbox/dynamixel_workbench.h"
 
@@ -86,6 +87,9 @@
 
 // Protocol version
 #define PROTOCOL_VERSION 2.0 // See which protocol version is used in the Dynamixel
+
+#define RECONFIG_WAIT 200
+#define SWITCH_CONTROLLER_CNT RECONFIG_WAIT-10
 
 
 typedef struct _ItemValue
@@ -165,7 +169,7 @@ namespace open_manipulator_p_hw
     hardware_interface::VelocityJointInterface velocity_joint_interface_;
     hardware_interface::EffortJointInterface effort_joint_interface_;
 
-    ros::ServiceClient client;
+    ros::Publisher pub_switch_controller_;
   };
 
 } // namespace open_manipulator_p_hw

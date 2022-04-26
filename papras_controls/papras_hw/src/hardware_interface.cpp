@@ -32,7 +32,7 @@ namespace open_manipulator_p_hw
     yaml_file_ = priv_node_handle_.param<std::string>("yaml_file", "");
     interface_ = priv_node_handle_.param<std::string>("interface", "position");
 
-    client = nh.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
+    pub_switch_controller_ = nh.advertise<std_msgs::Bool>("switch_controller",10);
 
     /************************************************************
   ** Register Interfaces
@@ -458,7 +458,7 @@ namespace open_manipulator_p_hw
   void HardwareInterface::read()
   {
     // every few sec, check motor ids if the motors are not moving
-    if (controlLoopCnt % 50 == 0 && motorsStopped())
+    if (controlLoopCnt % 10 == 0 && (isMotorsMissing || motorsStopped()))
       checkMotorIDs();
 
     // exit if motor ids missing
@@ -586,49 +586,29 @@ namespace open_manipulator_p_hw
     int32_t dynamixel_velocity[dynamixel_.size()];
     int32_t dynamixel_effort[dynamixel_.size()];
 
-    // ROS_INFO_STREAM("controlLoopCnt: " << controlLoopCnt);
-
     // reset cnt if arms missing, exit
     if(isMotorsMissing) {
       controlLoopCnt = 0;
       return;
     }
 
-    // if (controlLoopCnt == 299){
-    //   controller_manager_msgs::SwitchController::Request req;
-    //   controller_manager_msgs::SwitchController::Response resp;
-    //   std::vector<std::string> controller;
-    //   controller.push_back("arm1_controller");
-    //   req.start_controllers = controller;
-    //   req.stop_controllers = controller;
-    //   req.strictness = 2;
-    //   req.start_asap = false;
-    //   req.timeout = 0.0;
-    //   ros::service::waitForService("controller_manager/switch_controller", ros::Duration(5));
-    //   bool success = client.call(req, resp);
+    if (controlLoopCnt == 11) {
+      ROS_INFO_STREAM("arm plugged in");
+    }
 
-    //   if (success)
-    //   {
-    //     ROS_INFO_STREAM("srv response ok: " << (bool) resp.ok);
-    //   }
-    //   else
-    //   {
-    //     ROS_ERROR("Failed to call service SwitchController");
-    //   }
-    // }
+    if (controlLoopCnt == SWITCH_CONTROLLER_CNT){
+      ROS_INFO_STREAM("switching controllers");
+      std_msgs::Bool switch_controller;
+      switch_controller.data = true;
+      pub_switch_controller_.publish(switch_controller);
+    }
 
-    if (controlLoopCnt < 100){
-      // rosservice call /controller_manager/switch_controller "start_controllers: ['arm1_controller']
-      // stop_controllers: ['arm1_controller']
-      // strictness: 2
-      // start_asap: false
-      // timeout: 0.0" 
-      // ok: True
+    if (controlLoopCnt < RECONFIG_WAIT){
       return;
     }
 
     // torqueOn N secs after arm is plugged in
-    if (controlLoopCnt == 100){
+    if (controlLoopCnt == RECONFIG_WAIT){
       bool result = initDynamixels();
       if (result == false)
       {

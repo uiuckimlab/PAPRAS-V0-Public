@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 
   // update
   ros::CallbackQueue queue;
-  ros::AsyncSpinner spinner(1, &queue);
+  ros::AsyncSpinner spinner(2, &queue);
   spinner.start();
   ros::Time last_time = ros::Time::now();
   ros::TimerOptions timer_options(

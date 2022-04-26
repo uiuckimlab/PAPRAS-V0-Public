@@ -12,4 +12,7 @@
     <param name="yaml_file" value="$(arg yaml_file)"/>
   </node>
 
+  <node name="switch_controller_node" pkg="papras_hw" type="switch_controller_node.py" respawn="true" output="screen">
+  </node>
+
 </launch>
