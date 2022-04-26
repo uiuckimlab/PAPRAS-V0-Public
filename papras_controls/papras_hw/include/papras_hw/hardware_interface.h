@@ -29,7 +29,7 @@
 #include <hardware_interface/robot_hw.h>
 
 #include "controller_manager_msgs/SwitchController.h"
-#include "std_msgs/Bool.h"
+#include "std_msgs/Int32.h"
 
 #include "dynamixel_workbench_toolbox/dynamixel_workbench.h"
 
@@ -90,6 +90,7 @@
 
 #define RECONFIG_WAIT 200
 #define SWITCH_CONTROLLER_CNT RECONFIG_WAIT-10
+#define NUM_JOINTS_PER_ARM 7
 
 
 typedef struct _ItemValue
@@ -159,9 +160,12 @@ namespace open_manipulator_p_hw
     std::map<std::string, const ControlItem *> control_items_;
     std::vector<std::pair<std::string, ItemValue>> dynamixel_info_;
     std::vector<Joint> joints_;
+    std::vector<int> joint_ids_;
+
     
     bool isMotorsMissing;
     bool isTorqueOn;
+    bool isMotorsStopped;
 
     // ROS Control interfaces
     hardware_interface::JointStateInterface joint_state_interface_;

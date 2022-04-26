@@ -32,7 +32,8 @@ namespace open_manipulator_p_hw
     yaml_file_ = priv_node_handle_.param<std::string>("yaml_file", "");
     interface_ = priv_node_handle_.param<std::string>("interface", "position");
 
-    pub_switch_controller_ = nh.advertise<std_msgs::Bool>("switch_controller",10);
+    pub_switch_controller_ = nh.advertise<std_msgs::Int32>("switch_controller",10);
+    joint_ids_ = {};
 
     /************************************************************
   ** Register Interfaces
@@ -129,8 +130,11 @@ namespace open_manipulator_p_hw
         std::string item_name = it_item->first.as<std::string>();
         int32_t value = it_item->second.as<int32_t>();
 
-        if (item_name == "ID")
+        if (item_name == "ID"){
           dynamixel_[name] = value;
+          joint_ids_.push_back((int)value);
+        }
+          
 
         ItemValue item_value = {item_name, value};
         std::pair<std::string, ItemValue> info(name, item_value);
@@ -417,16 +421,16 @@ namespace open_manipulator_p_hw
 
   bool HardwareInterface::motorsStopped()
   {
-    // get list of ids from dynamixel_ map
-    // range should be max val of scanned_id
-    uint8_t id_array[dynamixel_.size()] = {43,44,45,46,47,48};
-    
-    // if any motor velocities are above threshold
-    for (uint8_t index = 0; index < dynamixel_.size(); index++)
+    double position_command;
+    double position_current;
+
+    for (auto const &dxl : dynamixel_)
     {
-      if (joints_[id_array[index] - 1].isMoving){
+      position_command = joints_[(uint8_t)dxl.second - 1].position_command;
+      position_current = joints_[(uint8_t)dxl.second - 1].position;
+
+      if (position_command != position_current)
         return false;
-      } 
     }
     return true;
   }
@@ -457,9 +461,12 @@ namespace open_manipulator_p_hw
 
   void HardwareInterface::read()
   {
+    isMotorsStopped = motorsStopped();
     // every few sec, check motor ids if the motors are not moving
-    if (controlLoopCnt % 10 == 0 && (isMotorsMissing || motorsStopped()))
+    if (controlLoopCnt % 10 == 0 && (isMotorsMissing || isMotorsStopped))
+    {
       checkMotorIDs();
+    }
 
     // exit if motor ids missing
     if (isMotorsMissing)
@@ -569,7 +576,6 @@ namespace open_manipulator_p_hw
       joints_[id_array[index] - 1].isMoving = (bool) get_moving[index];
 
       joints_[id_array[index] - 1].position_command = joints_[id_array[index] - 1].position;
-      // ROS_INFO_STREAM("position_command: " << joints_[43].position_command);
     }
   }
 
@@ -598,9 +604,9 @@ namespace open_manipulator_p_hw
 
     if (controlLoopCnt == SWITCH_CONTROLLER_CNT){
       ROS_INFO_STREAM("switching controllers");
-      std_msgs::Bool switch_controller;
-      switch_controller.data = true;
-      pub_switch_controller_.publish(switch_controller);
+      std_msgs::Int32 switch_controller_cnt;
+      switch_controller_cnt.data = joint_ids_.size()/NUM_JOINTS_PER_ARM;
+      pub_switch_controller_.publish(switch_controller_cnt);
     }
 
     if (controlLoopCnt < RECONFIG_WAIT){
