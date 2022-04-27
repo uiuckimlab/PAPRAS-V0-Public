@@ -15,5 +15,5 @@
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>create_robot</exec_depend>
   <exec_depend>joystick_drivers</exec_depend>
-  <export><metapackage/></export>
+  <!-- <export><metapackage/></export> -->
 </package>
