@@ -33,7 +33,8 @@ ros-noetic-effort-controllers \
 ros-noetic-plotjuggler-ros \
 ros-noetic-vision-msgs \
 ros-noetic-rosparam-shortcuts \
-ros-noetic-serial
+ros-noetic-serial \
+ros-noetic-libcreate
 ```
 ```
 git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git \
