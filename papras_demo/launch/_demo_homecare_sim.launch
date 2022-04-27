@@ -21,11 +21,11 @@
   <arg name="tea_table_pos_y" default=" 0"/>
   <arg name="kitchen_pos_x" default="-2"/>
   <arg name="kitchen_pos_y" default="0.0"/>
-  <arg name="roomba_pos_x" default="0"/>
-  <arg name="roomba_pos_y" default="0"/>
   <arg name="wall_mount_pos_x" default="1"/>
   <arg name="wall_mount_pos_y" default="2"/>
   <arg name="wall_mount_pos_yaw" default="$(eval -0.5*pi)"/>
+  <arg name="roomba_pos_x" default="0"/>
+  <arg name="roomba_pos_y" default="0"/>
 
   <!-- startup Gazebo related -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -127,10 +127,22 @@
       </include>
   </group>
 
-  <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="$(arg big_table_pos_x) $(arg big_table_pos_y) 0 $(arg big_table_pos_yaw) 0 0 /world /big_table/world 100"/> 
-  <node pkg="tf" type="static_transform_publisher" name="world2tea_table" args="$(arg tea_table_pos_x) $(arg tea_table_pos_y) 0 0 0 0 /world /tea_table/world 100"/> 
-  <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="$(arg kitchen_pos_x) $(arg kitchen_pos_y) 0 0 0 0 /world /kitchen/world 100"/> 
-  <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="$(arg wall_mount_pos_x) $(arg wall_mount_pos_y) 0 $(arg wall_mount_pos_yaw) 0 0 /world /wall_mount/world 100"/> 
+  <group ns="roomba">
+      <!-- startup robot_description related -->
+      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find create_description)/urdf/create_2.urdf.xacro'"/>
+      <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+          <param name="publish_frequency" type="double" value="50.0" />
+          <param name="tf_prefix" value="roomba" />
+      </node>
+
+      <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model roomba -x $(arg roomba_pos_x) -y $(arg roomba_pos_y) -z 0  -param robot_description"/>
+  </group>
+
+  <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="$(arg big_table_pos_x) $(arg big_table_pos_y) 0 $(arg big_table_pos_yaw) 0 0 /world /big_table/world 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="world2tea_table" args="$(arg tea_table_pos_x) $(arg tea_table_pos_y) 0 0 0 0 /world /tea_table/world 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="$(arg kitchen_pos_x) $(arg kitchen_pos_y) 0 0 0 0 /world /kitchen/world 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="$(arg wall_mount_pos_x) $(arg wall_mount_pos_y) 0 $(arg wall_mount_pos_yaw) 0 0 /world /wall_mount/world 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="world2roomba" args="0 0 0 0 0 0 /world /roomba/odom 100"/> 
 
   <!-- startup rviz visulization -->
   <group if="$(arg rviz)">
