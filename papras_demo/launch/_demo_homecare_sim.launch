@@ -37,7 +37,7 @@
 
   <group ns="big_table">
       <!-- startup robot_description related -->
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/big_table.urdf.xacro'"/>
+      <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/big_table.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="big_table" />
@@ -62,7 +62,7 @@
 
   <group ns="tea_table">
       <!-- startup robot_description related -->
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
+      <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="tea_table" />
@@ -86,7 +86,7 @@
   </group>
 
   <group ns="kitchen">
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/kitchen.urdf.xacro'"/>
+      <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/kitchen.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="kitchen" />
@@ -107,7 +107,7 @@
   </group>
 
   <group ns="wall_mount">
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/wall_mount.urdf.xacro'"/>
+      <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/wall_mount.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="wall_mount" />
@@ -129,7 +129,7 @@
 
   <group ns="roomba">
       <!-- startup robot_description related -->
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find create_description)/urdf/create_2.urdf.xacro'"/>
+      <param name="robot_description" command="$(find xacro)/xacro '$(find create_description)/urdf/create_2.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="roomba" />

@@ -5,7 +5,7 @@
 
   <group ns="big_table">
       <!-- startup robot_description related -->
-      <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/big_table.urdf.xacro'"/>
+      <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/big_table.urdf.xacro'"/>
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="big_table" />

@@ -9,7 +9,7 @@
        default=" -J robot1/gripper 0 -J robot1/joint1 0 -J robot1/joint2 -0.785 -J robot1/joint3 0.3925 -J robot1/joint4 0 -J robot1/joint5 0.3925 -J robot1/joint6 0 -J robot2/gripper 0 -J robot2/joint1 0 -J robot2/joint2 -0.785 -J robot2/joint3 0.3925 -J robot2/joint4 0 -J robot2/joint5 0.3925 -J robot2/joint6 0"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->  
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/tea_table.urdf.xacro'"/>
 
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">

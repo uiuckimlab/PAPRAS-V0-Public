@@ -8,7 +8,7 @@
   <arg name="dope_config" default="$(find dope)/config/config_pose.yaml" doc="Path to parameter config file"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->  
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/soft_gripper_v2.urdf.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/soft_gripper_v2.urdf.xacro'"/>
 
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">

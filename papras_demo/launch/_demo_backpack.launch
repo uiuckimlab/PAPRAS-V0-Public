@@ -5,7 +5,7 @@
   <arg name="gazebo_gui" default="true"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->  
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/backpack.urdf.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/backpack.urdf.xacro'"/>
 
   <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">

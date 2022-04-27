@@ -7,7 +7,7 @@
   <arg name="rviz" default="true"/>
 
   <!-- Load the URDF into the ROS Parameter Server -->  
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find papras_description)/urdf/spot_mount.urdf.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/spot_mount.urdf.xacro'"/>
 
    <!-- startup simulated world and spawn robot-->
   <group if="$(arg sim)">
