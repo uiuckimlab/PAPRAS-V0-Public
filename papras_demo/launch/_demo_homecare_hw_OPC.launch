@@ -5,6 +5,7 @@
   <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="0 0 0 0 0 0 /world /kitchen/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2spot_mount" args="0 0 0 0 0 0 /world /spot_mount/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="0 0 0 0 0 0 /world /big_table/world 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="0 0 0 0 0 0 /world /wall_mount/world 100"/> 
 
   <!-- startup rviz visulization -->
   <include file="$(find tea_table_moveit_config)/launch/moveit_rviz.launch">

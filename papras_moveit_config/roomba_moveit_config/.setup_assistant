@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: papras_description
+    relative_path: urdf/roomba.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/roomba.srdf
+  CONFIG:
+    author_name: Dhruv Mathur
+    author_email: dmathur2@illinois.edu
+    generated_timestamp: 1651180366

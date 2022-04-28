@@ -15,6 +15,8 @@
         <odometryTopic>odom</odometryTopic>
         <odometryFrame>roomba/odom</odometryFrame>
         <robotBaseFrame>roomba/base_footprint</robotBaseFrame>
+        <!-- <publishWheelTF>true</publishWheelTF> -->
+        <publishWheelJointState>true</publishWheelJointState>
       </plugin>
 
       <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
