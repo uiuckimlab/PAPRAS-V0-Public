@@ -127,9 +127,9 @@ add_executable(stand_tasks src/stand_tasks.cpp)
 target_link_libraries(stand_tasks ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS stand_tasks DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-add_executable(command_operator src/command_operator.cpp)
-target_link_libraries(command_operator Qt5::Widgets ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES})
-install(TARGETS command_operator DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+# add_executable(command_operator src/command_operator.cpp)
+# target_link_libraries(command_operator Qt5::Widgets ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES})
+# install(TARGETS command_operator DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(pick_place src/pick_place.cpp)
 target_link_libraries(pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
