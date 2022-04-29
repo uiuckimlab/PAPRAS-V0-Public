@@ -2,6 +2,7 @@
 <launch>
   <arg name="usb_port" default="/dev/ttyUSB1" />
   <arg name="pipeline" default="ompl"/>
+  <arg name="roomba_config" default="$(find create_bringup)/config/default.yaml" />
 
   <group ns="roomba">
       <!-- startup robot_description related -->
@@ -9,6 +10,12 @@
       <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
           <param name="publish_frequency" type="double" value="50.0" />
           <param name="tf_prefix" value="roomba" />
+      </node>
+
+      <!-- startup roomba related -->
+      <node name="create_driver" pkg="create_driver" type="create_driver" output="screen">
+        <rosparam command="load" file="$(arg roomba_config)" />
+        <param name="robot_model" value="CREATE_2" />
       </node>
 
       <include file="$(find papras_hw)/launch/papras_hw.launch">
