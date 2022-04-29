@@ -24,7 +24,7 @@
       <node name="gripper1_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn gripper1_controller"/>
  
       <!-- startup move_group related -->
-      <include file="$(find roobma_moveit_config)/launch/move_group.launch">
+      <include file="$(find roomba_moveit_config)/launch/move_group.launch">
         <arg name="pipeline" value="$(arg pipeline)"/>
         <arg name="load_robot_description" value="true" />
       </include>
