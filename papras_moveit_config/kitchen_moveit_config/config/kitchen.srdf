@@ -47,6 +47,38 @@
     <group_state name="close" group="gripper1">
         <joint name="robot1/gripper" value="1"/>
     </group_state>
+    <group_state name="observe_sink" group="arm1">
+        <joint name="robot1/joint1" value="-0.5585"/>
+        <joint name="robot1/joint2" value="1.02974"/>
+        <joint name="robot1/joint3" value="0.0698132"/>
+        <joint name="robot1/joint4" value="-0.663225"/>
+        <joint name="robot1/joint5" value="1.51844"/>
+        <joint name="robot1/joint6" value="0.244346"/>
+    </group_state>
+    <group_state name="place_dishwasher" group="arm1">
+        <joint name="robot1/joint1" value="1.5447"/>
+        <joint name="robot1/joint2" value="-0.2541"/>
+        <joint name="robot1/joint3" value="0.269"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="1.2236"/>
+        <joint name="robot1/joint6" value="1.6141"/>
+    </group_state>
+    <group_state name="up" group="arm1">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="0.8066"/>
+        <joint name="robot1/joint3" value="0.393"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0.393"/>
+        <joint name="robot1/joint6" value="0"/>
+    </group_state>
+    <group_state name="place_counter" group="arm1">
+        <joint name="robot1/joint1" value="0.5728"/>
+        <joint name="robot1/joint2" value="0.3867"/>
+        <joint name="robot1/joint3" value="0.7376"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0.393"/>
+        <joint name="robot1/joint6" value="0.5728"/>
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="eef1" parent_link="robot1/end_effector_link" group="gripper1"/>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
