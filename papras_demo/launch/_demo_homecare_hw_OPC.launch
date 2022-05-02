@@ -10,7 +10,7 @@
   <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="0 0 0 0 0 0 /world /big_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="0 0 0 0 0 0 /world /wall_mount/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2roomba" args="0 0 0 0 0 0 /world /roomba/odom 100"/>
-  <node pkg="tf" type="static_transform_publisher" name="roombansmoveit" args="0 0 0 0 0 0 /roomba/base_footprint /base_footprint 100"/>
+  <!-- <node pkg="tf" type="static_transform_publisher" name="roombansmoveit" args="0 0 0 0 0 0 /roomba/base_footprint /base_footprint 100"/> -->
 
   <!-- startup rviz visulization -->
   <include file="$(find tea_table_moveit_config)/launch/moveit_rviz.launch">

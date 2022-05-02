@@ -2,7 +2,7 @@
 <launch>
   <arg name="usb_port" default="/dev/ttyUSB1" />
   <arg name="pipeline" default="ompl"/>
-  <arg name="roomba_config" default="$(find create_bringup)/config/default.yaml" />
+  <arg name="roomba_config" default="$(find create_bringup)/config/default_ns.yaml" />
 
   <group ns="roomba">
       <!-- startup robot_description related -->
