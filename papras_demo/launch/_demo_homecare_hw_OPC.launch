@@ -1,14 +1,27 @@
 <?xml version="1.0" ?>
 <launch>
 
+  <arg name="roomba_joy" default="false"/>
+  <arg name="joy_dev" default="/dev/input/js0"/>
+
   <node pkg="tf" type="static_transform_publisher" name="world2tea_table" args="0 0 0 0 0 0 /world /tea_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2kitchen" args="0 0 0 0 0 0 /world /kitchen/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2spot_mount" args="0 0 0 0 0 0 /world /spot_mount/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2big_table" args="0 0 0 0 0 0 /world /big_table/world 100"/> 
   <node pkg="tf" type="static_transform_publisher" name="world2wall_mount" args="0 0 0 0 0 0 /world /wall_mount/world 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="world2roomba" args="0 0 0 0 0 0 /world /roomba/odom 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="roombansmoveit" args="0 0 0 0 0 0 /roomba/base_footprint /base_footprint 100"/>
 
   <!-- startup rviz visulization -->
   <include file="$(find tea_table_moveit_config)/launch/moveit_rviz.launch">
     <arg name="rviz_config" value="$(find papras_utils)/rviz/homecare.rviz"/>
   </include>
+
+  <!-- optional joystick control -->
+  <group if="$(arg roomba_joy)">
+    <include file="$(find create_bringup)/launch/joy_teleop.launch">
+      <arg name="joy_dev" value="$(arg joy_dev)"/>
+      <arg name="joy_config" value="ps3_ns"/>
+    </include>
+  </group>
 </launch>

@@ -158,6 +158,7 @@
   <group if="$(arg roomba_joy)">
     <include file="$(find create_bringup)/launch/joy_teleop.launch">
       <arg name="joy_dev" value="$(arg joy_dev)"/>
+      <arg name="joy_config" value="ps3_ns"/>
     </include>
   </group>
 

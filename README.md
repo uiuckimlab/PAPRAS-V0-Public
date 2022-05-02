@@ -34,7 +34,8 @@ ros-noetic-plotjuggler-ros \
 ros-noetic-vision-msgs \
 ros-noetic-rosparam-shortcuts \
 ros-noetic-serial \
-ros-noetic-libcreate
+ros-noetic-libcreate \
+libspnav-dev
 ```
 ```
 git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git \
