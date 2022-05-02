@@ -135,6 +135,10 @@ add_executable(pick_place src/pick_place.cpp)
 target_link_libraries(pick_place ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS pick_place DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(handoff_fsm src/handoff_fsm.cpp)
+target_link_libraries(handoff_fsm ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS handoff_fsm DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 # add_executable(plan_grasps_service src/plan_grasps_service.cpp)
 # target_link_libraries(plan_grasps_service ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 # install(TARGETS plan_grasps_service DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

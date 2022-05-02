@@ -33,6 +33,8 @@ namespace open_manipulator_p_hw
     interface_ = priv_node_handle_.param<std::string>("interface", "position");
 
     pub_switch_controller_ = nh.advertise<std_msgs::Int32>("switch_controller",10);
+    sub_torque_torque_toggle = nh.subscribe("torque_toggle", 1, &HardwareInterface::torqueToggleCallback, this);
+
     joint_ids_ = {};
 
     /************************************************************
@@ -457,6 +459,12 @@ namespace open_manipulator_p_hw
     }
 
     return result;
+  }
+
+  void HardwareInterface::torqueToggleCallback(const std_msgs::Bool& msg)
+  {
+    // isTorqueOn = (bool) msg.data;
+    ROS_INFO_STREAM("torqueToggleCallback: " << (bool) msg.data);
   }
 
   void HardwareInterface::read()

@@ -30,6 +30,7 @@
 
 #include "controller_manager_msgs/SwitchController.h"
 #include "std_msgs/Int32.h"
+#include "std_msgs/Bool.h"
 
 #include "dynamixel_workbench_toolbox/dynamixel_workbench.h"
 
@@ -143,6 +144,7 @@ namespace open_manipulator_p_hw
 
     bool checkMotorIDs();
     bool motorsStopped();
+    void torqueToggleCallback(const std_msgs::Bool& msg);
 
     // ROS NodeHandle
     ros::NodeHandle node_handle_;
@@ -174,6 +176,7 @@ namespace open_manipulator_p_hw
     hardware_interface::EffortJointInterface effort_joint_interface_;
 
     ros::Publisher pub_switch_controller_;
+    ros::Subscriber sub_torque_torque_toggle;
   };
 
 } // namespace open_manipulator_p_hw
