@@ -35,7 +35,7 @@ def find_tag(publisher):
 
     while prev_sequence == curr_sequence:
         # no updated tag position is being received (i.e. the camera does not detect the aruco tag)
-        vel_cmd.angular.z = 0.1
+        vel_cmd.angular.z = 0.15
         publisher.publish(vel_cmd)
 
     vel_cmd.angular.z = 0.0
@@ -59,7 +59,10 @@ def roomba_nav(publisher):
         # aruco tag to the left of the camera
         vel_cmd.angular.z = 0.1
 
-    if z > 1:
+    if z > 2:
+        # aruco tag is more than 2m away
+        vel_cmd.linear.x = 0.2
+    elif z > 1:
         # aruco tag is more than 1m away
         vel_cmd.linear.x = 0.1
     elif z < 0.5:
