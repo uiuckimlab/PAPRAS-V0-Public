@@ -1,0 +1,25 @@
+<launch>
+    <arg name="namespace_prefix" default="roomba_nav" />
+    <arg name="usb_port" default="/dev/ttyUSB0" />
+    <arg name="pipeline" default="ompl"/>
+    <arg name="marker_size" default="0.03" />
+    <arg name="marker_id" default="0" doc="The ID of the ArUco marker used" />
+    <arg name="namespace" default="robot1"/>
+    <arg name="sim" default="false"/>
+    <arg name="eye_on_hand" default="true"/>
+     <arg name="evaluation" default="true" doc="Start the evaluator to estimate the accuracy of the calibration" />
+
+    <node name="aruco_tracker" pkg="aruco_ros" type="marker_publisher">
+        <remap from="/camera_info" to="/camera/color/camera_info" />
+        <remap from="/image" to="/camera/color/image_raw" />
+        <param name="image_is_rectified" value="true"/>
+        <!-- <param name="marker_size"        value="$(arg marker_size)"/>
+        <param name="marker_id"          value="$(arg marker_id)"/> -->
+        <param name="camera_frame" value="$(arg namespace)/camera_link"/>
+        <param name="marker_frame" value="camera_marker" />
+    </node>
+
+    <node name="roomba_nav" pkg="papras_demo" type="roomba_nav.py" respawn="false" output="screen">
+    </node>
+
+</launch>
