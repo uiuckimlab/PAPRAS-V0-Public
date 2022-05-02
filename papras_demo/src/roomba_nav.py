@@ -23,6 +23,7 @@ aruco_tags = None
 aruco_tag_ids = None
 prev_sequence, curr_sequence = -1, -1
 tolerance = 0.025 #m
+camera_upside_down = -1 # 1 = no, -1 = yes
 
 def get_position_from_marker(marker):
     x,y,z = float(marker.pose.pose.position.x), float(marker.pose.pose.position.y), float(marker.pose.pose.position.z)
@@ -56,7 +57,7 @@ def find_tag(publisher, goal_tag_id):
     prev_sequence = curr_sequence
 
 def roomba_nav(publisher, goal_tag_id):
-    global aruco_tags, aruco_tag_ids, tolerance
+    global aruco_tags, aruco_tag_ids, tolerance, camera_upside_down
 
     if goal_tag_id not in aruco_tag_ids:
         print("Can't find the goal aruco tag. Leave nav to stall in search.")
@@ -76,18 +77,18 @@ def roomba_nav(publisher, goal_tag_id):
 
     if x > tolerance:
         # aruco tag to the right of the camera
-        vel_cmd.angular.z = -0.1
+        vel_cmd.angular.z = -0.1 * camera_upside_down
     elif x < -tolerance:
         # aruco tag to the left of the camera
-        vel_cmd.angular.z = 0.1
+        vel_cmd.angular.z = 0.1 * camera_upside_down
 
-    if z > 0.2:
+    if z > 2:
         # aruco tag is more than 2m away
         vel_cmd.linear.x = 0.2
-    elif z > 0.12:
+    elif z > 1:
         # aruco tag is more than 1m away
         vel_cmd.linear.x = 0.1
-    elif z < 0.08:
+    elif z < 0.5:
         # aruco tag is too close, less than 0.5m away
         vel_cmd.linear.x = -0.1
 
