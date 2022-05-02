@@ -59,11 +59,10 @@ def roomba_nav(publisher):
         # aruco tag to the left of the camera
         vel_cmd.angular.z = 0.1
 
-    # TODO CHANGE TO 1m and 0.5m, just testing with camera attached to laptop
-    if z > 0.2:
+    if z > 1:
         # aruco tag is more than 1m away
         vel_cmd.linear.x = 0.1
-    elif z < 0.1:
+    elif z < 0.5:
         # aruco tag is too close, less than 0.5m away
         vel_cmd.linear.x = -0.1
 
