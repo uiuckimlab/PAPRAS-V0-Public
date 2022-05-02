@@ -37,8 +37,8 @@
 
 
   <!-- Start the demo -->
-  <node ns="big_table" name="pick_place" launch-prefix="$(arg launch_prefix) $(arg launch_prefix2) $(arg launch_prefix3)" pkg="papras_demo"
-  type="handoff_fsm" output="screen" args="$(arg command_args)"/>
+  <!-- <node ns="big_table" name="pick_place" launch-prefix="$(arg launch_prefix) $(arg launch_prefix2) $(arg launch_prefix3)" pkg="papras_demo"
+  type="handoff_fsm" output="screen" args="$(arg command_args)"/> -->
 
 
 </launch>
