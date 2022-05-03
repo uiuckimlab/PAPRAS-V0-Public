@@ -48,9 +48,15 @@ def find_tag(publisher, goal_tag_id):
     while prev_sequence == curr_sequence or goal_tag_id not in aruco_tag_ids:
         # no updated tag position is being received (i.e. the camera does not detect the aruco tag)
         # or can't find specific aruco tag id
-        vel_cmd.angular.z = 0.15
-        publisher.publish(vel_cmd)
-
+        try:
+            rospy.wait_for_message("/aruco_marker_publisher/markers", MarkerArray, timeout=3)
+        except:
+            vel_cmd.angular.z = 2.0
+            for i in range(5):
+                publisher.publish(vel_cmd)
+                rospy.sleep(0.05)
+          
+      
     vel_cmd.angular.z = 0.0
     publisher.publish(vel_cmd)
 
@@ -77,15 +83,15 @@ def roomba_nav(publisher, goal_tag_id):
 
     if x > tolerance:
         # aruco tag to the right of the camera
-        vel_cmd.angular.z = -0.1 * camera_upside_down
+        vel_cmd.angular.z = -0.2 * camera_upside_down**2
     elif x < -tolerance:
         # aruco tag to the left of the camera
-        vel_cmd.angular.z = 0.1 * camera_upside_down
+        vel_cmd.angular.z = 0.2 * camera_upside_down**2
 
     if z > 2:
         # aruco tag is more than 2m away
         vel_cmd.linear.x = 0.2
-    elif z > 1:
+    elif z > 0.8:
         # aruco tag is more than 1m away
         vel_cmd.linear.x = 0.1
     elif z < 0.5:
@@ -96,17 +102,22 @@ def roomba_nav(publisher, goal_tag_id):
 
 def main():
     publisher = rospy.Publisher('/roomba/cmd_vel', Twist, queue_size=10)
-    subscriber = rospy.Subscriber("/aruco_tracker/markers", MarkerArray, aruco_tag_callback)
+    subscriber = rospy.Subscriber("/aruco_marker_publisher/markers", MarkerArray, aruco_tag_callback)
     rospy.init_node('roomba_nav', anonymous=True)
     rate = rospy.Rate(10) # 10hz
 
     goal_tag_id = 0
 
+    vel_cmd = Twist()
+    for i in range(100):
+        vel_cmd.linear.x = 0.20
+        publisher.publish(vel_cmd)
+        rate.sleep()
+
     while not rospy.is_shutdown():
 
         find_tag(publisher, goal_tag_id)
         roomba_nav(publisher, goal_tag_id)
-
         rate.sleep()
 
 if __name__ == '__main__':
