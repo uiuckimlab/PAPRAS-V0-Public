@@ -143,6 +143,12 @@ add_executable(kitchen_fsm src/kitchen_fsm.cpp)
 target_link_libraries(kitchen_fsm ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS kitchen_fsm DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(roomba_nav src/roomba_nav.cpp)
+target_link_libraries(roomba_nav ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS roomba_nav DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+
+
 # add_executable(plan_grasps_service src/plan_grasps_service.cpp)
 # target_link_libraries(plan_grasps_service ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 # install(TARGETS plan_grasps_service DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

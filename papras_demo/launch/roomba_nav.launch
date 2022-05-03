@@ -1,15 +1,6 @@
 <launch>
-    <arg name="namespace_prefix" default="roomba_nav" />
-    <arg name="usb_port" default="/dev/ttyUSB0" />
-    <arg name="pipeline" default="ompl"/>
-    <arg name="marker_size" default="0.03" />
-    <arg name="marker_id" default="0" doc="The ID of the ArUco marker used" />
-    <arg name="namespace" default="robot1"/>
-    <arg name="sim" default="false"/>
-    <arg name="eye_on_hand" default="true"/>
-     <arg name="evaluation" default="true" doc="Start the evaluator to estimate the accuracy of the calibration" />
-
-    <node name="roomba_nav" pkg="papras_demo" type="roomba_nav.py" respawn="false" output="screen">
+   
+    <node name="roomba_nav" pkg="papras_demo" type="roomba_nav" respawn="false" output="screen">
     </node>
 
 </launch>
