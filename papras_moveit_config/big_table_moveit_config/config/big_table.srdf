@@ -31,7 +31,7 @@
         <group name="gripper1"/>
         <group name="gripper2"/>
     </group>
-    !--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="init" group="arm1">
         <joint name="robot1/joint1" value="0"/>
         <joint name="robot1/joint2" value="0"/>
@@ -130,10 +130,34 @@
     </group_state>
     <group_state name="observe_table_left" group="arm2">
         <joint name="robot2/joint1" value="-0.5033"/>
-        <joint name="robot2/joint2" value="-1.337"/>
-        <joint name="robot2/joint3" value="0.9719"/>
+        <joint name="robot2/joint2" value="-1.6685"/>
+        <joint name="robot2/joint3" value="0.5293"/>
         <joint name="robot2/joint4" value="0"/>
-        <joint name="robot2/joint5" value="0.7376"/>
+        <joint name="robot2/joint5" value="1.5707"/>
+        <joint name="robot2/joint6" value="0"/>
+    </group_state>
+    <group_state name="observe_table_middle" group="arm2">
+        <joint name="robot2/joint1" value="-1.7183"/>
+        <joint name="robot2/joint2" value="-1.6685"/>
+        <joint name="robot2/joint3" value="0.5293"/>
+        <joint name="robot2/joint4" value="0"/>
+        <joint name="robot2/joint5" value="1.5707"/>
+        <joint name="robot2/joint6" value="0"/>
+    </group_state>
+    <group_state name="observe_table_right" group="arm2">
+        <joint name="robot2/joint1" value="-2.6555"/>
+        <joint name="robot2/joint2" value="-1.6685"/>
+        <joint name="robot2/joint3" value="0.5293"/>
+        <joint name="robot2/joint4" value="0"/>
+        <joint name="robot2/joint5" value="1.5707"/>
+        <joint name="robot2/joint6" value="0"/>
+    </group_state>
+    <group_state name="observe_table_full_right" group="arm2">
+        <joint name="robot2/joint1" value="-3.1415"/>
+        <joint name="robot2/joint2" value="-1.6685"/>
+        <joint name="robot2/joint3" value="0.5293"/>
+        <joint name="robot2/joint4" value="0"/>
+        <joint name="robot2/joint5" value="1.5707"/>
         <joint name="robot2/joint6" value="0"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->

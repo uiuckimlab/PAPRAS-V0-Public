@@ -12,10 +12,7 @@ ssh papras@nuc-3
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
-```
-```
-roslaunch papras_demo _demo_homecare_hw_tea_table.launch
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_tea_table.launch
 ```
 ## Big Table PC 
 *remove arm 4 from tea table and move to big table*
@@ -27,10 +24,7 @@ sudo setserial /dev/ttyUSB0 low_latency
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
-```
-```
-roslaunch papras_demo _demo_homecare_hw_big_table.launch
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_big_table.launch
 ```
 ## Kitchen PC NUC 5
 ```
@@ -41,10 +35,7 @@ ssh papras@nuc-5
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
-```
-```
-roslaunch papras_demo _demo_homecare_hw_kitchen.launch
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_kitchen.launch
 ```
 **vision launch on kazukis2@nv-lambda**
 ## Roomba PC NUC 10
@@ -58,9 +49,9 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 ```
-*ensure roomba is powered on (clean button should be lit green)*
+*ensure roomba is powered on (clean button should be flashing green)*
 ```
-roslaunch papras_demo _demo_homecare_hw_kitchen.launch
+roslaunch papras_demo _demo_homecare_hw_roomba.launch
 ```
 **vision launch on kimlab@jetson-xavier-nx**
 ## OPC
@@ -68,7 +59,7 @@ roslaunch papras_demo _demo_homecare_hw_kitchen.launch
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_OPC.launch
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_OPC.launch roomba_joy:=false
 ```
 ## Wall Mount PC NUC 2
 ```
@@ -79,8 +70,5 @@ ssh papras@nuc-2
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
-```
-```
-roslaunch papras_demo _demo_homecare_hw_wall_mount.launch
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_wall_mount.launch
 ```
