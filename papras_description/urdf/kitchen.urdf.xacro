@@ -31,7 +31,7 @@
   <joint name="robot1/env_arm_fixed" type="fixed">
     <parent link="env"/>
     <child link="robot1/link1"/>
-    <origin xyz="-0.07009 0.03648 0.78111" rpy="${pi} ${-0.5*pi} 0"/>
+    <origin xyz="-0.06229 0.01597 0.85252" rpy="${pi} ${-0.5*pi} 0"/>
   </joint>
 
   <xacro:papras_arm_long id="1"/>
