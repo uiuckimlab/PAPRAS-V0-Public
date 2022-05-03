@@ -79,6 +79,22 @@
         <joint name="robot1/joint5" value="0.393"/>
         <joint name="robot1/joint6" value="0.5728"/>
     </group_state>
+    <group_state name="roomba_scan_objects" group="arm1">
+        <joint name="robot1/joint1" value="-0.5033"/>
+        <joint name="robot1/joint2" value="0.3646"/>
+        <joint name="robot1/joint3" value="-0.1215"/>
+        <joint name="robot1/joint4" value="-2.0198"/>
+        <joint name="robot1/joint5" value="1.5707"/>
+        <joint name="robot1/joint6" value="0.0868"/>
+    </group_state>
+    <group_state name="roomba_scan_objects_behind" group="arm1">
+        <joint name="robot1/joint1" value="-1.9266"/>
+        <joint name="robot1/joint2" value="-0.8287"/>
+        <joint name="robot1/joint3" value="-0.3298"/>
+        <joint name="robot1/joint4" value="-0.1063"/>
+        <joint name="robot1/joint5" value="1.5707"/>
+        <joint name="robot1/joint6" value="-1.4406"/>
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="eef1" parent_link="robot1/end_effector_link" group="gripper1"/>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
