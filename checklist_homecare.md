@@ -46,12 +46,9 @@ ssh papras@nuc-10
 ```
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
-```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
-```
 *ensure roomba is powered on (clean button should be flashing green)*
 ```
-roslaunch papras_demo _demo_homecare_hw_roomba.launch
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_roomba.launch
 ```
 **vision launch on kimlab@jetson-xavier-nx**
 ## OPC
