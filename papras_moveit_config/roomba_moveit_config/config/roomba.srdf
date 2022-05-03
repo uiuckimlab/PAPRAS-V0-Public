@@ -47,6 +47,14 @@
         <joint name="robot1/joint5" value="1.4"/>
         <joint name="robot1/joint6" value="3.14"/>
     </group_state>
+    <group_state name="plate_big_table" group="arm1">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="-0.663225"/>
+        <joint name="robot1/joint3" value="-0.174533"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0.663225"/>
+        <joint name="robot1/joint6" value="3.14"/>
+    </group_state>
     <group_state name="plate_down" group="arm1">
         <joint name="robot1/joint1" value="0"/>
         <joint name="robot1/joint2" value="-1.3812"/>
