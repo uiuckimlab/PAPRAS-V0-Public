@@ -1,40 +1,9 @@
 ```
 export ROS_MASTER_URI=http://lambda-dual:11311/ && roscore
 ```
-```
-Kimlab_2020
-```
 
 # Homecare Service Robot
-## Big Table PC 
-```
-sudo setserial /dev/ttyUSB0 low_latency
-```
-*enter pass for setting usb low latency*
-```
-cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
-```
-```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
-```
-```
-roslaunch papras_demo _demo_homecare_hw_big_table.launch
-```
-## Kitchen PC NUC5
-```
-ssh papras@nuc-5
-```
-*enter pass for setting usb low latency*
-```
-cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
-```
-```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
-```
-```
-roslaunch papras_demo _demo_homecare_hw_kitchen.launch
-```
-## Tea Table PC NUC3
+## Tea Table PC NUC 3
 ```
 ssh papras@nuc-3
 ```
@@ -48,10 +17,70 @@ source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
 ```
 roslaunch papras_demo _demo_homecare_hw_tea_table.launch
 ```
+## Big Table PC 
+*remove arm 4 from tea table and move to big table*
+```
+sudo setserial /dev/ttyUSB0 low_latency
+```
+*enter pass for setting usb low latency*
+```
+cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+```
+```
+roslaunch papras_demo _demo_homecare_hw_big_table.launch
+```
+## Kitchen PC NUC 5
+```
+ssh papras@nuc-5
+```
+*enter pass for setting usb low latency*
+```
+cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+```
+```
+roslaunch papras_demo _demo_homecare_hw_kitchen.launch
+```
+**vision launch on kazukis2@nv-lambda**
+## Roomba PC NUC 10
+```
+ssh papras@nuc-10
+```
+*enter pass for setting usb low latency*
+```
+cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+```
+*ensure roomba is powered on (clean button should be lit green)*
+```
+roslaunch papras_demo _demo_homecare_hw_kitchen.launch
+```
+**vision launch on kimlab@jetson-xavier-nx**
 ## OPC
 ```
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make
 ```
 ```
 source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_OPC.launch
+```
+## Wall Mount PC NUC 2
+```
+ssh papras@nuc-2
+```
+*enter pass for setting usb low latency*
+```
+cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/
+```
+```
+roslaunch papras_demo _demo_homecare_hw_wall_mount.launch
 ```
