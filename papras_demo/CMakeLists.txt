@@ -143,6 +143,10 @@ add_executable(kitchen_fsm src/kitchen_fsm.cpp)
 target_link_libraries(kitchen_fsm ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS kitchen_fsm DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(kitchen_roomba_handoff src/kitchen_roomba_handoff.cpp)
+target_link_libraries(kitchen_roomba_handoff ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS kitchen_roomba_handoff DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 add_executable(roomba_nav src/roomba_nav.cpp)
 target_link_libraries(roomba_nav ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS roomba_nav DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
