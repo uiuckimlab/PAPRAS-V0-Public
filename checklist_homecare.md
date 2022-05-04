@@ -69,3 +69,5 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_wall_mount.launch
 ```
+## calibration
+rosrun camera_calibration cameracalibrator.py --no-service-check --size 8x6 --square 0.026 image:=/camera/color/image_raw camera:=/camera
