@@ -48,6 +48,10 @@
 #include <actionlib/client/terminal_state.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <cmath>
+#define EEF1 "big_table/robot1/end_effector_link"
+#define EEF2 "big_table/robot2/end_effector_link"
+
+
 
 std::string tf_prefix_ = "big_table/robot2/";
 constexpr char LOGNAME[] = "moveit_task_constructor_papras";
@@ -149,6 +153,59 @@ struct GrapsPoseDefine
 
 bool paused = false;
 bool failed = false;
+
+int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& group, moveit::planning_interface::MoveGroupInterface& hand_group, std::vector<ObjectID> objects_ids, int i){
+  moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+  group.setPlanningTime(10.0);
+  group.setNumPlanningAttempts(30.0);
+  group.setMaxAccelerationScalingFactor(0.1);
+  group.setMaxVelocityScalingFactor(0.1);
+  group.setPlannerId("RRTConnect");
+  geometry_msgs::Pose objPose;
+
+
+  double robot2_link1_x =  0.3735;
+  double robot2_link1_y = -0.2535;
+
+  double robot1_link1_x = -0.3795;
+  double robot1_link1_y =  0.0435;
+
+  std::vector<std::string> robot2_close_objects;
+  std::vector<std::string> robot1_close_objects;
+
+  std::vector<std::string> object_names(objects_ids.size());
+  for(int i = 0; i < object_names.size(); i++){
+    object_names[i] = id_to_string(objects_ids[i]);
+  }
+  for(int i = 0; i < object_names.size(); i++){
+    objPose = planning_scene_interface.getObjectPoses({object_names[i]}).at(object_names[i]);
+    double distanceRobot2 = (abs(objPose.position.y - robot2_link1_y)*abs(objPose.position.y - robot2_link1_y)+abs(objPose.position.x - robot2_link1_x)*abs(objPose.position.y - robot2_link1_x));
+    double distanceRobot1 = (abs(objPose.position.y - robot1_link1_y)*abs(objPose.position.y - robot1_link1_y)+abs(objPose.position.x - robot1_link1_x)*abs(objPose.position.y - robot1_link1_x));
+    if( distanceRobot2 < distanceRobot1 ){
+        robot2_close_objects.push_back(object_names[i]);
+    }else{
+        robot1_close_objects.push_back(object_names[i]);
+    }
+  }
+
+  int j = 0;
+  for(int i = 0; i < robot1_close_objects.size(); i++){
+    
+
+
+
+
+
+
+
+
+
+
+
+  }
+
+
+}
 
 int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, moveit::planning_interface::MoveGroupInterface& hand_group, ObjectID object_id, int i){
   // get pose of detected object
