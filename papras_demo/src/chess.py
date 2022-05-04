@@ -9,7 +9,7 @@ from std_msgs.msg import String, Bool
 from stockfish import Stockfish
 
 robot_done = True
-mode = 'rr'
+mode = 'rh'
 
 class ChessEngine:
     def __init__(self):
@@ -378,9 +378,13 @@ if __name__ == '__main__':
     # global mode
     try:
         if mode == 'rr':
+            print("Robot vs. Robot mode engaged.")
             chess_RR()
         elif mode == 'rh':
-            tester()
-            # chess_RH()
+            # tester()
+            print("Robot vs. Human mode engaged.")
+            chess_RH()
+        else:
+            print("Unknown chess mode. Quitting.")
     except rospy.ROSInterruptException:
         print("Error: Failed to start chess demo!")

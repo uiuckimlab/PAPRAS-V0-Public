@@ -21,7 +21,7 @@
 
 // for cacheing
 #include <unordered_map>
-#include <fstream> 
+#include <fstream>
 #include <sstream>
 #include <cstdint>
 #include <yaml-cpp/yaml.h>
@@ -60,7 +60,7 @@ moveit::planning_interface::MoveGroupInterface** current_move_group;
 const moveit::core::JointModelGroup** current_joint_model;
 
 // Visualization
-moveit_visual_tools::MoveItVisualTools* visual_tools; 
+moveit_visual_tools::MoveItVisualTools* visual_tools;
 
 //ros node_handle for yaml parsing
 // ros::NodeHandle node_handle;
@@ -138,6 +138,74 @@ std::unordered_map<std::string,std::string>arm1_moves({
   {"bucket","/arm2/bucket"}
 });
 
+std::unordered_map<std::string,std::string>arm1_90({
+  {"a1","/arm1/a8"},
+  {"a2","/arm1/b8"},
+  {"a3","/arm1/c8"},
+  {"a4","/arm1/d8"},
+  {"a5","/arm1/e8"},
+  {"a6","/arm1/f8"},
+  {"a7","/arm1/g8"},
+  {"a8","/arm1/h8"},
+  {"b1","/arm1/a7"},
+  {"b2","/arm1/b7"},
+  {"b3","/arm1/c7"},
+  {"b4","/arm1/d7"},
+  {"b5","/arm1/e7"},
+  {"b6","/arm1/f7"},
+  {"b7","/arm1/g7"},
+  {"b8","/arm1/h7"},
+  {"c1","/arm1/a6"},
+  {"c2","/arm1/b6"},
+  {"c3","/arm1/c6"},
+  {"c4","/arm1/d6"},
+  {"c5","/arm1/e6"},
+  {"c6","/arm1/f6"},
+  {"c7","/arm1/g6"},
+  {"c8","/arm1/h6"},
+  {"d1","/arm1/a5"},
+  {"d2","/arm1/b5"},
+  {"d3","/arm1/c5"},
+  {"d4","/arm1/d5"},
+  {"d5","/arm1/e5"},
+  {"d6","/arm1/f5"},
+  {"d7","/arm1/g5"},
+  {"d8","/arm1/h5"},
+  {"e1","/arm1/a4"},
+  {"e2","/arm1/b4"},
+  {"e3","/arm1/c4"},
+  {"e4","/arm1/d4"},
+  {"e5","/arm1/e4"},
+  {"e6","/arm1/f4"},
+  {"e7","/arm1/g4"},
+  {"e8","/arm1/h4"},
+  {"f1","/arm1/a3"},
+  {"f2","/arm1/b3"},
+  {"f3","/arm1/c3"},
+  {"f4","/arm1/d3"},
+  {"f5","/arm1/e3"},
+  {"f6","/arm1/f3"},
+  {"f7","/arm1/g3"},
+  {"f8","/arm1/h3"},
+  {"g1","/arm1/a2"},
+  {"g2","/arm1/b2"},
+  {"g3","/arm1/c2"},
+  {"g4","/arm1/d2"},
+  {"g5","/arm1/e2"},
+  {"g6","/arm1/f2"},
+  {"g7","/arm1/g2"},
+  {"g8","/arm1/h2"},
+  {"h1","/arm1/a1"},
+  {"h2","/arm1/b1"},
+  {"h3","/arm1/c1"},
+  {"h4","/arm1/d1"},
+  {"h5","/arm1/e1"},
+  {"h6","/arm1/f1"},
+  {"h7","/arm1/g1"},
+  {"h8","/arm1/h1"},
+  {"bucket","/arm2/bucket"}
+});
+
 std::unordered_map<std::string,std::string>arm2_moves({
   {"a1","/arm2/h8"},
   {"a2","/arm2/h7"},
@@ -210,7 +278,7 @@ std::unordered_map<std::string,std::string>arm2_moves({
 
 void execute_move(const ros::NodeHandle node_handle){
     std::vector<int> comma_positions;
-    
+
     comma_positions.push_back(msg.find(","));
     // comma_positions.push_back(msg.substr(comma_positions[0]+1).find(",") + comma_positions[0]);
 
@@ -219,12 +287,12 @@ void execute_move(const ros::NodeHandle node_handle){
     std::string from = msg.substr(5,2);
     std::string to = msg.substr(8);
     std::string move_name_from;
-    std::string move_name_to; 
+    std::string move_name_to;
     moveit::planning_interface::MoveGroupInterface* move_group_gripper;
     std::vector<double> pose_data;
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
-    
+
     if (control_group == "arm1"){
       move_group = move_group_arm1;
       move_group_gripper = move_group_gripper1;
@@ -235,7 +303,7 @@ void execute_move(const ros::NodeHandle node_handle){
       move_group_gripper = move_group_gripper2;
       move_name_from = arm2_moves[from];
       move_name_to = arm2_moves[to];
-    } 
+    }
 
     move_group->setPlanningPipelineId("ompl");
     move_group->setMaxVelocityScalingFactor(VEL_SCALE);
@@ -252,7 +320,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
     if(to == "playing"){
       move_group->setStartStateToCurrentState();
-      // 
+      //
       // move to position from
       node_handle.getParam("arm1/playing_home", pose_data);
       move_group->setJointValueTarget(pose_data);
@@ -272,7 +340,7 @@ void execute_move(const ros::NodeHandle node_handle){
       ROS_INFO("IN NOT PLAYING!!!!");
 
       move_group->setStartStateToCurrentState();
-      // 
+      //
       // move to position from
       node_handle.getParam("arm1/not_playing_home", pose_data);
       move_group->setJointValueTarget(pose_data);
@@ -283,7 +351,7 @@ void execute_move(const ros::NodeHandle node_handle){
         visual_tools->prompt("Press 'next' to execute plan");
         move_group->execute(my_plan);
       }
-      
+
       std_msgs::Bool finished;
       finished.data = true;
       finished_move_pub.publish(finished);
@@ -293,11 +361,11 @@ void execute_move(const ros::NodeHandle node_handle){
     }
 
     ROS_INFO("Control Group: %s, move_name_from: %s, move_name_to: %s",control_group.c_str(),from.c_str(),to.c_str());
-    
-  
+
+
 
     move_group->setStartStateToCurrentState();
-    // 
+    //
     // move to position from
     node_handle.getParam(move_name_from + "_up", pose_data);
     move_group->setJointValueTarget(pose_data);
@@ -312,7 +380,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
 
     move_group->setStartStateToCurrentState();
-    // 
+    //
     // move to position from
     node_handle.getParam(move_name_from + "_down", pose_data);
     move_group->setJointValueTarget(pose_data);
@@ -339,7 +407,7 @@ void execute_move(const ros::NodeHandle node_handle){
     }
 
     move_group->setStartStateToCurrentState();
-    // 
+    //
     // move to position from
     node_handle.getParam(move_name_from + "_up", pose_data);
     move_group->setJointValueTarget(pose_data);
@@ -355,7 +423,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
 
     move_group->setStartStateToCurrentState();
-    // 
+    //
     // move to position home
     node_handle.getParam("/arm1/playing_home", pose_data);
     move_group->setJointValueTarget(pose_data);
@@ -369,7 +437,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
 
     move_group->setStartStateToCurrentState();
-    // 
+    //
     // move to position to
     node_handle.getParam(move_name_to + "_up", pose_data);
     move_group->setJointValueTarget(pose_data);
@@ -384,7 +452,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
 
     move_group->setStartStateToCurrentState();
-    // 
+    //
     // move to position to
     node_handle.getParam(move_name_to + "_down", pose_data);
     move_group->setJointValueTarget(pose_data);
@@ -398,7 +466,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
 
 
-    
+
     move_group_gripper->setStartStateToCurrentState();
     // un grasp
     node_handle.getParam("/gripper/ungrab_piece", pose_data);
@@ -412,7 +480,7 @@ void execute_move(const ros::NodeHandle node_handle){
     }
 
     move_group->setStartStateToCurrentState();
-    // 
+    //
     // move to position to
     node_handle.getParam(move_name_to + "_up", pose_data);
     move_group->setJointValueTarget(pose_data);
@@ -426,7 +494,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
 
     move_group->setStartStateToCurrentState();
-    // 
+    //
     // move to position home
     node_handle.getParam("/arm1/playing_home", pose_data);
     move_group->setJointValueTarget(pose_data);
@@ -440,7 +508,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
     // on game finish flip the boolean
 
-    //publish topic 
+    //publish topic
     std_msgs::Bool finished;
     finished.data = true;
     finished_move_pub.publish(finished);
@@ -566,7 +634,7 @@ int main(int argc, char** argv)
 
   // move_group->plan(my_plan);
   // move_group->execute(my_plan);
-  
+
   ROS_INFO("BEFORE WHILE");
   while(!game_finished && ros::ok()){
     if(do_move_bool){
@@ -578,14 +646,14 @@ int main(int argc, char** argv)
     r.sleep();
   }
 
-  
+
 
   move_group = move_group_arm1_2;
   move_group->setStartStateToCurrentState();
   move_group->setNamedTarget("rest");
   move_group->plan(my_plan);
   move_group->execute(my_plan);
-  
+
 
   // Write to a yaml file with helper functions.
   ros::shutdown();
