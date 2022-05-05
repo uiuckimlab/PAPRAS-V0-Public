@@ -35,7 +35,8 @@ ros-noetic-vision-msgs \
 ros-noetic-rosparam-shortcuts \
 ros-noetic-serial \
 ros-noetic-libcreate \
-libspnav-dev
+ros-noetic-aruco-msgs \
+libspnav-dev \
 ```
 ```
 git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git \
