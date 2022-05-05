@@ -26,6 +26,15 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_big_table.launch
 ```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch dope camera.launch
+```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch dope dope.launch
+```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo papras_homecare_handoff_fsm.launch
+```
 ## Kitchen PC NUC 5
 ```
 ssh papras@nuc-5
