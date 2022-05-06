@@ -47,8 +47,6 @@ enum state
     ST_ARM_TO_REST_START,
     ST_SPAWN_TRAY,
     ST_OBSERVE_OBJS,
-    ST_OBSERVE_OBJS_2,
-    ST_OBSERVE_OBJS_3,
     ST_PICK_PLACE_OBJS,
     ST_ARM_TO_HOME_END,
     ST_DONE,
@@ -180,7 +178,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   double robot2_link1_y = -0.2535;
   double yaw = atan2(objPose.position.y - robot2_link1_y, objPose.position.x - robot2_link1_x);
   tf::Quaternion q;
-  q.setRPY(3.14159, 0.0, yaw);
+  q.setRPY(0.0, 0.0, yaw);
   geometry_msgs::Quaternion q_msg;
   tf::quaternionTFToMsg(q, q_msg);
   pre_grasp_pose.pose.orientation = q_msg;
@@ -297,7 +295,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   ros::Duration(0.5).sleep();
 
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
-  group.setNamedTarget("observe_sink");
+  group.setNamedTarget("place_counter");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
@@ -309,7 +307,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   group.detachObject(object_name);
 
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
-  group.setNamedTarget("init");
+  group.setNamedTarget("observe_roomba");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
@@ -319,7 +317,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
 }
 
 // Updates the simulation and planning scenes
-std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInterface &planning_scene_interface,
+std::vector<std::pair<double, ObjectID>> updateScene(moveit::planning_interface::PlanningSceneInterface &planning_scene_interface,
                         ros::NodeHandle &nh, moveit::planning_interface::MoveGroupInterface &group)
 {
     // get objects from object detection
@@ -327,19 +325,19 @@ std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInter
     tf2_ros::Buffer tf_buffer;
     tf2_ros::TransformListener tf2_listener(tf_buffer);
     geometry_msgs::TransformStamped world_to_camera_link; // My frames are named "base_link" and "leap_motion"
-    std::vector<ObjectID> collision_objects_found;
+    std::vector<std::pair<double, ObjectID>> objs_dists;
     
     while (!found_obj)
     {
         if (!ros::ok())
-            return collision_objects_found;
+            return objs_dists;
 
         vision_msgs::Detection3DArrayConstPtr detections =
             ros::topic::waitForMessage<vision_msgs::Detection3DArray>("/dope/detected_objects", nh, ros::Duration(30.0));
         if (detections->detections.size() == 0)
         {
             ROS_ERROR("Timed out while waiting for a message on topic detected_objects!");
-            return collision_objects_found;
+            return objs_dists;
         }
 
         // add objects to planning scene
@@ -349,7 +347,7 @@ std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInter
             if (det3d.results.empty())
             {
                 ROS_ERROR("Detections3D message has empty results!");
-                return collision_objects_found;
+                return objs_dists;
             }
 
             found_obj = true;  
@@ -367,7 +365,6 @@ std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInter
             moveit_msgs::CollisionObject co;
             co.header = detections->header;
             co.header.frame_id = "world";
-            collision_objects_found.push_back((ObjectID) det3d.results[0].id);
             co.id = id_to_string(det3d.results[0].id);
             co.operation = moveit_msgs::CollisionObject::ADD;
             co.primitives.resize(1);
@@ -379,6 +376,8 @@ std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInter
             co.primitive_poses.resize(1);
             co.primitive_poses[0] = obj_world_frame.pose;
             collision_objects.push_back(co);
+            double dist = obj_world_frame.pose.position.x*obj_world_frame.pose.position.x + obj_world_frame.pose.position.y*obj_world_frame.pose.position.y;
+            objs_dists.push_back({dist, (ObjectID) det3d.results[0].id});
             
         }
 
@@ -395,7 +394,11 @@ std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInter
     {
         group.detachObject(object.first);
     }
-    return collision_objects_found;
+    
+    // sort objects by min distance
+    std::sort(objs_dists.begin(), objs_dists.end());
+
+    return objs_dists;
 
 }
 
@@ -435,7 +438,7 @@ int main(int argc, char** argv)
   geometry_msgs::Pose base_place_pose;
   geometry_msgs::Pose base_home_pose;
   std::string world_name;
-  std::vector<ObjectID> object_ids;
+  std::vector<std::pair<double, ObjectID>> object_ids;
   bool handover_planned;
 
   // Load rosparams
@@ -586,9 +589,13 @@ int main(int argc, char** argv)
 
         group.clearPathConstraints();
 
-        object_ids = updateScene(planning_scene_interface, nh, group);   
+        object_ids = updateScene(planning_scene_interface, nh, group);  
 
-        task_state = ST_PICK_PLACE_OBJS;
+        if (object_ids.size() == 0) {
+          task_state = ST_ARM_TO_HOME_END;
+        } else {
+          task_state = ST_PICK_PLACE_OBJS;
+        }
         break;
       }
       case ST_PICK_PLACE_OBJS:
@@ -603,7 +610,7 @@ int main(int argc, char** argv)
         for(int i = 0; i < object_ids.size(); i++){
             pickPlanAttempts = 0;
             do{
-                error_code = pick_place_object(group, hand_group, object_ids[i],i);
+                error_code = pick_place_object(group, hand_group, object_ids[i].second, i);
                 ++pickPlanAttempts;
 
                 if ((error_code == moveit::core::MoveItErrorCode::PLANNING_FAILED ||
@@ -624,7 +631,7 @@ int main(int argc, char** argv)
 
         }   
         if(!failed){
-            task_state = ST_ARM_TO_HOME_END;
+            task_state = ST_OBSERVE_OBJS;
         }
         break;
       }
