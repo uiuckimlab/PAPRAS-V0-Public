@@ -1,6 +1,5 @@
 <launch>
-   
-    <node name="roomba_nav" pkg="papras_demo" type="roomba_nav" respawn="false" output="screen">
-    </node>
-
+    <group ns="roomba">
+        <node name="roomba_nav" pkg="papras_demo" type="roomba_nav" respawn="false" output="screen"/>
+    </group>
 </launch>
