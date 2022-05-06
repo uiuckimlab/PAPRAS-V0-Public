@@ -1,6 +1,6 @@
 <package>
 
-  <name>tea_table_moveit_config_one_arm</name>
+  <name>tea_table_one_arm_moveit_config</name>
   <version>0.3.0</version>
   <description>
      An automatically generated package with all the configuration and launch files for using the tea_table with the MoveIt Motion Planning Framework

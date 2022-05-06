@@ -21,5 +21,5 @@
   <!-- Add MoveGroup capabilities specific to this pipeline -->
   <!-- <param name="capabilities" value="" /> -->
 
-  <rosparam command="load" file="$(find tea_table_moveit_config_one_arm)/config/stomp_planning.yaml"/>
+  <rosparam command="load" file="$(find tea_table_one_arm_moveit_config)/config/stomp_planning.yaml"/>
 </launch>

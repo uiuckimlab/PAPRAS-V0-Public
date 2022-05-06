@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1.3)
-project(tea_table_moveit_config_one_arm)
+project(tea_table_one_arm_moveit_config)
 
 find_package(catkin REQUIRED)
 
