@@ -44,6 +44,7 @@ namespace open_manipulator_p_hw
     isMotorsMissing = false;
     isTorqueOn = false;
     controlLoopCnt = 0;
+    droppedPackets = 0;
   }
 
   void HardwareInterface::registerActuatorInterfaces()
@@ -552,7 +553,9 @@ namespace open_manipulator_p_hw
       ROS_ERROR("%s", log);
     }
 
-    if (result == false) isMotorsMissing = true;
+    // Motors Missing after 5 consecutive failed reads
+    droppedPackets = (result == false) ? droppedPackets+1 : 0;
+    if (droppedPackets > 5) isMotorsMissing = true;
 
 
     for (uint8_t index = 0; index < id_cnt; index++)

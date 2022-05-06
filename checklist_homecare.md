@@ -26,6 +26,15 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_big_table.launch
 ```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch dope camera.launch
+```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch dope dope.launch
+```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo papras_homecare_handoff_fsm.launch
+```
 ## Kitchen PC NUC 5
 ```
 ssh papras@nuc-5
@@ -37,7 +46,16 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_kitchen.launch
 ```
-**vision launch on kazukis2@nv-lambda**
+**kitchen vision - dope detection**
+```
+ssh kazukis2@nv-lambda
+```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch dope camera.launch
+```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch dope dope.launch
+```
 ## Roomba PC NUC 10
 ```
 ssh papras@nuc-10
@@ -50,7 +68,16 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_roomba.launch
 ```
-**vision launch on kimlab@jetson-xavier-nx**
+** roomba vision - aruco marker detection**
+```
+ssh kimlab@jetson-xavier-nx
+```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch realsense2_camera rs_camera.launch
+```
+```
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch aruco_ros marker_publisher.launch 
+```
 ## OPC
 ```
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make
