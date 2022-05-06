@@ -6,6 +6,7 @@
 // MoveIt!
 #include <geometric_shapes/solid_primitive_dims.h>
 #include <moveit/move_group_interface/move_group_interface.h>
+#include <moveit/planning_scene/planning_scene.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <moveit/planning_scene_monitor/planning_scene_monitor.h>
 #include <moveit_visual_tools/moveit_visual_tools.h>
@@ -56,6 +57,9 @@ std::string tf_prefix_ = "big_table/robot2/";
 constexpr char LOGNAME[] = "moveit_task_constructor_papras";
 // The circle constant tau = 2*pi. One tau is one rotation in radians.
 const double tau = 2 * M_PI;
+
+// Planning scene
+planning_scene::PlanningScenePtr my_planning_scene;
 
 enum state
 {
@@ -152,9 +156,15 @@ struct GrapsPoseDefine
 bool paused = false;
 bool failed = false;
 
-int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& group, moveit::planning_interface::MoveGroupInterface& hand_group, std::vector<ObjectID> objects_ids){
+bool validate_IK(moveit::core::RobotState* robot_state, const moveit::core::JointModelGroup* joint_group, const double* joint_group_variable_values) {
+  collision_detection::CollisionRequest collision_request;
+  collision_detection::CollisionResult collision_result;
+  my_planning_scene->checkSelfCollision(collision_request, collision_result);
+  return !collision_result.collision;
+}
+
+int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& group, moveit::planning_interface::MoveGroupInterface& hand_group, std::map<ObjectID, geometry_msgs::PoseStamped> objects_ids){
   ROS_INFO_STREAM("in pick_place_object_two_arm");
-  moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
   group.setPlanningTime(10.0);
   group.setNumPlanningAttempts(30.0);
   group.setMaxAccelerationScalingFactor(0.1);
@@ -171,48 +181,51 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
   double robot1_link1_x = -0.3795;
   double robot1_link1_y =  0.0435;
 
-  std::vector<std::pair<std::string,ObjectID>> robot2_close_objects;
-  std::vector<std::pair<std::string,ObjectID>> robot1_close_objects;
+  std::vector<std::pair<ObjectID, geometry_msgs::PoseStamped>> robot2_close_objects;
+  robot2_close_objects.reserve(objects_ids.size());
+  std::vector<std::pair<ObjectID, geometry_msgs::PoseStamped>> robot1_close_objects;
 
-  std::vector<std::string> object_names(objects_ids.size());
-  for(int i = 0; i < object_names.size(); i++){
-    object_names[i] = id_to_string(objects_ids[i]);
-  }
-  
-  for(int i = 0; i < object_names.size(); i++){
-    objPose = planning_scene_interface.getObjectPoses({object_names[i]}).at(object_names[i]);
+  for (auto it = objects_ids.begin(); it != objects_ids.end(); it++) {
+    objPose = it->second.pose;
     double distanceRobot2 = (objPose.position.y - robot2_link1_y)*(objPose.position.y - robot2_link1_y) + (objPose.position.x - robot2_link1_x)*(objPose.position.x - robot2_link1_x);
     double distanceRobot1 = (objPose.position.y - robot1_link1_y)*(objPose.position.y - robot1_link1_y) + (objPose.position.x - robot1_link1_x)*(objPose.position.x - robot1_link1_x);
-    if( distanceRobot2 < distanceRobot1 ){
-        robot2_close_objects.push_back({object_names[i],objects_ids[i]});
-    }else{
-        robot1_close_objects.push_back({object_names[i],objects_ids[i]});
+    if (distanceRobot2 < distanceRobot1) {
+      robot2_close_objects.push_back(*it);
+    } else {
+      robot1_close_objects.push_back(*it);
     }
+  }
+
+  for (auto it : robot1_close_objects) {
+    ROS_INFO_STREAM("Robot 1 Objects: Object ID: " << it.first << std::endl << "Pose: " << it.second.pose.position);
+  }
+  for (auto it : robot2_close_objects) {
+    ROS_INFO_STREAM("Robot 2 Objects: Object ID: " << it.first << std::endl << "Pose: " << it.second.pose.position);
   }
 
   ROS_INFO_STREAM("before getCurrentPose");
 
-  int j = 0;
-  for(int i = 0; i < robot2_close_objects.size(); i++){
+  int i = 0;
+  auto it_robot1 = robot1_close_objects.begin();
+  for(auto it_robot2 = robot2_close_objects.begin(); it_robot2 != robot2_close_objects.end(); it_robot2++){
     geometry_msgs::PoseStamped pre_grasp_pose_robot1 = group.getCurrentPose(EEF1);
     geometry_msgs::PoseStamped grasp_pose_robot1 = group.getCurrentPose(EEF1);
     geometry_msgs::PoseStamped pre_place_pose_robot1 = group.getCurrentPose(EEF1);
     geometry_msgs::PoseStamped place_pose_robot1 = group.getCurrentPose(EEF1);
-    ROS_INFO_STREAM("arm1 current pose: " << pre_grasp_pose_robot1);
 
     geometry_msgs::PoseStamped pre_grasp_pose_robot2 = group.getCurrentPose(EEF2);
     geometry_msgs::PoseStamped grasp_pose_robot2 = group.getCurrentPose(EEF2);
     geometry_msgs::PoseStamped pre_place_pose_robot2 = group.getCurrentPose(EEF2);
     geometry_msgs::PoseStamped place_pose_robot2 = group.getCurrentPose(EEF2);
-    ROS_INFO_STREAM("arm2 current pose: " << pre_grasp_pose_robot2);
 
     geometry_msgs::Pose objPose_robot2;
     geometry_msgs::Pose objPose_robot1;
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
     // NEW CODE WORKAROUND
-    moveit::core::RobotModelConstPtr kinematic_model = group.getRobotModel();
+    const moveit::core::RobotModelConstPtr kinematic_model = group.getRobotModel();
     moveit::core::RobotStatePtr kinematic_state = group.getCurrentState();
+    my_planning_scene = (planning_scene::PlanningScenePtr) new planning_scene::PlanningScene(kinematic_model);
     const moveit::core::JointModelGroup* arm1_joint_model_group = kinematic_model->getJointModelGroup("arm1");
     const moveit::core::JointModelGroup* arm2_joint_model_group = kinematic_model->getJointModelGroup("arm2");
 
@@ -226,11 +239,9 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
     ROS_INFO_STREAM("Created all MoveIt objects");
 
 
-    objPose_robot2 = planning_scene_interface.getObjectPoses({robot2_close_objects[i].first}).at(robot2_close_objects[i].first);
-
-    if( j < robot1_close_objects.size() ){
-       objPose_robot1 = planning_scene_interface.getObjectPoses({robot1_close_objects[i].first}).at(robot1_close_objects[i].first);
-       switch(robot1_close_objects[j].second){
+    if( it_robot1 != robot1_close_objects.end() ){
+       objPose_robot1 = it_robot1->second.pose;
+       switch(it_robot1->first){
           case ObjectID::OJ:
           case ObjectID::MILK:
             pre_grasp_pose_robot1.pose.position.x = objPose_robot1.position.x;
@@ -241,13 +252,13 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
           case ObjectID::ABETSOUP:
           case ObjectID::TOMATOSAUCE:
           case ObjectID::CUP :
-            pre_grasp_pose_robot1.pose.position.x = objPose_robot1.position.x;
-            pre_grasp_pose_robot1.pose.position.y = objPose_robot1.position.y;
+            pre_grasp_pose_robot1.pose.position.x = objPose_robot1.position.x + 0.028;
+            pre_grasp_pose_robot1.pose.position.y = objPose_robot1.position.y + 0.017;
             // pre_grasp_pose.pose.position.z = objPose.position.z + 0.1;
             pre_grasp_pose_robot1.pose.position.z = 0.895;
             break;
           default:
-            ROS_INFO("object not in list");
+            ROS_INFO("HERE: object not in list");
             return 0;
         }
 
@@ -260,7 +271,7 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
 
 
         grasp_pose_robot1 = pre_grasp_pose_robot1;
-        switch(robot1_close_objects[j].second){
+        switch(it_robot1->first){
           case ObjectID::BOWL :
             grasp_pose_robot1.pose.position.y = pre_grasp_pose_robot1.pose.position.y - 0.05;
             grasp_pose_robot1.pose.position.z = pre_grasp_pose_robot1.pose.position.z - 0.075;
@@ -282,28 +293,46 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
             grasp_pose_robot1.pose.position.z = pre_grasp_pose_robot1.pose.position.z - 0.03;
             break;
           default:
-            ROS_INFO("object not in list");
+            ROS_INFO("HERE2: object not in list");
           return 0;
         }
 
 
         // for arm2 to grab
-        pre_place_pose_robot1.pose.position.x = 0 - j*0.05;
-        pre_place_pose_robot1.pose.position.y = 0 + j*0.05;
-        pre_place_pose_robot1.pose.position.z = 0.9 + 0.1;
-        pre_place_pose_robot1.pose.orientation.x = 0.015262;
-        pre_place_pose_robot1.pose.orientation.y = -0.052553;
-        pre_place_pose_robot1.pose.orientation.z = -0.53839;
-        pre_place_pose_robot1.pose.orientation.w =  0.84092;
+        pre_place_pose_robot1.pose.position.x = 0.082364 - i*0.05;
+        pre_place_pose_robot1.pose.position.y = -0.47751 + i*0.05;
+        pre_place_pose_robot1.pose.position.z = 0.915;
+        pre_place_pose_robot1.pose.orientation.x = 2.4912e-05;
+        pre_place_pose_robot1.pose.orientation.y = 0.00010808;
+        pre_place_pose_robot1.pose.orientation.z = -0.35333;
+        pre_place_pose_robot1.pose.orientation.w =  0.9355;
 
         place_pose_robot1 = pre_place_pose_robot1;
-        place_pose_robot1.pose.position.z -= 0.03;
+        place_pose_robot1.pose.position.z -= 0.04;
 
-        robot2_close_objects.push_back(robot1_close_objects[j]);
+        it_robot1->second.pose = place_pose_robot1.pose;
+        it_robot1->second.pose.position.x -= 0.04;
+        it_robot1->second.pose.position.y += 0.00;
+        robot2_close_objects.push_back(*it_robot1);
+        
+        it_robot1++;
+    } else {
+        pre_grasp_pose_robot1.pose.position.x = -0.37951;
+        pre_grasp_pose_robot1.pose.position.y = 0.29024;
+        pre_grasp_pose_robot1.pose.position.z = 0.83558;
+        pre_grasp_pose_robot1.pose.orientation.x = -0.11594;
+        pre_grasp_pose_robot1.pose.orientation.y = 0.11585;
+        pre_grasp_pose_robot1.pose.orientation.z = 0.69757;
+        pre_grasp_pose_robot1.pose.orientation.w =  0.69752;
+        grasp_pose_robot1.pose = pre_grasp_pose_robot1.pose;
+        pre_place_pose_robot1.pose = pre_grasp_pose_robot1.pose;
+        place_pose_robot1.pose = pre_grasp_pose_robot1.pose;
     }
 
 
-    switch(robot2_close_objects[i].second){
+    objPose_robot2 = it_robot2->second.pose;
+
+    switch(it_robot2->first){
       case ObjectID::OJ:
       case ObjectID::MILK:
         pre_grasp_pose_robot2.pose.position.x = objPose_robot2.position.x;
@@ -317,10 +346,10 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
         pre_grasp_pose_robot2.pose.position.x = objPose_robot2.position.x;
         pre_grasp_pose_robot2.pose.position.y = objPose_robot2.position.y;
         // pre_grasp_pose.pose.position.z = objPose.position.z + 0.1;
-        pre_grasp_pose_robot2.pose.position.z = 0.895;
+        pre_grasp_pose_robot2.pose.position.z = 0.885;
         break;
       default:
-        ROS_INFO("object not in list");
+        ROS_INFO("HERE3: object not in list");
         return 0;
     }
 
@@ -333,7 +362,7 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
     pre_grasp_pose_robot2.pose.orientation = q_msg;
 
     grasp_pose_robot2 = pre_grasp_pose_robot2;
-    switch(robot2_close_objects[j].second){
+    switch(it_robot2->first){
       case ObjectID::BOWL :
         grasp_pose_robot2.pose.position.y = pre_grasp_pose_robot2.pose.position.y - 0.05;
         grasp_pose_robot2.pose.position.z = pre_grasp_pose_robot2.pose.position.z - 0.075;
@@ -355,7 +384,7 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
         grasp_pose_robot2.pose.position.z = pre_grasp_pose_robot2.pose.position.z - 0.03;
         break;
       default:
-        ROS_INFO("object not in list");
+        ROS_INFO("HERE4: object not in list");
       return 0;
     }
 
@@ -382,20 +411,24 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
     ROS_INFO_STREAM("After gripper open");
 
     // IK WORKAROUND
-    bool arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, pre_grasp_pose_robot1.pose, timeout);
-    bool arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, pre_grasp_pose_robot2.pose, timeout);
-    if (arm1_found_ik && arm2_found_ik)
-    {
-      kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
-      kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
-    }
-    else
-    {
-      ROS_INFO("Did not find IK solution");
-    }
+    bool arm1_found_ik, arm2_found_ik;
+    do {
+      arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, pre_grasp_pose_robot1.pose, timeout, validate_IK);
+      arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, pre_grasp_pose_robot2.pose, timeout, validate_IK);
+      if (arm1_found_ik && arm2_found_ik)
+      {
+        kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
+        kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
+      }
+      else
+      {
+        ROS_INFO("Did not find IK solution");
+      }
+    } while (!arm1_found_ik || !arm2_found_ik);
     group.setJointValueTarget(arm1_joint_names, arm1_joint_values);
     group.setJointValueTarget(arm2_joint_names, arm2_joint_values);
 
+    group.setStartStateToCurrentState();
     success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("tutorial", "Successful pre grasp plan %s", success ? "" : "FAILED");
     moveit_visual_tools::MoveItVisualTools visual_tools("world");
@@ -404,27 +437,24 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
     // END WORKAROUND
 
     
-    group.attachObject(robot2_close_objects[i].first,EEF2);
-    if(j < robot1_close_objects.size()){
-      group.attachObject(robot1_close_objects[j].first,EEF1);
-    }
-
-
     // IK WORKAROUND
-     arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, grasp_pose_robot1.pose, timeout);
-     arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, grasp_pose_robot2.pose, timeout);
-    if (arm1_found_ik && arm2_found_ik)
-    {
-      kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
-      kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
-    }
-    else
-    {
-      ROS_INFO("Did not find IK solution");
-    }
+    do {
+      arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, grasp_pose_robot1.pose, timeout, validate_IK);
+      arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, grasp_pose_robot2.pose, timeout, validate_IK);
+      if (arm1_found_ik && arm2_found_ik)
+      {
+        kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
+        kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
+      }
+      else
+      {
+        ROS_INFO("Did not find IK solution");
+      }
+    } while (!arm1_found_ik || !arm2_found_ik);
     group.setJointValueTarget(arm1_joint_names, arm1_joint_values);
     group.setJointValueTarget(arm2_joint_names, arm2_joint_values);
 
+    group.setStartStateToCurrentState();
     success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
     visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
@@ -437,20 +467,23 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
 
 
     // IK WORKAROUND
-     arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, pre_grasp_pose_robot1.pose, timeout);
-     arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, pre_grasp_pose_robot2.pose, timeout);
-    if (arm1_found_ik && arm2_found_ik)
-    {
-      kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
-      kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
-    }
-    else
-    {
-      ROS_INFO("Did not find IK solution");
-    }
+    do {
+      arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, pre_grasp_pose_robot1.pose, timeout, validate_IK);
+      arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, pre_grasp_pose_robot2.pose, timeout, validate_IK);
+      if (arm1_found_ik && arm2_found_ik)
+      {
+        kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
+        kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
+      }
+      else
+      {
+        ROS_INFO("Did not find IK solution");
+      }
+    } while (!arm1_found_ik || !arm2_found_ik);
     group.setJointValueTarget(arm1_joint_names, arm1_joint_values);
     group.setJointValueTarget(arm2_joint_names, arm2_joint_values);
 
+    group.setStartStateToCurrentState();
     success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("tutorial", "Successful pre grasp plan %s", success ? "" : "FAILED");
     visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
@@ -459,20 +492,23 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
 
 
     // IK WORKAROUND
-     arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, pre_place_pose_robot1.pose, timeout);
-     arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, pre_place_pose_robot2.pose, timeout);
-    if (arm1_found_ik && arm2_found_ik)
-    {
-      kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
-      kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
-    }
-    else
-    {
-      ROS_INFO("Did not find IK solution");
-    }
+    do {
+      arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, pre_place_pose_robot1.pose, timeout, validate_IK);
+      arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, pre_place_pose_robot2.pose, timeout, validate_IK);
+      if (arm1_found_ik && arm2_found_ik)
+      {
+        kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
+        kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
+      }
+      else
+      {
+        ROS_INFO("Did not find IK solution");
+      }
+    } while (!arm1_found_ik || !arm2_found_ik);
     group.setJointValueTarget(arm1_joint_names, arm1_joint_values);
     group.setJointValueTarget(arm2_joint_names, arm2_joint_values);
 
+    group.setStartStateToCurrentState();
     success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("tutorial", "Successful pre place plan %s", success ? "" : "FAILED");
     visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
@@ -481,41 +517,60 @@ int pick_place_object_two_arm(moveit::planning_interface::MoveGroupInterface& gr
 
 
     // IK WORKAROUND
-     arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, place_pose_robot1.pose, timeout);
-     arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, place_pose_robot2.pose, timeout);
-    if (arm1_found_ik && arm2_found_ik)
-    {
-      kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
-      kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
-    }
-    else
-    {
-      ROS_INFO("Did not find IK solution");
-    }
+    do {
+      arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, place_pose_robot1.pose, timeout, validate_IK);
+      arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, place_pose_robot2.pose, timeout, validate_IK);
+      if (arm1_found_ik && arm2_found_ik)
+      {
+        kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
+        kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
+      }
+      else
+      {
+        ROS_INFO("Did not find IK solution");
+      }
+    } while (!arm1_found_ik || !arm2_found_ik);
     group.setJointValueTarget(arm1_joint_names, arm1_joint_values);
     group.setJointValueTarget(arm2_joint_names, arm2_joint_values);
 
+    group.setStartStateToCurrentState();
     success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("tutorial", "Successful place plan %s", success ? "" : "FAILED");
     visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
     group.execute(my_plan);
     // END WORKAROUND
-    group.clearPoseTargets();
-    group.setPoseTarget(place_pose_robot1,EEF1);
-    group.setPoseTarget(place_pose_robot2,EEF2);
 
 
     hand_group.setNamedTarget("open");
     hand_group.plan(my_plan);
     hand_group.execute(my_plan);
 
-    group.detachObject(robot2_close_objects[i].first);
-    if(j < robot1_close_objects.size()){
-      group.detachObject(robot1_close_objects[j].first);
-    }
 
-    j++;
+    // IK WORKAROUND
+    do {
+      arm1_found_ik = kinematic_state->setFromIK(arm1_joint_model_group, pre_place_pose_robot1.pose, timeout, validate_IK);
+      arm2_found_ik = kinematic_state->setFromIK(arm2_joint_model_group, pre_place_pose_robot2.pose, timeout, validate_IK);
+      if (arm1_found_ik && arm2_found_ik)
+      {
+        kinematic_state->copyJointGroupPositions(arm1_joint_model_group, arm1_joint_values);
+        kinematic_state->copyJointGroupPositions(arm2_joint_model_group, arm2_joint_values);
+      }
+      else
+      {
+        ROS_INFO("Did not find IK solution");
+      }
+    } while (!arm1_found_ik || !arm2_found_ik);
+    group.setJointValueTarget(arm1_joint_names, arm1_joint_values);
+    group.setJointValueTarget(arm2_joint_names, arm2_joint_values);
 
+    group.setStartStateToCurrentState();
+    success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    ROS_INFO_NAMED("tutorial", "Successful pre place plan %s", success ? "" : "FAILED");
+    visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+    group.execute(my_plan);
+    // END WORKAROUND
+
+    i++;
   }
   return 1;
 }
@@ -742,16 +797,14 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
 }
 
 // Updates the simulation and planning scenes
-std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInterface &planning_scene_interface,
-                        ros::NodeHandle &nh, moveit::planning_interface::MoveGroupInterface &group)
+std::map<ObjectID, geometry_msgs::PoseStamped> updateScene(ros::NodeHandle &nh)
 {
     // get objects from object detection
     bool found_obj = false;
     tf2_ros::Buffer tf_buffer;
     tf2_ros::TransformListener tf2_listener(tf_buffer);
     geometry_msgs::TransformStamped world_to_camera_link; // My frames are named "base_link" and "leap_motion"
-    std::vector<ObjectID> collision_objects_found;
-    
+    std::map<ObjectID, geometry_msgs::PoseStamped> collision_objects_found;
     while (!found_obj)
     {
         if (!ros::ok())
@@ -766,7 +819,6 @@ std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInter
         }
 
         // add objects to planning scene
-        std::vector<moveit_msgs::CollisionObject> collision_objects;
         for (auto &&det3d : detections->detections)
         {
             if (det3d.results.empty())
@@ -784,40 +836,16 @@ std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInter
             geometry_msgs::PoseStamped obj_world_frame;
             world_to_camera_link = tf_buffer.lookupTransform("big_table/world", "big_table/robot2/camera_link", ros::Time(0), ros::Duration(10.0));
             tf2::doTransform(obj_camera_frame, obj_world_frame, world_to_camera_link);
-            // spawnGazeboModel(det3d, gazebo_spawn_sdf_obj);
-            ROS_INFO("Adding to planning scene");
-            // add collision object to planning scene 
-            moveit_msgs::CollisionObject co;
-            co.header = detections->header;
-            co.header.frame_id = "world";
-            collision_objects_found.push_back((ObjectID) det3d.results[0].id);
-            co.id = id_to_string(det3d.results[0].id);
-            co.operation = moveit_msgs::CollisionObject::ADD;
-            co.primitives.resize(1);
-            co.primitives[0].type = shape_msgs::SolidPrimitive::BOX;
-            co.primitives[0].dimensions.resize(geometric_shapes::solidPrimitiveDimCount<shape_msgs::SolidPrimitive::BOX>());
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = det3d.bbox.size.x;
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = det3d.bbox.size.y;
-            co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = det3d.bbox.size.z;
-            co.primitive_poses.resize(1);
-            co.primitive_poses[0] = obj_world_frame.pose;
-            collision_objects.push_back(co);
+            // add collision object to map
+            collision_objects_found.emplace((ObjectID) det3d.results[0].id, obj_world_frame);
             
         }
 
         if (!found_obj)
             ROS_INFO_THROTTLE(1.0, "Still waiting for obj...");
 
-        planning_scene_interface.addCollisionObjects(collision_objects);
-
     }
 
-    // detach all objects
-    auto attached_objects = planning_scene_interface.getAttachedObjects();
-    for (auto &&object : attached_objects)
-    {
-        group.detachObject(object.first);
-    }
     return collision_objects_found;
 
 }
@@ -858,7 +886,7 @@ int main(int argc, char** argv)
   geometry_msgs::Pose base_place_pose;
   geometry_msgs::Pose base_home_pose;
   std::string world_name;
-  std::vector<ObjectID> object_ids;
+  std::map<ObjectID, geometry_msgs::PoseStamped> object_ids;
   bool handover_planned;
   ros::Publisher start_roomba = nh.advertise<std_msgs::Bool>("start_roomba", 1000);
   // Load rosparams
@@ -1031,7 +1059,7 @@ int main(int argc, char** argv)
 
         group.clearPathConstraints();
 
-        object_ids = updateScene(planning_scene_interface, nh, group);   
+        object_ids = updateScene(nh);   
         
         // if (object_ids.size() == 0)
         // {
@@ -1077,8 +1105,8 @@ int main(int argc, char** argv)
 
         group.clearPathConstraints();
 
-        auto scanned_object_ids = updateScene(planning_scene_interface, nh, group);
-        object_ids.insert(object_ids.end(),scanned_object_ids.begin(),scanned_object_ids.end());
+        auto scanned_object_ids = updateScene(nh);
+        object_ids.insert(scanned_object_ids.begin(),scanned_object_ids.end());
         
         // if (object_ids.size() == 0)
         // {
@@ -1124,8 +1152,8 @@ int main(int argc, char** argv)
 
         group.clearPathConstraints();
 
-        auto scanned_object_ids = updateScene(planning_scene_interface, nh, group);
-        object_ids.insert(object_ids.end(),scanned_object_ids.begin(),scanned_object_ids.end());
+        auto scanned_object_ids = updateScene(nh);
+        object_ids.insert(scanned_object_ids.begin(),scanned_object_ids.end());
         if (object_ids.size() == 0)
         {
             ROS_ERROR("Updating planning scene FAILED");
