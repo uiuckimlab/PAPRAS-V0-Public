@@ -144,7 +144,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   group.setMaxVelocityScalingFactor(0.1);
   group.setPlannerId("RRTConnect");
 
-  std::string frame_id = "robot1/camera_link";
+  std::string frame_id = "kitchen/robot1/camera_link";
   std::string object_name = id_to_string(object_id);
   geometry_msgs::Pose objPose;
   objPose = planning_scene_interface.getObjectPoses({object_name}).at(object_name);
@@ -155,9 +155,9 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   switch(object_id){
     case ObjectID::ABETSOUP:
     case ObjectID::TOMATOSAUCE:
-      pre_grasp_pose.pose.position.x = objPose.position.x;
+      pre_grasp_pose.pose.position.x = objPose.position.x - 0.04;
       pre_grasp_pose.pose.position.y = objPose.position.y;
-      pre_grasp_pose.pose.position.z = objPose.position.z + 0.10;
+      pre_grasp_pose.pose.position.z = objPose.position.z + 0.08;
       break;
     default:
       ROS_INFO("object not in list");
@@ -305,10 +305,10 @@ std::vector<ObjectID> updateScene(moveit::planning_interface::PlanningSceneInter
             
             geometry_msgs::PoseStamped to_world_frame;
             to_world_frame.header = detections->header;
-            to_world_frame.header.frame_id = "robot1/camera_link";
+            to_world_frame.header.frame_id = "kitchen/robot1/camera_link";
             to_world_frame.pose = det3d.bbox.center;
             geometry_msgs::PoseStamped in_world;
-            world_to_camera_link = tf_buffer.lookupTransform("world", "robot1/camera_link", ros::Time(0), ros::Duration(10.0));
+            world_to_camera_link = tf_buffer.lookupTransform("world", "kitchen/robot1/camera_link", ros::Time(0), ros::Duration(10.0));
             tf2::doTransform(to_world_frame, in_world, world_to_camera_link);
             // spawnGazeboModel(det3d, gazebo_spawn_sdf_obj);
             ROS_INFO("Adding to planning scene");
