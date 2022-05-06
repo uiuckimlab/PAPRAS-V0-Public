@@ -21,24 +21,9 @@
   <arg unless="$(arg valgrind)" name="launch_prefix3" value="" />
   <arg     if="$(arg valgrind)" name="launch_prefix3" value="valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes -v" />
 
-  
-  <node name="dope_webcam" pkg="dope" type="camera" output="screen" respawn="true">
-    <param name="camera_info_url" value="package://dope/config/camera_info.yaml" />
-  </node>
-  <node name="image_proc" pkg="image_proc" type="image_proc" ns="dope/webcam"/>
-
-
-  <arg name="config" default="$(find dope)/config/config_pose.yaml" doc="Path to parameter config file"/>
-
-  <node name="dope" pkg="dope" type="dope" output="screen" clear_params="true" respawn="true">
-    <rosparam file="$(arg config)"/>
-  </node>
-
-
-
   <!-- Start the demo -->
-  <!-- <node ns="big_table" name="pick_place" launch-prefix="$(arg launch_prefix) $(arg launch_prefix2) $(arg launch_prefix3)" pkg="papras_demo"
-  type="handoff_fsm" output="screen" args="$(arg command_args)"/> -->
+  <node ns="big_table" name="pick_place" launch-prefix="$(arg launch_prefix) $(arg launch_prefix2) $(arg launch_prefix3)" pkg="papras_demo"
+  type="handoff_fsm" output="screen" args="$(arg command_args)"/>
 
 
 </launch>

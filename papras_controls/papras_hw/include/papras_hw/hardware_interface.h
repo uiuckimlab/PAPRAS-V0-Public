@@ -130,6 +130,7 @@ namespace open_manipulator_p_hw
     void read();
     void write();
     int controlLoopCnt;
+    int droppedPackets;
 
   private:
     void registerActuatorInterfaces();

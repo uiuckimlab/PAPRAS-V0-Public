@@ -426,7 +426,7 @@
       <child link="robot${id}/link4"/>
       <origin xyz="0.03000 -0.01200 0.31400" rpy="0 0 0"/>
       <axis xyz="0 1 0"/>
-      <limit velocity="6.5" effort="1000" lower="${-pi*1.0}" upper="${pi*0.5}" />
+      <limit velocity="6.5" effort="1000" lower="${-pi*0.5}" upper="${pi*0.5}" />
       <dynamics damping="0.7"/>
     </joint>
     <xacro:SimpleTransmissionPosition n="3" joint="joint3" id="${id}" />
@@ -697,13 +697,13 @@
         <material name="red"/>
       </visual>
 
-      <collision>
+      <!-- <collision>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
         <geometry>
           <box size = "0.01 0.01 0.01"/>
         </geometry>
         <material name="red"/>
-      </collision>
+      </collision> -->
 
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
