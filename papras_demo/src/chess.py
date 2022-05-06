@@ -293,19 +293,19 @@ def chess_RH():
     rospy.init_node('chess_rh', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     chess = ChessEngine()
-    arms = ["arm1", "human"]
+    arms = ["human", "arm2"]
     which_arm = 0
     quit = False
 
     while not rospy.is_shutdown():
 
-        # ROBOT MOVE
-        if which_arm == 0:
-            robot_turn(chess, arms, which_arm, publisher)
-
         # HUMAN MOVE
-        else:
+        if which_arm == 0:
             quit = human_turn(chess, arms, which_arm)
+
+        # ROBOT MOVE
+        else:
+            robot_turn(chess, arms, which_arm, publisher)
 
         if quit:
             print("GAME OVER")
