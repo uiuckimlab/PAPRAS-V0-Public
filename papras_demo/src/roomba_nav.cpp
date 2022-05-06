@@ -133,7 +133,7 @@ int main(int argc, char** argv)
   std::string param_path;
  
 
-  ros::Publisher cmd_vel_pub = nh.advertise<aruco_msgs::MarkerArray>("/roomba/cmd_vel", 1000);
+  ros::Publisher cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("/roomba/cmd_vel", 1000);
   ros::Subscriber marker_sub = nh.subscribe("/aruco_marker_publisher/markers", 1000, aruco_tag_callback);
   
   goal_tag_id = 0;
