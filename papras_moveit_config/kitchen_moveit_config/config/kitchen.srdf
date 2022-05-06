@@ -41,6 +41,14 @@
         <joint name="robot1/joint5" value="0.4"/>
         <joint name="robot1/joint6" value="0"/>
     </group_state>
+    <group_state name="observe_roomba" group="arm1">
+       <joint name="robot1/joint1" value="0.0872665"/>
+       <joint name="robot1/joint2" value="-1.46608"/>
+       <joint name="robot1/joint3" value="1.18682"/>
+       <joint name="robot1/joint4" value="0.558505"/>
+       <joint name="robot1/joint5" value="-1.43117"/>
+       <joint name="robot1/joint6" value="-0.122173"/>
+    </group_state>
     <group_state name="open" group="gripper1">
         <joint name="robot1/gripper" value="0"/>
     </group_state>
