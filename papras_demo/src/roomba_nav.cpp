@@ -46,6 +46,8 @@ std::unordered_map<int,int> marker_id_index;
 int camera_upside_down = -1;
 double tolerance = 0.10;
 
+int aruco_tag_cb_cnt = 0;
+
 
 
 geometry_msgs::Pose get_position_from_marker(aruco_msgs::Marker marker){
@@ -57,23 +59,13 @@ void aruco_tag_callback(const aruco_msgs::MarkerArray::ConstPtr& msgs){
   for(int i = 0; i < found_markers.markers.size(); i++){
     marker_id_index[(int)found_markers.markers[i].id] = i;
   }
+  aruco_tag_cb_cnt = 0;
 }
 
 void find_tag(ros::Publisher pub, int goal,ros::NodeHandle nh ){
   geometry_msgs::Twist cmd_vel_msg;
-  bool found_a_marker = false;
-  do{
-    const aruco_msgs::MarkerArray::ConstPtr detections = ros::topic::waitForMessage<aruco_msgs::MarkerArray>("/aruco_marker_publisher/markers", nh, ros::Duration(2.0));
-    if (detections && marker_id_index.find(goal) != marker_id_index.end())
-    {
-        found_a_marker = true;
-    }
-
-    if(!found_a_marker){
-      cmd_vel_msg.angular.z = 2.0;
-      pub.publish(cmd_vel_msg);
-    }
-  }while(!found_a_marker);
+  cmd_vel_msg.angular.z = 2.0;
+  pub.publish(cmd_vel_msg);
 }
 
 void roomba_nav(ros::Publisher pub, int goal){
@@ -146,7 +138,8 @@ int main(int argc, char** argv)
   }
 
   while(ros::ok()){
-    find_tag(cmd_vel_pub,goal_tag_id, nh);
+    aruco_tag_cb_cnt+=1;
+    if (aruco_tag_cb_cnt > 100) find_tag(cmd_vel_pub,goal_tag_id, nh);
     roomba_nav(cmd_vel_pub,goal_tag_id);
     r.sleep();
   }
