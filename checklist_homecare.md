@@ -73,10 +73,10 @@ source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && ro
 ssh kimlab@jetson-xavier-nx
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch realsense2_camera rs_camera.launch
+source ~/catkin_ws/devel_isolated/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch realsense2_camera rs_camera.launch
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch aruco_ros marker_publisher.launch 
+source ~/catkin_ws/devel_isolated/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch aruco_ros marker_publisher.launch 
 ```
 ## OPC
 ```
