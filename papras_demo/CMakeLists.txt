@@ -151,6 +151,9 @@ add_executable(roomba_nav src/roomba_nav.cpp)
 target_link_libraries(roomba_nav ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS roomba_nav DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(wall_demo src/wall_demo.cpp)
+target_link_libraries(wall_demo ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS wall_demo DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 
 # add_executable(plan_grasps_service src/plan_grasps_service.cpp)
