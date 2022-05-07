@@ -68,6 +68,9 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_roomba.launch
 ```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && cd ~/catkin_ws/src/PAPRAS/papras_utils/papras_utils/scripts && python3 homecare_launch.py
+```
 ** roomba vision - aruco marker detection**
 ```
 ssh kimlab@jetson-xavier-nx
