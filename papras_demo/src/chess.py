@@ -4,11 +4,12 @@ Robot vs. Human Chess Demo
 '''
 
 import rospy
-from std_msgs.msg import String, Bool
+from std_msgs.msg import String, Bool, Int32
 # Chess Engine
 from stockfish import Stockfish
 
 robot_done = False
+start_script = False
 mode = 'rh'
 
 
@@ -330,6 +331,7 @@ def chess_RH():
     '''
     publisher = rospy.Publisher('tea_table/chess_move', String, queue_size=10)
     subscriber = rospy.Subscriber("tea_table/move_finished", Bool, callback)
+    start_sub = rospy.Subscriber("/switch_controller", Int32, startScriptCallback)
     rospy.init_node('chess_rh', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     chess = ChessEngine()
@@ -337,7 +339,7 @@ def chess_RH():
     which_arm = 0
     quit = False
     global robot_done
-    while not robot_done:
+    while not start_script and not robot_done:
         pass
 
     while not rospy.is_shutdown():
@@ -389,7 +391,13 @@ def tester():
         # switch to other player's turn
         which_arm = (which_arm + 1) % 2
 
+def startScriptCallback(data):
+    print("Starting chess script.")
+    global start_script
+    start_script = True
+
 if __name__ == '__main__':
+    
     # global mode
     try:
         if mode == 'rr':
