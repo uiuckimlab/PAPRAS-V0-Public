@@ -55,7 +55,7 @@ int goal_tag_id = 0;
 aruco_msgs::MarkerArray found_markers;
 std::unordered_map<int,int> marker_id_index;
 int camera_upside_down = -1;
-double tolerance = 0.10;
+double tolerance = 0.01;
 
 int aruco_tag_cb_cnt = -1;
 bool finished_roomba_nav = false;
@@ -107,12 +107,14 @@ void roomba_nav(ros::Publisher pub, int goal){
     cmd_vel_msg.angular.z = (0.2 * camera_upside_down) * (1+(std::abs(p.position.x-tolerance)));
   }
 
-  if(p.position.z  > 2){
+  if(p.position.z  > 2.0){
     cmd_vel_msg.linear.x = 0.4 * (1+(std::abs(p.position.z-2)));
-  }else if(p.position.z > 0.6){
+  } else if(p.position.z  > 1.0){
+    cmd_vel_msg.linear.x = 0.3 * (1+(std::abs(p.position.z-2)));
+  }else if(p.position.z > 0.63){
     cmd_vel_msg.linear.x = 0.1 * (1+(std::abs(p.position.z -0.8)));
     tolerance = 0.025;
-  }else if(p.position.z  < 0.5){
+  }else if(p.position.z  < 0.62){
     cmd_vel_msg.linear.x = -0.1 * (1+(std::abs(p.position.z -0.5)));
   }else{
     if(goal_tag_id == 10){
