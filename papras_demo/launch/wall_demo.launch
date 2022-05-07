@@ -1,0 +1,5 @@
+<launch>
+    <group ns="wall_mount">
+        <node name="wall_demo" pkg="papras_demo" type="wall_demo" respawn="false" output="screen"/>
+    </group>
+</launch>
