@@ -158,10 +158,10 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
     case ObjectID::ABETSOUP:
     case ObjectID::TOMATOSAUCE:
     case ObjectID::CUP :
-      pre_grasp_pose.pose.position.x = objPose.position.x;
-      pre_grasp_pose.pose.position.y = objPose.position.y;
+      pre_grasp_pose.pose.position.x = objPose.position.x + 0.04;
+      pre_grasp_pose.pose.position.y = objPose.position.y - 0.04;
       // pre_grasp_pose.pose.position.z = objPose.position.z + 0.1;
-      pre_grasp_pose.pose.position.z = 0.895;
+      pre_grasp_pose.pose.position.z = 0.935;
       break;
     default:
       ROS_INFO("object not in list");
@@ -276,7 +276,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
 
 
   group.setStartState(*group.getCurrentState());
-  // group.setPoseTarget(pre_grasp_pose.pose);
+  pre_grasp_pose.pose.position.z += 0.05;
   group.setJointValueTarget(pre_grasp_pose.pose);
 
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
@@ -284,6 +284,13 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
   group.execute(my_plan);
   ros::Duration(0.5).sleep();
+
+  group.setStartStateToCurrentState();  // not sure why this is necessary after placing
+  group.setNamedTarget("place_waypoint");
+  success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
+  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  group.execute(my_plan);
 
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
   group.setNamedTarget("place_counter");
@@ -464,7 +471,7 @@ int main(int argc, char** argv)
             group.detachObject(object.first);
         }
 
-        task_state = ST_ARM_TO_REST_START;
+        task_state = ST_SPAWN_TRAY;
         break;
       }
       case ST_PAUSED:
@@ -475,6 +482,28 @@ int main(int argc, char** argv)
           ROS_INFO_STREAM("Next state: " << task_state);
         }
         ros::Duration(0.1).sleep();
+        break;
+      }
+      case ST_SPAWN_TRAY:
+      {
+        ROS_INFO("Adding tray to planning scene");
+        std::vector<moveit_msgs::CollisionObject> collision_objects;
+        moveit_msgs::CollisionObject co;
+        co.header.frame_id = "world";
+        co.operation = moveit_msgs::CollisionObject::ADD;
+        co.primitives.resize(1);
+        co.primitives[0].type = shape_msgs::SolidPrimitive::BOX;
+        co.primitives[0].dimensions.resize(geometric_shapes::solidPrimitiveDimCount<shape_msgs::SolidPrimitive::BOX>());
+        co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = 0.40;
+        co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = 0.80;
+        co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = 0.02;
+        co.primitive_poses.resize(1);
+        co.primitive_poses[0].position.x = 0.78;
+        co.primitive_poses[0].position.y = 0.59;
+        co.primitive_poses[0].position.z = 0.76;
+        collision_objects.push_back(co);
+        planning_scene_interface.addCollisionObjects(collision_objects);
+        task_state = ST_ARM_TO_REST_START;
         break;
       }
       case ST_ARM_TO_REST_START:
