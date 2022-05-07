@@ -7,22 +7,28 @@ rospy.init_node('homecare_node', anonymous=True)
 uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
 roslaunch.configure_logging(uuid)
 
-home_path = "/home/papras"
+home_path = "/home/kimlab"
 
-cli_args = [home_path+'/catkin_ws/src/PAPRAS/papras_demo/launch/roomba_nav.launch']
-roslaunch_args = cli_args[1:]
-# cli_args_handoff = [home_path+'/catkin_ws/src/PAPRAS/papras_demo/launch/papras_homecare_handoff_fsm.launch']
-# roslaunch_args_handoff = cli_args_handoff[1:]
-roslaunch_file = [(roslaunch.rlutil.resolve_launch_arguments(cli_args)[0], roslaunch_args)]
+cli_args1 = [home_path+'/catkin_ws/src/PAPRAS/papras_demo/launch/kitchen_fsm.launch']
+cli_args2 = [home_path+'/catkin_ws/src/PAPRAS/papras_demo/launch/table_handoff_fsm.launch']
+cli_args3 = [home_path+'/catkin_ws/src/PAPRAS/papras_demo/launch/kichen_roomba_handoff.launch']
+cli_args4 = [home_path+'/catkin_ws/src/PAPRAS/papras_demo/launch/tea_tasks_chess.launch']
 
-launch = roslaunch.parent.ROSLaunchParent(uuid, roslaunch_file)
+roslaunch_file1 = roslaunch.rlutil.resolve_launch_arguments(cli_args1)
+roslaunch_file2 = roslaunch.rlutil.resolve_launch_arguments(cli_args2)
+roslaunch_file3 = roslaunch.rlutil.resolve_launch_arguments(cli_args3)
+roslaunch_file4 = roslaunch.rlutil.resolve_launch_arguments(cli_args4)
 
 
-launch.start()
+launch_files = [roslaunch_file1,roslaunch_file2,roslaunch_file3,roslaunch_file4]
+
+parent = roslaunch.parent.ROSLaunchParent(uuid, launch_files)
+parent.start()
+
 rospy.loginfo("started")
 
 try:
-  launch.spin()
+  parent.spin()
 finally:
   # After Ctrl+C, stop all nodes from running
-  launch.shutdown()
+  parent.shutdown()
