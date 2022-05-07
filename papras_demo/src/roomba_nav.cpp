@@ -183,7 +183,7 @@ int main(int argc, char** argv)
 
   while(ros::ok() && !finished_roomba_nav){
     aruco_tag_cb_cnt+=1;
-    if (aruco_tag_cb_cnt > 15) 
+    if (aruco_tag_cb_cnt > 7) 
     {
       find_tag(cmd_vel_pub, nh);
       ros::Duration(0.5).sleep();
