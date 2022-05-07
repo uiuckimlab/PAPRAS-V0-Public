@@ -108,14 +108,12 @@ void roomba_nav(ros::Publisher pub, int goal){
   }
 
   if(p.position.z  > 2.0){
-    cmd_vel_msg.linear.x = 0.4 * (1+(std::abs(p.position.z-2)));
-  } else if(p.position.z  > 1.0){
-    cmd_vel_msg.linear.x = 0.3 * (1+(std::abs(p.position.z-2)));
+    cmd_vel_msg.linear.x = 0.2 * (1+(std::abs(p.position.z-2)));
   }else if(p.position.z > 0.63){
-    cmd_vel_msg.linear.x = 0.1 * (1+(std::abs(p.position.z -0.8)));
+    cmd_vel_msg.linear.x = 0.1 * (1+(std::abs(p.position.z - 63)));
     tolerance = 0.025;
   }else if(p.position.z  < 0.62){
-    cmd_vel_msg.linear.x = -0.1 * (1+(std::abs(p.position.z -0.5)));
+    cmd_vel_msg.linear.x = -0.1 * (1+(std::abs(p.position.z -0.62)));
   }else{
     if(goal_tag_id == 10){
       finished_roomba_nav = true;
@@ -147,18 +145,17 @@ int main(int argc, char** argv)
   moveit::planning_interface::MoveGroupInterface group("arm1");
   group.setPlanningTime(45.0);
   group.setPlannerId("RRTConnect");
-  group.setMaxAccelerationScalingFactor(0.05);
-  group.setMaxVelocityScalingFactor(0.05);
+  group.setMaxAccelerationScalingFactor(0.10);
+  group.setMaxVelocityScalingFactor(0.10);
 
-  ros::Publisher cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("/roomba/cmd_vel", 1000);
-  ros::Publisher start_kitchen = nh.advertise<std_msgs::Bool>("/roomba/start_kitchen", 1000);
+  ros::Publisher cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("/roomba/cmd_vel", 10);
+  ros::Publisher start_kitchen = nh.advertise<std_msgs::Bool>("/roomba/start_kitchen", 10);
 
-  ros::Subscriber marker_sub = nh.subscribe("/aruco_marker_publisher/markers", 1000, aruco_tag_callback);
-  ros::Subscriber handoff_done = nh.subscribe("/big_table/start_roomba",1000, start_roomba_callback);
+  ros::Subscriber marker_sub = nh.subscribe("/aruco_marker_publisher/markers", 10, aruco_tag_callback);
+  ros::Subscriber handoff_done = nh.subscribe("/big_table/start_roomba",10, start_roomba_callback);
   moveit::planning_interface::MoveGroupInterface::Plan plan;
 
   ROS_INFO_STREAM("after init");
-  ros::Duration(5.0).sleep();
   goal_tag_id = 0;
 
   group.setStartStateToCurrentState();
@@ -183,7 +180,7 @@ int main(int argc, char** argv)
 
   while(ros::ok() && !finished_roomba_nav){
     aruco_tag_cb_cnt+=1;
-    if (aruco_tag_cb_cnt > 7) 
+    if (aruco_tag_cb_cnt > 5) 
     {
       find_tag(cmd_vel_pub, nh);
       ros::Duration(0.5).sleep();
