@@ -1,3 +1,6 @@
+### tmux detach
+To detach your session, press `CTRL+b` the press `d`. Then press `CTRL+d` to log out of ssh. Your detached session still keeps running on the server. You can attach it later by `ssh -t papras@nuc-5 tmux attach`.
+# Start ROS Master Node
 ```
 export ROS_MASTER_URI=http://lambda-dual:11311/ && roscore
 ```
