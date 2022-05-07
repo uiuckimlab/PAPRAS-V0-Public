@@ -603,14 +603,16 @@ int main(int argc, char** argv)
   move_subscriber = node_handle.subscribe("chess_move",10,do_move);
   std::vector<double> pose_data;
 
+  ROS_INFO("HERE");
+
   //****************************************************************************
   // Set up planning interface
   // Set up move group planning interfaces
-  move_group_arm1 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1);
-  move_group_gripper1 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER1);
+  // move_group_arm1 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1);
+  // move_group_gripper1 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER1);
   move_group_arm2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM2);
   move_group_gripper2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_GRIPPER2);
-  move_group_arm1_2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_2);
+  // move_group_arm1_2 = new moveit::planning_interface::MoveGroupInterface(PLANNING_GROUP_ARM1_2);
 
   // Set up planning scene to add/remove collision objects in world
   // moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
@@ -626,8 +628,8 @@ int main(int argc, char** argv)
   // joint_model_arm1_2 = move_group_arm1_2->getCurrentState()->getJointModelGroup(PLANNING_GROUP_ARM1_2);
 
   // Print reference information
-  ROS_INFO("Arm 1 planning frame: %s", move_group_arm1->getPlanningFrame().c_str());
-  ROS_INFO("Arm 1 end effector link: %s", move_group_arm1->getEndEffectorLink().c_str());
+  // ROS_INFO("Arm 1 planning frame: %s", move_group_arm1->getPlanningFrame().c_str());
+  // ROS_INFO("Arm 1 end effector link: %s", move_group_arm1->getEndEffectorLink().c_str());
   ROS_INFO("Arm 2 planning frame: %s", move_group_arm2->getPlanningFrame().c_str());
   ROS_INFO("Arm 2 end effector link: %s", move_group_arm2->getEndEffectorLink().c_str());
 
@@ -648,7 +650,7 @@ int main(int argc, char** argv)
 
   // User input to start demo
   visual_tools->prompt("Press 'next' in the RvizVisualToolsGui window to begin");
-  move_group = move_group_arm1_2;
+  move_group = move_group_arm2;
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
   move_group->setPlanningPipelineId("ompl");
   move_group->setMaxVelocityScalingFactor(VEL_SCALE);
@@ -659,7 +661,7 @@ int main(int argc, char** argv)
   move_group->setStartStateToCurrentState();
   // move_group->setNamedTarget("rest");
 
-  node_handle.getParam("arm1_2/not_playing_home", pose_data);
+  node_handle.getParam("arm2/not_playing_home", pose_data);
   move_group->setJointValueTarget(pose_data);
   success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -669,7 +671,7 @@ int main(int argc, char** argv)
     move_group->execute(my_plan);
   }
 
-  move_group = move_group_gripper1;
+  move_group = move_group_gripper2;
   move_group->setStartStateToCurrentState();
   // move_group->setNamedTarget("rest");
 
@@ -681,21 +683,7 @@ int main(int argc, char** argv)
   //if (success) {
     visual_tools->prompt("Press 'next' to execute plan");
     move_group->execute(my_plan);
-  //}
-
-  move_group = move_group_gripper2;
-  move_group->setStartStateToCurrentState();
-  // move_group->setNamedTarget("rest");
-
-  node_handle.getParam("gripper/ungrab_piece", pose_data);
-  move_group->setJointValueTarget(pose_data);
-  success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
-  // visual_tools->trigger();
-  // if (success) {
-  visual_tools->prompt("Press 'next' to execute plan");
-  move_group->execute(my_plan);
-  ///}
+  
 
 
 
@@ -715,7 +703,7 @@ int main(int argc, char** argv)
 
 
 
-  move_group = move_group_arm1_2;
+  move_group = move_group_arm2;
   move_group->setStartStateToCurrentState();
   move_group->setNamedTarget("rest");
   move_group->plan(my_plan);

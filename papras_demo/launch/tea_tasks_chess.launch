@@ -2,11 +2,11 @@
 
   <rosparam file="$(find papras_demo)/config/tea_chess_moves.yaml">
   </rosparam>
-
-  <node name="chess" pkg="papras_demo" type="chess.py" respawn="false" output="screen">
-  </node>
-  
-  <node name="tea_chess_demo" pkg="papras_demo" type="tea_chess_demo" respawn="false" output="screen">
-  </node>
-
+  <group >
+    <node name="chess" pkg="papras_demo" type="chess.py" respawn="false" output="screen">
+    </node>
+    
+    <node ns="tea_table" name="tea_chess_demo" pkg="papras_demo" type="tea_chess_demo" respawn="false" output="screen">
+    </node>
+  </group>
 </launch>
