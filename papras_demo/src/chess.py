@@ -8,13 +8,31 @@ from std_msgs.msg import String, Bool
 # Chess Engine
 from stockfish import Stockfish
 
-robot_done = True
+robot_done = False
 mode = 'rh'
 
+
+human_moves = [
+    'e2e4',
+    'g1f3',
+    'd2d4',
+    'd1d4',
+    'b1c3',
+    'd4d3',
+    'c1f4',
+    'e1c1',
+    'c1b1',
+    'f4e3',
+    'f1e2',
+    'd3d2',
+    'c3d5',
+]
+curr_move = 0
+start_first_move = False 
 class ChessEngine:
     def __init__(self):
         self.engine = Stockfish()
-        self.engine.set_skill_level(5)
+        self.engine.set_skill_level(20)
         self.board_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
         self.piece_dict = {'q':'Queen', 'Q':'Queen', 'k':'King', 'K':'King', \
                            'b':'Bishop', 'B':'Bishop', 'n':'Knight', 'N':'Knight', \
@@ -136,19 +154,19 @@ class ChessEngine:
         if self.engine.is_move_correct(move):
             m = self.detect_castle(move)
             if m:
-                print("Yes Castle >> "+m)
+                print(""+m)
             else:
-                print("No Castle")
+                print("")
             m = self.detect_promotion(move)
             if m:
-                print("Yes Promotion >> "+m)
+                print(""+m)
             else:
-                print("No Promotion")
+                print("")
             m = self.detect_capture(move)
             if m:
-                print("Yes Capture >> "+m)
+                print(""+m)
             else:
-                print("No Capture")
+                print("")
         return self.engine.is_move_correct(move)
 
 def publish_move(publisher, data):
@@ -213,7 +231,10 @@ def robot_turn(chess, arms, which_arm, publisher):
     return False
 
 def human_turn(chess, arms, which_arm):
-
+    global curr_move
+    if curr_move >= len(human_moves)-1:
+        return True
+    
     quit = False
     while True:
         print("------------------------------------------------------")
@@ -225,26 +246,9 @@ def human_turn(chess, arms, which_arm):
             quit = True
             break
 
-        print("Enter \'help\' for a description of the moves you can enter, or \'q\' to quit the game.")
-        move = input(">>> ")
-
-        if move is None:
-            print("INVALID MOVE! Try again...")
-            continue
-        elif move == 'help':
-            print()
-            print("Moves should be algebraic and in the format of [starting position][ending position] without spaces.")
-            print("Captures are detected automatically. Including En Passant.")
-            print("Special move:")
-            # print(">> Castling options: [castle left] or [castle right]")
-            print("* Promotion options: [move][pawn] where pawn is from {Queen q, Rook r, Bishop b, or Knight n}")
-            print("Examples: e2e4, e1g1 (this is a white short castling), g8g1r (promote to rook)")
-            print()
-            continue
-        elif move == 'q':
-            print("Quitting...")
-            quit = True
-            break
+        rospy.sleep(rospy.Duration(10))
+        move = human_moves[curr_move]
+        curr_move +=1
 
         if chess.check_human_move(move):
             chess.make_move(move)
@@ -256,70 +260,13 @@ def human_turn(chess, arms, which_arm):
 
     return quit
 
-def chess_RR():
-    '''
-    Output: "Arm, Starting Position, Ending Position"
-            "Arm1,C3,D8" -- comma delimited, no spaces
-    '''
-    publisher = rospy.Publisher('chess_move', String, queue_size=10)
-    subscriber = rospy.Subscriber("move_finished", Bool, callback)
-    rospy.init_node('chess_rr', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    chess = ChessEngine()
-    arms = ["arm1", "arm2"]
-    which_arm = 0
-    quit = False
-
-    while not rospy.is_shutdown():
-
-        quit = robot_turn(chess, arms, which_arm, publisher)
-
-        if quit:
-            print("GAME OVER")
-            break
-
-        # switch to other player's turn
-        which_arm = (which_arm + 1) % 2
-
-        rate.sleep()
-
-def chess_RH():
-    '''
-    Output: "Arm, Starting Position, Ending Position"
-            "Arm1,C3,D8" -- comma delimited, no spaces
-    '''
-    publisher = rospy.Publisher('chess_move', String, queue_size=10)
-    subscriber = rospy.Subscriber("move_finished", Bool, callback)
-    rospy.init_node('chess_rh', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    chess = ChessEngine()
-    arms = ["human", "arm2"]
-    which_arm = 0
-    quit = False
-
-    while not rospy.is_shutdown():
-
-        # HUMAN MOVE
-        if which_arm == 0:
-            quit = human_turn(chess, arms, which_arm)
-
-        # ROBOT MOVE
-        else:
-            robot_turn(chess, arms, which_arm, publisher)
-
-        if quit:
-            print("GAME OVER")
-            break
-
-        # switch to other player's turn
-        which_arm = (which_arm + 1) % 2
-        rate.sleep()
-
 
 def robot_turn_no_pub(chess, arms, which_arm):
 
     # get best move based on state of the board
     move = chess.get_move()#"Arm1,A1,A2"
+    # print(which_arm)
+    print(move['Move'])
     if move is None:
         print("Winning Robot: "+arms[(which_arm + 1) % 2])
         return True
@@ -347,9 +294,77 @@ def robot_turn_no_pub(chess, arms, which_arm):
     chess.save_move(move['Move'])
     return False
 
+
+def chess_RR():
+    '''
+    Output: "Arm, Starting Position, Ending Position"
+            "Arm1,C3,D8" -- comma delimited, no spaces
+    '''
+    publisher = rospy.Publisher('tea_table/chess_move', String, queue_size=10)
+    subscriber = rospy.Subscriber("tea_table/move_finished", Bool, callback)
+    rospy.init_node('chess_rr', anonymous=True)
+    rate = rospy.Rate(10) # 10hz
+    chess = ChessEngine()
+    arms = ["arm1", "arm2"]
+    which_arm = 0
+    quit = False
+    global robot_done
+
+    while not rospy.is_shutdown():
+
+        # quit = robot_turn(chess, arms, which_arm, publisher)
+        quit = robot_turn_no_pub(chess, arms, which_arm)
+        if quit:
+            print("GAME OVER")
+            break
+
+        # switch to other player's turn
+        which_arm = (which_arm + 1) % 2
+
+        rate.sleep()
+
+def chess_RH():
+    '''
+    Output: "Arm, Starting Position, Ending Position"
+            "Arm1,C3,D8" -- comma delimited, no spaces
+    '''
+    publisher = rospy.Publisher('tea_table/chess_move', String, queue_size=10)
+    subscriber = rospy.Subscriber("tea_table/move_finished", Bool, callback)
+    rospy.init_node('chess_rh', anonymous=True)
+    rate = rospy.Rate(10) # 10hz
+    chess = ChessEngine()
+    arms = ["human", "arm2"]
+    which_arm = 0
+    quit = False
+    global robot_done
+    while not robot_done:
+        pass
+
+    while not rospy.is_shutdown():
+
+        # HUMAN MOVE
+        # chess.print_board()
+
+        if which_arm == 0:
+            quit = human_turn(chess, arms, which_arm)
+
+        # ROBOT MOVE
+        else:
+            robot_turn(chess, arms, which_arm, publisher)
+
+        if quit:
+            print("GAME OVER")
+            break
+
+        # switch to other player's turn
+        which_arm = (which_arm + 1) % 2
+        rate.sleep()
+
+
+
 def tester():
     chess = ChessEngine()
-    arms = ["arm1", "human"]
+    arms = ["human", "arm2"]
     which_arm = 0
     quit = False
 
@@ -360,7 +375,7 @@ def tester():
         chess.print_board()
 
         # ROBOT MOVE
-        if which_arm == 0:
+        if which_arm == 1:
             robot_turn_no_pub(chess, arms, which_arm)
 
         # HUMAN MOVE

@@ -207,139 +207,139 @@ std::unordered_map<std::string,std::string>arm1_90({
 });
 
 std::unordered_map<std::string,std::string>arm2_moves({
-  {"a1","/arm2/h8"},
-  {"a2","/arm2/h7"},
-  {"a3","/arm2/h6"},
-  {"a4","/arm2/h5"},
-  {"a5","/arm2/h4"},
-  {"a6","/arm2/h3"},
-  {"a7","/arm2/h2"},
-  {"a8","/arm2/h1"},
-  {"b1","/arm2/g8"},
-  {"b2","/arm2/g7"},
-  {"b3","/arm2/g6"},
   {"b4","/arm2/g5"},
-  {"b5","/arm2/g4"},
+  {"a1","/arm2/h8"},
   {"b6","/arm2/g3"},
-  {"b7","/arm2/g2"},
+  {"a2","/arm2/h7"},
   {"b8","/arm2/g1"},
-  {"c1","/arm2/f8"},
+  {"a3","/arm2/h6"},
   {"c2","/arm2/f7"},
-  {"c3","/arm2/f6"},
+  {"a4","/arm2/h5"},
   {"c4","/arm2/f5"},
-  {"c5","/arm2/f4"},
+  {"a5","/arm2/h4"},
   {"c6","/arm2/f3"},
-  {"c7","/arm2/f2"},
+  {"a6","/arm2/h3"},
   {"c8","/arm2/f1"},
-  {"d1","/arm2/e8"},
+  {"a7","/arm2/h2"},
   {"d2","/arm2/e7"},
-  {"d3","/arm2/e6"},
+  {"a8","/arm2/h1"},
   {"d4","/arm2/e5"},
-  {"d5","/arm2/e4"},
+  {"b1","/arm2/g8"},
   {"d6","/arm2/e3"},
-  {"d7","/arm2/e2"},
+  {"b2","/arm2/g7"},
   {"d8","/arm2/e1"},
-  {"e1","/arm2/d8"},
+  {"b3","/arm2/g6"},
   {"e2","/arm2/d7"},
-  {"e3","/arm2/d6"},
+  {"b5","/arm2/g4"},
   {"e4","/arm2/d5"},
-  {"e5","/arm2/d4"},
+  {"b7","/arm2/g2"},
   {"e6","/arm2/d3"},
-  {"e7","/arm2/d2"},
+  {"c1","/arm2/f8"},
   {"e8","/arm2/d1"},
-  {"f1","/arm2/c8"},
+  {"c3","/arm2/f6"},
   {"f2","/arm2/c7"},
-  {"f3","/arm2/c6"},
+  {"c5","/arm2/f4"},
   {"f4","/arm2/c5"},
-  {"f5","/arm2/c4"},
+  {"c7","/arm2/f2"},
   {"f6","/arm2/c3"},
-  {"f7","/arm2/c2"},
+  {"d1","/arm2/e8"},
   {"f8","/arm2/c1"},
-  {"g1","/arm2/b8"},
+  {"d3","/arm2/e6"},
   {"g2","/arm2/b7"},
-  {"g3","/arm2/b6"},
+  {"d5","/arm2/e4"},
   {"g4","/arm2/b5"},
-  {"g5","/arm2/b4"},
+  {"d7","/arm2/e2"},
   {"g6","/arm2/b3"},
-  {"g7","/arm2/b2"},
+  {"e1","/arm2/d8"},
   {"g8","/arm2/b1"},
-  {"h1","/arm2/a8"},
+  {"e3","/arm2/d6"},
   {"h2","/arm2/a7"},
-  {"h3","/arm2/a6"},
+  {"e5","/arm2/d4"},
   {"h4","/arm2/a5"},
-  {"h5","/arm2/a4"},
+  {"e7","/arm2/d2"},
   {"h6","/arm2/a3"},
-  {"h7","/arm2/a2"},
+  {"f1","/arm2/c8"},
   {"h8","/arm2/a1"},
+  {"f3","/arm2/c6"},
+  {"f5","/arm2/c4"},
+  {"f7","/arm2/c2"},
+  {"g1","/arm2/b8"},
+  {"g3","/arm2/b6"},
+  {"g5","/arm2/b4"},
+  {"g7","/arm2/b2"},
+  {"h1","/arm2/a8"},
+  {"h3","/arm2/a6"},
+  {"h5","/arm2/a4"},
+  {"h7","/arm2/a2"},
   {"bucket","/arm2/bucket"}
 });
 
 std::unordered_map<std::string,std::string>arm2_90({
-  {"a1","/arm1/a8"},
-  {"a2","/arm1/b8"},
-  {"a3","/arm1/c8"},
-  {"a4","/arm1/d8"},
-  {"a5","/arm1/e8"},
-  {"a6","/arm1/f8"},
-  {"a7","/arm1/g8"},
-  {"a8","/arm1/h8"},
-  {"b1","/arm1/a7"},
-  {"b2","/arm1/b7"},
-  {"b3","/arm1/c7"},
-  {"b4","/arm1/d7"},
-  {"b5","/arm1/e7"},
-  {"b6","/arm1/f7"},
-  {"b7","/arm1/g7"},
-  {"b8","/arm1/h7"},
-  {"c1","/arm1/a6"},
-  {"c2","/arm1/b6"},
-  {"c3","/arm1/c6"},
-  {"c4","/arm1/d6"},
-  {"c5","/arm1/e6"},
-  {"c6","/arm1/f6"},
-  {"c7","/arm1/g6"},
-  {"c8","/arm1/h6"},
-  {"d1","/arm1/a5"},
-  {"d2","/arm1/b5"},
-  {"d3","/arm1/c5"},
-  {"d4","/arm1/d5"},
-  {"d5","/arm1/e5"},
-  {"d6","/arm1/f5"},
-  {"d7","/arm1/g5"},
-  {"d8","/arm1/h5"},
-  {"e1","/arm1/a4"},
-  {"e2","/arm1/b4"},
-  {"e3","/arm1/c4"},
-  {"e4","/arm1/d4"},
-  {"e5","/arm1/e4"},
-  {"e6","/arm1/f4"},
-  {"e7","/arm1/g4"},
-  {"e8","/arm1/h4"},
-  {"f1","/arm1/a3"},
-  {"f2","/arm1/b3"},
-  {"f3","/arm1/c3"},
-  {"f4","/arm1/d3"},
-  {"f5","/arm1/e3"},
-  {"f6","/arm1/f3"},
-  {"f7","/arm1/g3"},
-  {"f8","/arm1/h3"},
-  {"g1","/arm1/a2"},
-  {"g2","/arm1/b2"},
-  {"g3","/arm1/c2"},
-  {"g4","/arm1/d2"},
-  {"g5","/arm1/e2"},
-  {"g6","/arm1/f2"},
-  {"g7","/arm1/g2"},
-  {"g8","/arm1/h2"},
-  {"h1","/arm1/a1"},
-  {"h2","/arm1/b1"},
-  {"h3","/arm1/c1"},
-  {"h4","/arm1/d1"},
-  {"h5","/arm1/e1"},
-  {"h6","/arm1/f1"},
-  {"h7","/arm1/g1"},
-  {"h8","/arm1/h1"},
-  {"bucket","/arm2/bucket"}
+  {"a1","arm2/a8"},
+  {"a2","arm2/b8"},
+  {"a3","arm2/c8"},
+  {"a4","arm2/d8"},
+  {"a5","arm2/e8"},
+  {"a6","arm2/f8"},
+  {"a7","arm2/g8"},
+  {"a8","arm2/h8"},
+  {"b1","arm2/a7"},
+  {"b2","arm2/b7"},
+  {"b3","arm2/c7"},
+  {"b4","arm2/d7"},
+  {"b5","arm2/e7"},
+  {"b6","arm2/f7"},
+  {"b7","arm2/g7"},
+  {"b8","arm2/h7"},
+  {"c1","arm2/a6"},
+  {"c2","arm2/b6"},
+  {"c3","arm2/c6"},
+  {"c4","arm2/d6"},
+  {"c5","arm2/e6"},
+  {"c6","arm2/f6"},
+  {"c7","arm2/g6"},
+  {"c8","arm2/h6"},
+  {"d1","arm2/a5"},
+  {"d2","arm2/b5"},
+  {"d3","arm2/c5"},
+  {"d4","arm2/d5"},
+  {"d5","arm2/e5"},
+  {"d6","arm2/f5"},
+  {"d7","arm2/g5"},
+  {"d8","arm2/h5"},
+  {"e1","arm2/a4"},
+  {"e2","arm2/b4"},
+  {"e3","arm2/c4"},
+  {"e4","arm2/d4"},
+  {"e5","arm2/e4"},
+  {"e6","arm2/f4"},
+  {"e7","arm2/g4"},
+  {"e8","arm2/h4"},
+  {"f1","arm2/a3"},
+  {"f2","arm2/b3"},
+  {"f3","arm2/c3"},
+  {"f4","arm2/d3"},
+  {"f5","arm2/e3"},
+  {"f6","arm2/f3"},
+  {"f7","arm2/g3"},
+  {"f8","arm2/h3"},
+  {"g1","arm2/a2"},
+  {"g2","arm2/b2"},
+  {"g3","arm2/c2"},
+  {"g4","arm2/d2"},
+  {"g5","arm2/e2"},
+  {"g6","arm2/f2"},
+  {"g7","arm2/g2"},
+  {"g8","arm2/h2"},
+  {"h1","arm2/a1"},
+  {"h2","arm2/b1"},
+  {"h3","arm2/c1"},
+  {"h4","arm2/d1"},
+  {"h5","arm2/e1"},
+  {"h6","arm2/f1"},
+  {"h7","arm2/g1"},
+  {"h8","arm2/h1"},
+  {"bucket","arm2/bucket"}
 });
 
 
@@ -392,7 +392,7 @@ void execute_move(const ros::NodeHandle node_handle){
       node_handle.getParam("arm1/playing_home", pose_data);
       move_group->setJointValueTarget(pose_data);
       success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-      ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+      ROS_INFO("Visualizing plan 1%s", success ? "" : "FAILED");
       visual_tools->trigger();
       if (success) {
         visual_tools->prompt("Press 'next' to execute plan");
@@ -412,7 +412,7 @@ void execute_move(const ros::NodeHandle node_handle){
       node_handle.getParam("arm1/not_playing_home", pose_data);
       move_group->setJointValueTarget(pose_data);
       success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-      ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+      ROS_INFO("Visualizing plan  2%s", success ? "" : "FAILED");
       visual_tools->trigger();
       if (success) {
         visual_tools->prompt("Press 'next' to execute plan");
@@ -437,7 +437,7 @@ void execute_move(const ros::NodeHandle node_handle){
     node_handle.getParam(move_name_from + "_up", pose_data);
     move_group->setJointValueTarget(pose_data);
     success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
+    // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
       visual_tools->prompt("Press 'next' to execute plan");
@@ -463,7 +463,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
     move_group_gripper->setStartStateToCurrentState();
     // grab
-    node_handle.getParam("/gripper/grab_piece", pose_data);
+    node_handle.getParam("gripper/grab_piece", pose_data);
     move_group_gripper->setJointValueTarget(pose_data);
     success = (move_group_gripper->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -492,7 +492,7 @@ void execute_move(const ros::NodeHandle node_handle){
     move_group->setStartStateToCurrentState();
     //
     // move to position home
-    node_handle.getParam("/arm1/playing_home", pose_data);
+    node_handle.getParam("arm1/playing_home", pose_data);
     move_group->setJointValueTarget(pose_data);
     success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -536,7 +536,7 @@ void execute_move(const ros::NodeHandle node_handle){
 
     move_group_gripper->setStartStateToCurrentState();
     // un grasp
-    node_handle.getParam("/gripper/ungrab_piece", pose_data);
+    node_handle.getParam("gripper/ungrab_piece", pose_data);
     move_group_gripper->setJointValueTarget(pose_data);
     success = (move_group_gripper->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -563,7 +563,7 @@ void execute_move(const ros::NodeHandle node_handle){
     move_group->setStartStateToCurrentState();
     //
     // move to position home
-    node_handle.getParam("/arm1/playing_home", pose_data);
+    node_handle.getParam("arm1/playing_home", pose_data);
     move_group->setJointValueTarget(pose_data);
     success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
@@ -603,7 +603,6 @@ int main(int argc, char** argv)
   move_subscriber = node_handle.subscribe("chess_move",10,do_move);
   std::vector<double> pose_data;
 
-  ROS_INFO("HERE");
 
   //****************************************************************************
   // Set up planning interface
@@ -689,6 +688,10 @@ int main(int argc, char** argv)
 
   // move_group->plan(my_plan);
   // move_group->execute(my_plan);
+  std_msgs::Bool finished;
+  finished.data = true;
+  finished_move_pub.publish(finished);
+
 
   ROS_INFO("BEFORE WHILE");
   while(!game_finished && ros::ok()){
