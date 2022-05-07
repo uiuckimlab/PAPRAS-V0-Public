@@ -368,8 +368,8 @@ void execute_move(const ros::NodeHandle node_handle){
     } else if (control_group == "arm2") {
       move_group = move_group_arm2;
       move_group_gripper = move_group_gripper2;
-      move_name_from = arm2_moves[from];
-      move_name_to = arm2_moves[to];
+      move_name_from = arm2_90[from];
+      move_name_to = arm2_90[to];
     }
 
     move_group->setPlanningPipelineId("ompl");
