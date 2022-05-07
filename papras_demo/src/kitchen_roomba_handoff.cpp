@@ -161,7 +161,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
       pre_grasp_pose.pose.position.x = objPose.position.x + 0.04;
       pre_grasp_pose.pose.position.y = objPose.position.y - 0.04;
       // pre_grasp_pose.pose.position.z = objPose.position.z + 0.1;
-      pre_grasp_pose.pose.position.z = 0.935;
+      pre_grasp_pose.pose.position.z = 0.935 + 0.02;
       break;
     default:
       ROS_INFO("object not in list");
@@ -245,7 +245,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
     case ObjectID::CUP :
       grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
       grasp_pose.pose.position.y = pre_grasp_pose.pose.position.y;
-      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.04;
+      grasp_pose.pose.position.z = pre_grasp_pose.pose.position.z - 0.07;
       break;
     case ObjectID::SPOON :
       grasp_pose.pose.position.x = pre_grasp_pose.pose.position.x;
@@ -276,7 +276,6 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
 
 
   group.setStartState(*group.getCurrentState());
-  pre_grasp_pose.pose.position.z += 0.05;
   group.setJointValueTarget(pre_grasp_pose.pose);
 
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
@@ -288,14 +287,40 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
   group.setNamedTarget("place_waypoint");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
+  ROS_INFO_NAMED("tutorial", "Successful place_waypoint plan %s", success ? "" : "FAILED");
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
   group.execute(my_plan);
 
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
   group.setNamedTarget("place_counter");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
+  ROS_INFO_NAMED("tutorial", "Successful place_counter plan %s", success ? "" : "FAILED");
+  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  group.execute(my_plan);
+
+  std::vector<double> place_joint_values;
+  
+  // joint vals for obj counter place
+  if (i==0) {
+    place_joint_values = {1.0821,
+                            0.575959,
+                            0.383972,
+                            0.0174533,
+                            0.610865,
+                            1.01229};
+  } else {
+    place_joint_values = {0.680678,
+                            0.349066,
+                            0.872665,
+                            0.15708,
+                            0.436332,
+                            0.575959};
+  }
+
+  group.setStartStateToCurrentState();  // not sure why this is necessary after placing
+  group.setJointValueTarget(place_joint_values);
+  success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO_NAMED("tutorial", "Successful place_joint_values plan %s", success ? "" : "FAILED");
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
   group.execute(my_plan);
 
@@ -304,13 +329,20 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   hand_group.execute(my_plan);
 
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
-  group.setNamedTarget("observe_roomba");
+  group.setNamedTarget("place_counter");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
+  ROS_INFO_NAMED("tutorial", "Successful place_counter plan %s", success ? "" : "FAILED");
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
   group.execute(my_plan);
 
-  return 0;
+  group.setStartStateToCurrentState();  // not sure why this is necessary after placing
+  group.setNamedTarget("place_waypoint");
+  success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  ROS_INFO_NAMED("tutorial", "Successful waypoiny plan %s", success ? "" : "FAILED");
+  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  group.execute(my_plan);
+
+  return 1;
 }
 
 // Updates the simulation and planning scenes
@@ -436,6 +468,8 @@ int main(int argc, char** argv)
   // PLANNING INTERFACE
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
+  moveit_visual_tools::MoveItVisualTools visual_tools("world");
+
   while (ros::ok())
   {
     if ((paused || failed) && !(task_state == ST_PAUSED))
@@ -494,7 +528,7 @@ int main(int argc, char** argv)
         co.primitives.resize(1);
         co.primitives[0].type = shape_msgs::SolidPrimitive::BOX;
         co.primitives[0].dimensions.resize(geometric_shapes::solidPrimitiveDimCount<shape_msgs::SolidPrimitive::BOX>());
-        co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = 0.40;
+        co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_X] = 0.40 - 0.06;
         co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Y] = 0.80;
         co.primitives[0].dimensions[shape_msgs::SolidPrimitive::BOX_Z] = 0.02;
         co.primitive_poses.resize(1);
@@ -615,17 +649,26 @@ int main(int argc, char** argv)
                 {
                     ROS_INFO("Planning for Picking FAILED");
                 }
-                else
-                {
-                    ROS_ERROR("Picking FAILED");
-                    failed = true;
-                }
 
             }while((error_code == moveit::core::MoveItErrorCode::PLANNING_FAILED ||
                   error_code == moveit::core::MoveItErrorCode::INVALID_MOTION_PLAN) &&
                  pickPlanAttempts < 10);
 
         }   
+
+        if (objs_dists.size() < 2)
+        {
+          group.setStartStateToCurrentState();  // not sure why this is necessary after placing
+          group.setNamedTarget("observe_roomba");
+          bool success = (group.plan(plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+          ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
+          visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+          group.execute(plan);
+        }else{
+          task_state = ST_ARM_TO_HOME_END;
+          break;
+        }
+
         if(!failed){
             task_state = ST_OBSERVE_OBJS;
         }
@@ -650,7 +693,6 @@ int main(int argc, char** argv)
           failed = true;
           break;
         }
-        moveit_visual_tools::MoveItVisualTools visual_tools("world");
         visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
 
         // move to home
