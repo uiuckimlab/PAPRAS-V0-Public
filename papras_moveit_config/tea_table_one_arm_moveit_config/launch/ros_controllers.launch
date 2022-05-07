@@ -6,6 +6,6 @@
 
   <!-- Load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" args="arm2_controller gripper2_controller "/>
+    output="screen" args="arm1_controller gripper1_controller "/>
 
 </launch>

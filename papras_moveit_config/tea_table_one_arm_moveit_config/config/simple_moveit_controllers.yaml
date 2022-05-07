@@ -1,5 +1,5 @@
 controller_list:
-  - name: arm2_controller
+  - name: arm1_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: True
@@ -10,7 +10,7 @@ controller_list:
       - robot2/joint4
       - robot2/joint5
       - robot2/joint6
-  - name: gripper2_controller
+  - name: gripper1_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: True
