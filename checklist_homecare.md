@@ -56,9 +56,9 @@ source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:
 ```
 source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch dope dope.launch
 ```
-## Roomba PC NUC 10
+## Roomba PC NUC 9
 ```
-ssh papras@nuc-10
+ssh papras@nuc-9
 ```
 *enter pass for setting usb low latency*
 ```
@@ -67,6 +67,9 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 *ensure roomba is powered on (clean button should be flashing green)*
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_roomba.launch
+```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && cd ~/catkin_ws/src/PAPRAS/papras_utils/papras_utils/scripts && python3 homecare_launch.py
 ```
 ** roomba vision - aruco marker detection**
 ```
