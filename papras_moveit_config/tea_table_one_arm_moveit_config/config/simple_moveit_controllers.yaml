@@ -10,3 +10,9 @@ controller_list:
       - robot2/joint4
       - robot2/joint5
       - robot2/joint6
+  - name: gripper2_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - robot2/gripper

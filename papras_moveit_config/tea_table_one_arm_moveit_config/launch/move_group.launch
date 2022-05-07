@@ -77,7 +77,7 @@
 
   <!-- Sensors Functionality -->
   <include ns="move_group" file="$(dirname)/sensor_manager.launch.xml" if="$(arg allow_trajectory_execution)">
-    <arg name="moveit_sensor_manager" value="tea_table" />
+    <arg name="moveit_sensor_manager" value="tea_table_one_arm" />
   </include>
 
   <!-- Start the actual move_group node/action server -->
