@@ -155,6 +155,9 @@ add_executable(wall_demo src/wall_demo.cpp)
 target_link_libraries(wall_demo ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS wall_demo DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(kitchen_sink_to_dishwasher src/kitchen_sink_to_dishwasher.cpp)
+target_link_libraries(kitchen_sink_to_dishwasher ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS kitchen_sink_to_dishwasher DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 # add_executable(plan_grasps_service src/plan_grasps_service.cpp)
 # target_link_libraries(plan_grasps_service ${catkin_LIBRARIES} ${Boost_LIBRARIES})
