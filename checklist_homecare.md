@@ -15,7 +15,7 @@ ssh papras@nuc-3
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make && sudo -s
 ```
 ```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_tea_table.launch
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_tea_table.launch usb_port:=/dev/ttyPAPRAS
 ```
 ## Big Table PC 
 *remove arm 4 from tea table and move to big table*
@@ -71,6 +71,9 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_roomba.launch
 ```
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo roomba_nav.launch
+```
 ** roomba vision - aruco marker detection**
 ```
 ssh kimlab@jetson-xavier-nx
@@ -86,7 +89,7 @@ source ~/catkin_ws/devel_isolated/setup.bash && export ROS_MASTER_URI=http://lam
 cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull && cd ~/catkin_ws && catkin_make
 ```
 ```
-source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_OPC.launch roomba_joy:=false
+source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_OPC.launch roomba_joy:=true
 ```
 ## Mission Start
 ```
