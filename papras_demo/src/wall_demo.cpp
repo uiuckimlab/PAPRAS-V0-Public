@@ -26,12 +26,15 @@
 #include <std_srvs/Empty.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/Bool.h>
+#include "std_msgs/Int32.h"
 #include <rosparam_shortcuts/rosparam_shortcuts.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
 #include <cmath>        // std::abs
 #include <vector>
 #include <unordered_map>
+
+volatile bool start_mission = false;
 
 std::vector<double> deg_to_rad(std::vector<double> &degs) {
   std::vector<double> rads;
@@ -41,12 +44,17 @@ std::vector<double> deg_to_rad(std::vector<double> &degs) {
   return rads;
 }
 
+void startMissionCallback(const std_msgs::Int32& msgs){
+  start_mission = true;
+}
+
 int main(int argc, char** argv) {
   ros::init(argc, argv, "wall_demo");
   ros::AsyncSpinner spinner(1);
   spinner.start();
   ros::Rate r(10); 
   ros::NodeHandle nh;
+  ros::Subscriber start_mission_subscriber = nh.subscribe("switch_controller",10,startMissionCallback);
 
   moveit::planning_interface::MoveGroupInterface group("arm1");
   moveit::planning_interface::MoveGroupInterface hand_group("gripper1");
@@ -62,6 +70,9 @@ int main(int argc, char** argv) {
   std::vector<double> gripper_goal; // 2 radians for gripper angles
   std::vector<double> goal_in_degrees; // n degrees to be converted to radian goal
 
+  // Wait after plugin
+  while (!start_mission);
+  
   // Open
   hand_group.setStartStateToCurrentState();
   hand_group.setNamedTarget("open");
@@ -83,7 +94,6 @@ int main(int argc, char** argv) {
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
-  ros::Duration(5.0).sleep();
   error_code = group.execute(plan);
   ros::Duration(1.0).sleep();
 
