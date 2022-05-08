@@ -68,9 +68,11 @@ int main(int argc, char** argv) {
   error_code = hand_group.plan(plan);
   error_code = hand_group.execute(plan);
 
-  // Rest
+  // Inverted Rest Looking Out
+  goal_in_degrees = {180, -86, 86, 0, -90, 0};
+  arm_goal = deg_to_rad(goal_in_degrees);
   group.setStartStateToCurrentState();
-  group.setNamedTarget("rest");
+  group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
   error_code = group.execute(plan);
 
@@ -81,11 +83,12 @@ int main(int argc, char** argv) {
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  ros::Duration(5.0).sleep();
   error_code = group.execute(plan);
   ros::Duration(1.0).sleep();
 
   // Close
-  gripper_goal = {1.09, 1.09};
+  gripper_goal = {1.1, 1.1};
   hand_group.setStartStateToCurrentState();
   hand_group.setJointValueTarget(gripper_goal);
   error_code = hand_group.plan(plan);
@@ -93,7 +96,7 @@ int main(int argc, char** argv) {
   ros::Duration(5.0).sleep();
 
   // Raise jacket
-  goal_in_degrees = {180, -80, -65, 0, 55, -90};
+  goal_in_degrees = {180, -80, -65, 0, 45, -90};
   arm_goal = deg_to_rad(goal_in_degrees);
   group.setStartStateToCurrentState();
   group.setJointValueTarget(arm_goal);
@@ -107,13 +110,14 @@ int main(int argc, char** argv) {
   hand_group.setNamedTarget("open");
   error_code = hand_group.plan(plan);
   error_code = hand_group.execute(plan);
-  ros::Duration(1.0).sleep();
+  ros::Duration(0.5).sleep();
 
-  // Rest
+  // Inverted Rest Looking Out
+  goal_in_degrees = {180, -86, 86, 0, -90, 0};
+  arm_goal = deg_to_rad(goal_in_degrees);
   group.setStartStateToCurrentState();
-  group.setNamedTarget("rest");
+  group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
   error_code = group.execute(plan);
 
   return 0;
