@@ -71,9 +71,6 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_roomba.launch
 ```
-```
-source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && cd ~/catkin_ws/src/PAPRAS/papras_utils/papras_utils/scripts && python3 homecare_launch.py
-```
 ** roomba vision - aruco marker detection**
 ```
 ssh kimlab@jetson-xavier-nx
@@ -91,6 +88,10 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 ```
 source ~/catkin_ws/devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_OPC.launch roomba_joy:=false
 ```
+## Mission Start
+```
+source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && python3 ~/catkin_ws/src/PAPRAS/papras_utils/papras_utils/scripts/homecare_launch.py
+```
 ## Wall Mount PC NUC 2
 ```
 ssh papras@nuc-2
@@ -103,4 +104,6 @@ cd ~/catkin_ws/src/PAPRAS && git pull && git checkout homecare-robot && git pull
 source devel/setup.bash && export ROS_MASTER_URI=http://lambda-dual:11311/ && roslaunch papras_demo _demo_homecare_hw_wall_mount.launch
 ```
 ## calibration
+```
 rosrun camera_calibration cameracalibrator.py --no-service-check --size 8x6 --square 0.026 image:=/camera/color/image_raw camera:=/camera
+```
