@@ -55,7 +55,7 @@ int goal_tag_id = 0;
 aruco_msgs::MarkerArray found_markers;
 std::unordered_map<int,int> marker_id_index;
 int camera_upside_down = -1;
-double tolerance = 0.01;
+double tolerance = 0.1;
 
 int aruco_tag_cb_cnt = -1;
 bool finished_roomba_nav = false;
@@ -107,20 +107,30 @@ void roomba_nav(ros::Publisher pub, int goal){
     cmd_vel_msg.angular.z = (0.2 * camera_upside_down) * (1+(std::abs(p.position.x-tolerance)));
   }
 
-  if(p.position.z  > 2.0){
-    cmd_vel_msg.linear.x = 0.2 * (1+(std::abs(p.position.z-2)));
-  }else if(p.position.z > 0.63){
-    cmd_vel_msg.linear.x = 0.1 * (1+(std::abs(p.position.z - 63)));
-    tolerance = 0.025;
-  }else if(p.position.z  < 0.62){
-    cmd_vel_msg.linear.x = -0.1 * (1+(std::abs(p.position.z -0.62)));
-  }else{
-    if(goal_tag_id == 10){
-      finished_roomba_nav = true;
+  if (goal_tag_id == 0)
+  {
+    if(p.position.z  > 2.0){
+      cmd_vel_msg.linear.x = 0.05 * (1+(std::abs(p.position.z-2.0)));
+    }else if(p.position.z > 1.25){
+      cmd_vel_msg.linear.x = 0.01 * (1+(std::abs(p.position.z - 1.25)));
+      tolerance = 0.025;
+    }else if(p.position.z  < 1.0){
+      cmd_vel_msg.linear.x = -0.01 * (1+(std::abs(p.position.z - 1.00)));
+    }else{
+      goal_tag_id = 10;
     }
-    goal_tag_id = 10;
+  } else if (goal_tag_id == 10) {
+    if(p.position.z  > 2.0){
+    cmd_vel_msg.linear.x = 0.05 * (1+(std::abs(p.position.z-2)));
+    }else if(p.position.z > 0.63){
+      cmd_vel_msg.linear.x = 0.01 * (1+(std::abs(p.position.z - 0.63)));
+      tolerance = 0.025;
+    }else if(p.position.z  < 0.62){
+      cmd_vel_msg.linear.x = -0.01 * (1+(std::abs(p.position.z -0.62)));
+    }else{
+      finished_roomba_nav = true;      
+    }
   }
-
 
   pub.publish(cmd_vel_msg);
 }
@@ -180,10 +190,10 @@ int main(int argc, char** argv)
 
   while(ros::ok() && !finished_roomba_nav){
     aruco_tag_cb_cnt+=1;
-    if (aruco_tag_cb_cnt > 5) 
+    if (aruco_tag_cb_cnt > 10) 
     {
       find_tag(cmd_vel_pub, nh);
-      ros::Duration(0.5).sleep();
+      ros::Duration(1.0).sleep();
     }
     roomba_nav(cmd_vel_pub,goal_tag_id);
     r.sleep();
