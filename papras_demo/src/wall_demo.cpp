@@ -55,37 +55,66 @@ int main(int argc, char** argv) {
   group.setMaxAccelerationScalingFactor(0.10);
   group.setMaxVelocityScalingFactor(0.10);
   moveit::planning_interface::MoveGroupInterface::Plan plan;
+  moveit::core::MoveItErrorCode error_code;
   moveit_visual_tools::MoveItVisualTools visual_tools("world");
 
   std::vector<double> arm_goal; // 6 radians for joint angles
   std::vector<double> gripper_goal; // 2 radians for gripper angles
   std::vector<double> goal_in_degrees; // n degrees to be converted to radian goal
 
-  group.setStartStateToCurrentState();
-  group.setNamedTarget("rest");
-  moveit::core::MoveItErrorCode error_code = group.plan(plan);
-  error_code = group.execute(plan);
-
+  // Open
   hand_group.setStartStateToCurrentState();
-  group.setNamedTarget("close");
+  hand_group.setNamedTarget("open");
   error_code = hand_group.plan(plan);
   error_code = hand_group.execute(plan);
 
-  // Lean back to grab jacket
-  goal_in_degrees = {0, -85, 85, 0, -90, 0};
+  // Rest
+  group.setStartStateToCurrentState();
+  group.setNamedTarget("rest");
+  error_code = group.plan(plan);
+  error_code = group.execute(plan);
+
+  // Grab jacket
+  goal_in_degrees = {180, -90, 40, 0, -70, -90};
   arm_goal = deg_to_rad(goal_in_degrees);
   group.setStartStateToCurrentState();
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
   visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
   error_code = group.execute(plan);
+  ros::Duration(1.0).sleep();
 
+  // Close
+  gripper_goal = {1.09, 1.09};
   hand_group.setStartStateToCurrentState();
-  group.setNamedTarget("open");
+  hand_group.setJointValueTarget(gripper_goal);
   error_code = hand_group.plan(plan);
   error_code = hand_group.execute(plan);
+  ros::Duration(5.0).sleep();
 
-  // ... finish script moves
+  // Raise jacket
+  goal_in_degrees = {180, -80, -65, 0, 55, -90};
+  arm_goal = deg_to_rad(goal_in_degrees);
+  group.setStartStateToCurrentState();
+  group.setJointValueTarget(arm_goal);
+  error_code = group.plan(plan);
+  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  error_code = group.execute(plan);
+  ros::Duration(0.5).sleep();
+
+  // Open
+  hand_group.setStartStateToCurrentState();
+  hand_group.setNamedTarget("open");
+  error_code = hand_group.plan(plan);
+  error_code = hand_group.execute(plan);
+  ros::Duration(1.0).sleep();
+
+  // Rest
+  group.setStartStateToCurrentState();
+  group.setNamedTarget("rest");
+  error_code = group.plan(plan);
+  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  error_code = group.execute(plan);
 
   return 0;
 }
