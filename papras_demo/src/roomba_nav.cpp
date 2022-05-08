@@ -55,7 +55,7 @@ int goal_tag_id = 0;
 aruco_msgs::MarkerArray found_markers;
 std::unordered_map<int,int> marker_id_index;
 int camera_upside_down = -1;
-double tolerance = 0.1;
+double tolerance = 0.22;
 
 int aruco_tag_cb_cnt = -1;
 bool finished_roomba_nav = false;
@@ -123,16 +123,16 @@ void roomba_nav(ros::Publisher pub, int goal){
     if(p.position.z  > 2.0){
     cmd_vel_msg.linear.x = 0.05 * (1+(std::abs(p.position.z-2)));
     }else if(p.position.z > 0.63){
-      cmd_vel_msg.linear.x = 0.01 * (1+(std::abs(p.position.z - 0.63)));
-      tolerance = 0.025;
+      cmd_vel_msg.linear.x = 0.05 * (1+(std::abs(p.position.z - 0.63)));
+      tolerance = 0.15;
     }else if(p.position.z  < 0.62){
-      cmd_vel_msg.linear.x = -0.01 * (1+(std::abs(p.position.z -0.62)));
+      cmd_vel_msg.linear.x = -0.05 * (1+(std::abs(p.position.z -0.62)));
     }else{
       finished_roomba_nav = true;      
     }
   }
 
-  pub.publish(cmd_vel_msg);
+  // pub.publish(cmd_vel_msg);
 }
 
 int main(int argc, char** argv)
@@ -166,7 +166,7 @@ int main(int argc, char** argv)
   moveit::planning_interface::MoveGroupInterface::Plan plan;
 
   ROS_INFO_STREAM("after init");
-  goal_tag_id = 0;
+  goal_tag_id = 10;
 
   group.setStartStateToCurrentState();
   group.setNamedTarget("plate_big_table");
@@ -180,21 +180,21 @@ int main(int argc, char** argv)
   error_code = group.plan(plan);
   error_code = group.execute(plan);
 
-  geometry_msgs::Twist cmd_vel_msg;
-  for(int i = 0; i < 100 && aruco_tag_cb_cnt == -1; i++){
-    cmd_vel_msg.linear.x = 0.40;
-    cmd_vel_msg.angular.z = -0.08;
-    cmd_vel_pub.publish(cmd_vel_msg);
-    r.sleep();
-  }
+  // geometry_msgs::Twist cmd_vel_msg;
+  // for(int i = 0; i < 100 && aruco_tag_cb_cnt == -1; i++){
+  //   cmd_vel_msg.linear.x = 0.40;
+  //   cmd_vel_msg.angular.z = -0.08;
+  //   cmd_vel_pub.publish(cmd_vel_msg);
+  //   r.sleep();
+  // }
 
   while(ros::ok() && !finished_roomba_nav){
     aruco_tag_cb_cnt+=1;
-    if (aruco_tag_cb_cnt > 10) 
-    {
-      find_tag(cmd_vel_pub, nh);
-      ros::Duration(1.0).sleep();
-    }
+    // if (aruco_tag_cb_cnt > 10) 
+    // {
+    //   find_tag(cmd_vel_pub, nh);
+    //   ros::Duration(1.0).sleep();
+    // }
     roomba_nav(cmd_vel_pub,goal_tag_id);
     r.sleep();
   }
