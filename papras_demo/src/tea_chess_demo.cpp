@@ -10,6 +10,7 @@
 #include <moveit_visual_tools/moveit_visual_tools.h>
 #include "std_msgs/String.h"
 #include "std_msgs/Bool.h"
+#include "std_msgs/Int32.h"
 
 // For HTMs
 #include <tf2/LinearMath/Transform.h>
@@ -66,9 +67,11 @@ moveit_visual_tools::MoveItVisualTools* visual_tools;
 // ros::NodeHandle node_handle;
 ros::Publisher finished_move_pub;
 ros::Subscriber move_subscriber;
+ros::Subscriber start_mission_subscriber;
 std::string msg;
 bool game_finished = false;
 bool do_move_bool = false;
+volatile bool start_mission = false;
 
 std::unordered_map<std::string,std::string>arm1_moves({
   {"a1","/arm1/a1"},
@@ -590,6 +593,10 @@ void do_move(const std_msgs::String::ConstPtr& msgs){
   do_move_bool = true;
 }
 
+void startMissionCallback(const std_msgs::Int32& msgs){
+  start_mission = true;
+}
+
 int main(int argc, char** argv)
 {
   // Setup node and start AsyncSpinner
@@ -601,8 +608,10 @@ int main(int argc, char** argv)
   ros::Rate r(10); // 10 hz
   finished_move_pub = node_handle.advertise<std_msgs::Bool>("move_finished",10);
   move_subscriber = node_handle.subscribe("chess_move",10,do_move);
+  start_mission_subscriber = node_handle.subscribe("switch_controller",10,startMissionCallback);
   std::vector<double> pose_data;
 
+  while (!start_mission);
 
   //****************************************************************************
   // Set up planning interface
