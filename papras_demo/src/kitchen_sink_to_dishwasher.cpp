@@ -26,6 +26,7 @@
 #include <std_srvs/Empty.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/Bool.h>
+#include "std_msgs/Int32.h"
 #include <rosparam_shortcuts/rosparam_shortcuts.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
@@ -41,12 +42,21 @@ std::vector<double> deg_to_rad(std::vector<double> &degs) {
   return rads;
 }
 
+volatile bool start_mission = false;
+void startMissionCallback(const std_msgs::Int32& msgs){
+  start_mission = true;
+}
+
 int main(int argc, char** argv) {
   ros::init(argc, argv, "kitchen_sink_to_dishwasher");
   ros::AsyncSpinner spinner(1);
   spinner.start();
   ros::Rate r(10); 
   ros::NodeHandle nh;
+
+  ros::Subscriber start_mission_subscriber = nh.subscribe("switch_controller",10,startMissionCallback);
+
+  while (!start_mission);
 
   moveit::planning_interface::MoveGroupInterface group("arm1");
   moveit::planning_interface::MoveGroupInterface hand_group("gripper1");
@@ -79,7 +89,7 @@ int main(int argc, char** argv) {
   group.setStartStateToCurrentState();
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   error_code = group.execute(plan);
 
   // Over Sink
@@ -87,7 +97,7 @@ int main(int argc, char** argv) {
   group.setStartStateToCurrentState();
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   error_code = group.execute(plan);
 
   // Into Sink
@@ -95,12 +105,13 @@ int main(int argc, char** argv) {
   group.setStartStateToCurrentState();
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   error_code = group.execute(plan);
 
   // Close
+  gripper_goal = {1.13, 1.13};
   hand_group.setStartStateToCurrentState();
-  hand_group.setNamedTarget("close");
+  hand_group.setJointValueTarget(gripper_goal);
   error_code = hand_group.plan(plan);
   error_code = hand_group.execute(plan);
 
@@ -109,7 +120,7 @@ int main(int argc, char** argv) {
   group.setStartStateToCurrentState();
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   error_code = group.execute(plan);
 
   // Over Dishwasher
@@ -117,7 +128,7 @@ int main(int argc, char** argv) {
   group.setStartStateToCurrentState();
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   error_code = group.execute(plan);
 
   // Into Dishwasher
@@ -125,7 +136,7 @@ int main(int argc, char** argv) {
   group.setStartStateToCurrentState();
   group.setJointValueTarget(arm_goal);
   error_code = group.plan(plan);
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   error_code = group.execute(plan);
 
   // Open
@@ -138,7 +149,7 @@ int main(int argc, char** argv) {
   group.setStartStateToCurrentState();
   group.setNamedTarget("home");
   error_code = group.plan(plan);
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   error_code = group.execute(plan);
 
   // Rest

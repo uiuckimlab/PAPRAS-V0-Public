@@ -398,7 +398,7 @@ void execute_move(const ros::NodeHandle node_handle){
       ROS_INFO("Visualizing plan 1%s", success ? "" : "FAILED");
       visual_tools->trigger();
       if (success) {
-        visual_tools->prompt("Press 'next' to execute plan");
+        
         move_group->execute(my_plan);
       }
       std_msgs::Bool finished;
@@ -418,7 +418,7 @@ void execute_move(const ros::NodeHandle node_handle){
       ROS_INFO("Visualizing plan  2%s", success ? "" : "FAILED");
       visual_tools->trigger();
       if (success) {
-        visual_tools->prompt("Press 'next' to execute plan");
+        
         move_group->execute(my_plan);
       }
 
@@ -443,7 +443,7 @@ void execute_move(const ros::NodeHandle node_handle){
     // ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group->execute(my_plan);
     }
 
@@ -458,7 +458,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group->execute(my_plan);
     }
 
@@ -472,7 +472,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group_gripper->execute(my_plan);
     }
 
@@ -485,7 +485,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group->execute(my_plan);
     }
 
@@ -501,7 +501,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group->execute(my_plan);
     }
 
@@ -515,7 +515,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group->execute(my_plan);
     }
 
@@ -530,7 +530,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group->execute(my_plan);
     }
 
@@ -545,7 +545,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group_gripper->execute(my_plan);
     }
 
@@ -558,7 +558,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group->execute(my_plan);
     }
 
@@ -572,7 +572,7 @@ void execute_move(const ros::NodeHandle node_handle){
     ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
     visual_tools->trigger();
     if (success) {
-      visual_tools->prompt("Press 'next' to execute plan");
+      
       move_group->execute(my_plan);
     }
 
@@ -657,7 +657,6 @@ int main(int argc, char** argv)
   visual_tools->trigger();
 
   // User input to start demo
-  visual_tools->prompt("Press 'next' in the RvizVisualToolsGui window to begin");
   move_group = move_group_arm2;
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
   move_group->setPlanningPipelineId("ompl");
@@ -675,7 +674,7 @@ int main(int argc, char** argv)
   ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
   visual_tools->trigger();
   if (success) {
-    visual_tools->prompt("Press 'next' to execute plan");
+    
     move_group->execute(my_plan);
   }
 
@@ -689,7 +688,7 @@ int main(int argc, char** argv)
   //ROS_INFO("Visualizing plan %s", success ? "" : "FAILED");
   //visual_tools->trigger();
   //if (success) {
-    visual_tools->prompt("Press 'next' to execute plan");
+    
     move_group->execute(my_plan);
   
 

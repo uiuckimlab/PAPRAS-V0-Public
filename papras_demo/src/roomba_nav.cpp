@@ -27,6 +27,7 @@
 #include <std_srvs/Empty.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/Bool.h>
+#include "std_msgs/Int32.h"
 #include <rosparam_shortcuts/rosparam_shortcuts.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
@@ -60,6 +61,7 @@ double tolerance = 0.22;
 int aruco_tag_cb_cnt = -1;
 bool finished_roomba_nav = false;
 volatile bool start_roomba = false;
+volatile bool start_mission = false;
 
 geometry_msgs::Pose get_position_from_marker(aruco_msgs::Marker marker){
   return  marker.pose.pose;
@@ -135,6 +137,10 @@ void roomba_nav(ros::Publisher pub, int goal){
   // pub.publish(cmd_vel_msg);
 }
 
+void startMissionCallback(const std_msgs::Int32& msgs){
+  start_mission = true;
+}
+
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "roomba_nav");
@@ -152,17 +158,23 @@ int main(int argc, char** argv)
   ros::NodeHandle nh_priv("~");
   std::string param_path;
 
+  ros::Publisher cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("/roomba/cmd_vel", 10);
+  ros::Publisher start_kitchen = nh.advertise<std_msgs::Bool>("/roomba/start_kitchen", 10);
+
+  ros::Subscriber marker_sub = nh.subscribe("/aruco_marker_publisher/markers", 10, aruco_tag_callback);
+  ros::Subscriber handoff_done = nh.subscribe("/big_table/start_roomba",10, start_roomba_callback);
+  ros::Subscriber start_mission_subscriber = nh.subscribe("switch_controller",10,startMissionCallback);
+
+  while (!start_mission);
+
   moveit::planning_interface::MoveGroupInterface group("arm1");
   group.setPlanningTime(45.0);
   group.setPlannerId("RRTConnect");
   group.setMaxAccelerationScalingFactor(0.10);
   group.setMaxVelocityScalingFactor(0.10);
 
-  ros::Publisher cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("/roomba/cmd_vel", 10);
-  ros::Publisher start_kitchen = nh.advertise<std_msgs::Bool>("/roomba/start_kitchen", 10);
+  moveit::planning_interface::MoveGroupInterface hand_group("gripper1");
 
-  ros::Subscriber marker_sub = nh.subscribe("/aruco_marker_publisher/markers", 10, aruco_tag_callback);
-  ros::Subscriber handoff_done = nh.subscribe("/big_table/start_roomba",10, start_roomba_callback);
   moveit::planning_interface::MoveGroupInterface::Plan plan;
 
   ROS_INFO_STREAM("after init");
@@ -173,20 +185,33 @@ int main(int argc, char** argv)
   moveit::core::MoveItErrorCode error_code = group.plan(plan);
   error_code = group.execute(plan);
 
-  while(!start_roomba);
+  hand_group.setStartStateToCurrentState();
+  hand_group.setNamedTarget("open");
+  hand_group.plan(plan);
+  error_code = hand_group.execute(plan);
+
+  ros::Duration(0.5).sleep();
+
+  hand_group.setStartStateToCurrentState();
+  hand_group.setNamedTarget("close");
+  error_code = hand_group.plan(plan);
+  error_code = hand_group.execute(plan);
+  ros::Duration(0.5).sleep();
+
+  // while(!start_roomba);
 
   group.setStartStateToCurrentState();
   group.setNamedTarget("plate_down");
   error_code = group.plan(plan);
   error_code = group.execute(plan);
 
-  // geometry_msgs::Twist cmd_vel_msg;
-  // for(int i = 0; i < 100 && aruco_tag_cb_cnt == -1; i++){
-  //   cmd_vel_msg.linear.x = 0.40;
-  //   cmd_vel_msg.angular.z = -0.08;
-  //   cmd_vel_pub.publish(cmd_vel_msg);
-  //   r.sleep();
-  // }
+  geometry_msgs::Twist cmd_vel_msg;
+  for(int i = 0; i < 100 && aruco_tag_cb_cnt == -1; i++){
+    cmd_vel_msg.linear.x = 0.40;
+    cmd_vel_msg.angular.z = -0.08;
+    cmd_vel_pub.publish(cmd_vel_msg);
+    r.sleep();
+  }
 
   while(ros::ok() && !finished_roomba_nav){
     aruco_tag_cb_cnt+=1;

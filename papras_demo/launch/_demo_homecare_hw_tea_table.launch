@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <launch>
-  <arg name="usb_port" default="/dev/ttyUSB0" />
+  <arg name="usb_port" default="/dev/ttyPAPRAS" />
   <arg name="pipeline" default="ompl"/>
 
   <group ns="tea_table">

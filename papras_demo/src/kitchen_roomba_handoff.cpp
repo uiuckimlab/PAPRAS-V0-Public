@@ -23,6 +23,7 @@
 #include <std_msgs/String.h>
 #include <std_srvs/Empty.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Bool.h>
 #include <vision_msgs/Detection3DArray.h>
 #include <rosparam_shortcuts/rosparam_shortcuts.h>
 
@@ -132,8 +133,9 @@ struct GrapsPoseDefine
   std::float_t gripper_width;
 };
 
-bool paused = false;
+bool paused = true;
 bool failed = false;
+bool start_mission = true;
 
 int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, moveit::planning_interface::MoveGroupInterface& hand_group, ObjectID object_id, geometry_msgs::Pose objPose, int i){
   // get pose of detected object
@@ -219,7 +221,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   bool success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful pregrasp plan %s", success ? "" : "FAILED");
   moveit_visual_tools::MoveItVisualTools visual_tools("world");
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   group.execute(my_plan);
   ros::Duration(0.5).sleep();
 
@@ -267,7 +269,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   group.setJointValueTarget(grasp_pose.pose);
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   group.execute(my_plan);
 
   hand_group.setNamedTarget("close");
@@ -280,7 +282,7 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
 
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful pregrasp plan %s", success ? "" : "FAILED");
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   group.execute(my_plan);
   ros::Duration(0.5).sleep();
 
@@ -288,14 +290,14 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   group.setNamedTarget("place_waypoint");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful place_waypoint plan %s", success ? "" : "FAILED");
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   group.execute(my_plan);
 
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
   group.setNamedTarget("place_counter");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful place_counter plan %s", success ? "" : "FAILED");
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   group.execute(my_plan);
 
   std::vector<double> place_joint_values;
@@ -321,25 +323,27 @@ int pick_place_object(moveit::planning_interface::MoveGroupInterface& group, mov
   group.setJointValueTarget(place_joint_values);
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful place_joint_values plan %s", success ? "" : "FAILED");
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   group.execute(my_plan);
 
   hand_group.setNamedTarget("open");
   hand_group.plan(my_plan);
   hand_group.execute(my_plan);
 
+  ros::Duration(1.0).sleep();
+
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
   group.setNamedTarget("place_counter");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful place_counter plan %s", success ? "" : "FAILED");
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   group.execute(my_plan);
 
   group.setStartStateToCurrentState();  // not sure why this is necessary after placing
   group.setNamedTarget("place_waypoint");
   success = (group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
   ROS_INFO_NAMED("tutorial", "Successful waypoiny plan %s", success ? "" : "FAILED");
-  visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+  
   group.execute(my_plan);
 
   return 1;
@@ -421,6 +425,10 @@ bool continue_service(std_srvs::Empty::Request &req, std_srvs::Empty::Response &
     return true;
 }
 
+void start_mission_callback(const std_msgs::Bool data){
+    start_mission = data.data;
+}
+
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "handoff");
@@ -459,6 +467,8 @@ int main(int argc, char** argv)
   // pause service
   ros::ServiceServer continue_state = nh.advertiseService("continue_statemachine", continue_service);
 
+  ros::Subscriber marker_sub = nh.subscribe("/roomba/start_kitchen", 10, start_mission_callback);
+
   // GAZEBO SERVICE
   moveit::planning_interface::MoveGroupInterface group("arm1");
   moveit::planning_interface::MoveGroupInterface hand_group("gripper1");
@@ -472,6 +482,10 @@ int main(int argc, char** argv)
 
   while (ros::ok())
   {
+    if(start_mission)
+    {
+      paused = false;
+    }
     if ((paused || failed) && !(task_state == ST_PAUSED))
     {
       ROS_INFO_STREAM("PAUSED in state " << task_state);
@@ -560,7 +574,7 @@ int main(int argc, char** argv)
           break;
         }
         moveit_visual_tools::MoveItVisualTools visual_tools("world");
-        visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+        
 
         // move
         error_code = group.execute(plan);
@@ -593,7 +607,7 @@ int main(int argc, char** argv)
           break;
         }
         moveit_visual_tools::MoveItVisualTools visual_tools("world");
-        visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+        
 
         error_code = group.execute(plan);
         if (error_code == moveit::core::MoveItErrorCode::SUCCESS)
@@ -662,7 +676,7 @@ int main(int argc, char** argv)
           group.setNamedTarget("observe_roomba");
           bool success = (group.plan(plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
           ROS_INFO_NAMED("tutorial", "Successful grasp plan %s", success ? "" : "FAILED");
-          visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+          
           group.execute(plan);
         }else{
           task_state = ST_ARM_TO_HOME_END;
@@ -693,7 +707,7 @@ int main(int argc, char** argv)
           failed = true;
           break;
         }
-        visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
+        
 
         // move to home
         error_code = group.execute(plan);
