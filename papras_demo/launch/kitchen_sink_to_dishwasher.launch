@@ -1,5 +1,0 @@
-<launch>
-    <group ns="kitchen">
-        <node name="kitchen_sink_to_dishwasher" pkg="papras_demo" type="kitchen_sink_to_dishwasher" respawn="false" output="screen"/>
-    </group>
-</launch>

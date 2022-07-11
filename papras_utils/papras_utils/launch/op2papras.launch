@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-
-<launch>
-    <arg name="pub_topic" default="/frame" />
-
-    <node name="op2papras" pkg="ros_openpose" type="op2papras.py" output="screen" required="true" >
-        <param name="pub_topic" value="$(arg pub_topic)" />
-    </node>
-</launch>

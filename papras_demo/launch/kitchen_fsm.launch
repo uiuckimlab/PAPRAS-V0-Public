@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<launch>
-  <group ns="kitchen">
-      <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/kitchen.urdf.xacro'"/>
-      <node pkg="papras_demo" type="kitchen_fsm" name="kitchen_fsm" output="screen"/>
-  </group>
-</launch>

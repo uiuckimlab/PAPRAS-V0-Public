@@ -1,9 +1,0 @@
-<launch>
-
-  <include file="$(find papras)/launch/rviz.launch">
-    <arg name="coffee" value="true"/>
-  </include>
-
-  <include file="$(find papras)/launch/coffee_tasks.launch"/>
-  
-</launch>

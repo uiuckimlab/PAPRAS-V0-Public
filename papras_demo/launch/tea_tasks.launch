@@ -1,9 +1,0 @@
-<launch>
-
-  <rosparam file="$(find papras_demo)/config/mission_plan_tea_table.yaml">
-  </rosparam>
-  
-  <node name="tea_demo" pkg="papras_demo" type="tea_demo" respawn="false" output="screen">
-  </node>
-
-</launch>

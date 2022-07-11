@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="simple_robot">
+    <group name="arm1">
+            <chain base_link="robot1/link1" tip_link="robot1/end_effector_link"/>
+    </group>
+    <group name="gripper1">
+        <joint name="robot1/gripper"/>
+        <joint name="robot1/gripper_sub"/>
+    </group>
+    <group_state name="init" group="arm1">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="0"/>
+        <joint name="robot1/joint3" value="0"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0"/>
+        <joint name="robot1/joint6" value="0"/>
+    </group_state>
+    <group_state name="rest" group="arm1">
+        <joint name="robot1/joint1" value="0"/>
+        <joint name="robot1/joint2" value="-1.5707"/>
+        <joint name="robot1/joint3" value="1.5"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="0.4"/>
+        <joint name="robot1/joint6" value="0"/>
+    </group_state>
+    <group_state name="open" group="gripper1">
+        <joint name="robot1/gripper" value="0"/>
+    </group_state>
+    <group_state name="close" group="gripper1">
+        <joint name="robot1/gripper" value="1"/>
+    </group_state>
+    <group_state name="observe_table_left" group="arm1">
+        <joint name="robot1/joint1" value="-0.6075"/>
+        <joint name="robot1/joint2" value="0.0552"/>
+        <joint name="robot1/joint3" value="-0.486"/>
+        <joint name="robot1/joint4" value="0"/>
+        <joint name="robot1/joint5" value="1.1021"/>
+        <joint name="robot1/joint6" value="0"/>
+    </group_state>
+    <end_effector name="eef1" parent_link="robot1/end_effector_link" group="gripper1"/>
+    <passive_joint name="robot1/gripper_sub"/>
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="robot1/camera_link" link2="robot1/end_link" reason="Never"/>
+    <disable_collisions link1="robot1/camera_link" link2="robot1/gripper_link" reason="Never"/>
+    <disable_collisions link1="robot1/camera_link" link2="robot1/gripper_main_link" reason="Adjacent"/>
+    <disable_collisions link1="robot1/camera_link" link2="robot1/gripper_sub_link" reason="Never"/>
+    <disable_collisions link1="robot1/camera_link" link2="robot1/link4" reason="Never"/>
+    <disable_collisions link1="robot1/camera_link" link2="robot1/link5" reason="Never"/>
+    <disable_collisions link1="robot1/camera_link" link2="robot1/link6" reason="Never"/>
+    <disable_collisions link1="robot1/end_link" link2="robot1/gripper_link" reason="Never"/>
+    <disable_collisions link1="robot1/end_link" link2="robot1/gripper_main_link" reason="Adjacent"/>
+    <disable_collisions link1="robot1/end_link" link2="robot1/gripper_sub_link" reason="Never"/>
+    <disable_collisions link1="robot1/end_link" link2="robot1/link4" reason="Never"/>
+    <disable_collisions link1="robot1/end_link" link2="robot1/link5" reason="Never"/>
+    <disable_collisions link1="robot1/end_link" link2="robot1/link6" reason="Adjacent"/>
+    <disable_collisions link1="robot1/gripper_link" link2="robot1/gripper_main_link" reason="Adjacent"/>
+    <disable_collisions link1="robot1/gripper_link" link2="robot1/gripper_sub_link" reason="User"/>
+    <disable_collisions link1="robot1/gripper_link" link2="robot1/link4" reason="Never"/>
+    <disable_collisions link1="robot1/gripper_link" link2="robot1/link5" reason="Never"/>
+    <disable_collisions link1="robot1/gripper_link" link2="robot1/link6" reason="Never"/>
+    <disable_collisions link1="robot1/gripper_main_link" link2="robot1/gripper_sub_link" reason="Adjacent"/>
+    <disable_collisions link1="robot1/gripper_main_link" link2="robot1/link4" reason="Never"/>
+    <disable_collisions link1="robot1/gripper_main_link" link2="robot1/link5" reason="Never"/>
+    <disable_collisions link1="robot1/gripper_main_link" link2="robot1/link6" reason="Never"/>
+    <disable_collisions link1="robot1/gripper_sub_link" link2="robot1/link4" reason="Never"/>
+    <disable_collisions link1="robot1/gripper_sub_link" link2="robot1/link5" reason="Never"/>
+    <disable_collisions link1="robot1/gripper_sub_link" link2="robot1/link6" reason="Never"/>
+    <disable_collisions link1="robot1/link1" link2="robot1/link2" reason="Adjacent"/>
+    <disable_collisions link1="robot1/link1" link2="robot1/link3" reason="Never"/>
+    <disable_collisions link1="robot1/link2" link2="robot1/link3" reason="Adjacent"/>
+    <disable_collisions link1="robot1/link2" link2="robot1/link4" reason="Never"/>
+    <disable_collisions link1="robot1/link3" link2="robot1/link4" reason="Adjacent"/>
+    <disable_collisions link1="robot1/link3" link2="robot1/link5" reason="Never"/>
+    <disable_collisions link1="robot1/link4" link2="robot1/link5" reason="Adjacent"/>
+    <disable_collisions link1="robot1/link4" link2="robot1/link6" reason="Never"/>
+    <disable_collisions link1="robot1/link5" link2="robot1/link6" reason="Adjacent"/>
+</robot>

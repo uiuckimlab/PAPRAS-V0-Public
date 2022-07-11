@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>papras_controls</name>
+  <version>2.0.1</version>
+  <description>ROS package for papras_controls</description>
+  <license>Apache 2.0</license>
+
+  <author email="kazukis2@illinois.edu">Kazuki Shin</author>
+  <maintainer email="kazukis2@illinois.edu">Kazuki Shin</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <build_depend>roscpp</build_depend>
+  <build_depend>controller_manager</build_depend>
+  <build_depend>dynamixel_workbench_toolbox</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>yaml-cpp</build_depend>
+
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>dynamixel_workbench_toolbox</exec_depend>
+  <exec_depend>hardware_interface</exec_depend>
+  <exec_depend>yaml-cpp</exec_depend>
+</package>
