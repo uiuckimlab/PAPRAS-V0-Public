@@ -1,0 +1,7 @@
+<launch>
+
+  <include file="$(find tea_table_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find tea_table_moveit_config)/launch/moveit.rviz"/>
+  </include>
+
+</launch>

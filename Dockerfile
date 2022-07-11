@@ -31,17 +31,17 @@ RUN mkdir -p /opt/catkin_ws/src && cd /opt/catkin_ws/src \
     && git clone https://github.com/ROBOTIS-GIT/open_manipulator_msgs.git \
     && git clone https://github.com/ROBOTIS-GIT/open_manipulator_p_simulations.git \
     && git clone https://github.com/ROBOTIS-GIT/robotis_manipulator.git \
-    && git clone https://github.com/ROBOTIS-GIT/open_manipulator_dependencies.git \
-    && git clone https://github.com/ravijo/ros_openpose.git \
-    && git clone https://github.com/ros/robot_state_publisher.git
+    && git clone https://github.com/ROBOTIS-GIT/open_manipulator_dependencies.git 
+# && git clone https://github.com/ravijo/ros_openpose.git \
+# && git clone https://github.com/ros/robot_state_publisher.git
 
-RUN cd $ROS_WS/src/ros_openpose && touch CATKIN_IGNORE
+# RUN cd $ROS_WS/src/ros_openpose && touch CATKIN_IGNORE
 # need to mount /dev first 
 # RUN sudo setserial /dev/ttyUSB0 low_latency
 RUN . "/opt/ros/$ROS_DISTRO/setup.sh" && cd $ROS_WS && catkin_make \
     && sed --in-place --expression \ 
-     '$isource "$ROS_WS/devel/setup.bash"' \
-      /ros_entrypoint.sh
+    '$isource "$ROS_WS/devel/setup.bash"' \
+    /ros_entrypoint.sh
 
 # run ros package launch file
 # CMD [ "roslaunch", "<your package>", "<your launch file>" ]

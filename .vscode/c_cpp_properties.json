@@ -1,32 +1,33 @@
 {
-  "configurations": [
-    {
-      "browse": {
-        "databaseFilename": "",
-        "limitSymbolsToIncludedHeaders": true
-      },
-      "includePath": [
-        "/home/kimlab/catkin_kaz/devel/include/**",
-        "/opt/ros/noetic/include/**",
-        "/home/kimlab/catkin_kaz/src/DynamixelSDK/ros/dynamixel_sdk/include/**",
-        "/home/kimlab/catkin_kaz/src/dynamixel-workbench/dynamixel_workbench_controllers/include/**",
-        "/home/kimlab/catkin_kaz/src/dynamixel-workbench/dynamixel_workbench_operators/include/**",
-        "/home/kimlab/catkin_kaz/src/dynamixel-workbench/dynamixel_workbench_toolbox/include/**",
-        "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_control_gui/include/**",
-        "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_control_gui_synced/include/**",
-        "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_controller/include/**",
-        "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p_controls/open_manipulator_p_controllers/include/**",
-        "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p_controls/open_manipulator_p_hw/include/**",
-        "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_libs/include/**",
-        "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_teleop/include/**",
-        "/home/kimlab/catkin_kaz/src/PAPRAS/papras/include/**",
-        "/home/kimlab/catkin_kaz/src/robot_state_publisher/include/**",
-        "/home/kimlab/catkin_kaz/src/open_manipulator_dependencies/roboticsgroup_gazebo_plugins/include/**",
-        "/home/kimlab/catkin_kaz/src/robotis_manipulator/include/**",
-        "/usr/include/**"
-      ],
-      "name": "ROS"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/kimlab/catkin_kaz/devel/include/**",
+                "/opt/ros/noetic/include/**",
+                "/home/kimlab/catkin_kaz/src/DynamixelSDK/ros/dynamixel_sdk/include/**",
+                "/home/kimlab/catkin_kaz/src/dynamixel-workbench/dynamixel_workbench_controllers/include/**",
+                "/home/kimlab/catkin_kaz/src/dynamixel-workbench/dynamixel_workbench_operators/include/**",
+                "/home/kimlab/catkin_kaz/src/dynamixel-workbench/dynamixel_workbench_toolbox/include/**",
+                "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_control_gui/include/**",
+                "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_control_gui_synced/include/**",
+                "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_controller/include/**",
+                "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p_controls/open_manipulator_p_controllers/include/**",
+                "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p_controls/open_manipulator_p_hw/include/**",
+                "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_libs/include/**",
+                "/home/kimlab/catkin_kaz/src/PAPRAS/open_manipulator_p/open_manipulator_p_teleop/include/**",
+                "/home/kimlab/catkin_kaz/src/PAPRAS/papras/include/**",
+                "/home/kimlab/catkin_kaz/src/robot_state_publisher/include/**",
+                "/home/kimlab/catkin_kaz/src/open_manipulator_dependencies/roboticsgroup_gazebo_plugins/include/**",
+                "/home/kimlab/catkin_kaz/src/robotis_manipulator/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
 }

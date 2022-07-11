@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<robot name="kitchen" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Import PAPRAS Macros -->
+  <xacro:include filename="$(find papras_description)/urdf/papras_macros.xacro"/>
+
+  <link name="world"/>
+
+  <joint name="world_env_fixed" type="fixed">
+    <parent link="world"/>
+    <child link="env"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="env">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://papras_description/meshes/kitchen.stl"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://papras_description/meshes/kitchen_simple.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="robot1/env_arm_fixed" type="fixed">
+    <parent link="env"/>
+    <child link="robot1/link1"/>
+    <origin xyz="-0.06229 0.01597 0.85252" rpy="${pi} ${-0.5*pi} 0"/>
+  </joint>
+
+  <xacro:papras_arm_long id="1"/>
+  <xacro:papras_gripper id="1"/>
+  <xacro:papras_camera id="1"/>
+
+</robot>

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<robot name="spot_mount" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Import PAPRAS Macros -->
+  <xacro:include filename="$(find papras_description)/urdf/papras_macros.xacro"/>
+
+  <link name="world"/>
+
+  <joint name="world_env_fixed" type="fixed">
+    <parent link="world"/>
+    <child link="env"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="env">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://papras_description/meshes/spot_mount.stl"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://papras_description/meshes/spot_mount_simple.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="robot1/env_arm_fixed" type="fixed">
+    <parent link="env"/>
+    <child link="robot1/link1"/>
+    <origin xyz="0.0 0.05049 0.09003" rpy="0 ${pi*0.25} ${pi*0.5}"/>
+  </joint>
+  <joint name="robot2/env_arm_fixed" type="fixed">
+    <parent link="env"/>
+    <child link="robot2/link1"/>
+    <origin xyz="0.0 -0.05049 0.09003" rpy="0 ${pi*0.25} ${-pi*0.5}"/>
+  </joint>
+
+  <xacro:papras_arm id="1"/>
+  <xacro:papras_gripper id="1"/>
+  <xacro:papras_camera id="1"/>
+  <xacro:papras_arm id="2"/>
+  <xacro:papras_gripper id="2"/>
+  <xacro:papras_camera id="2"/>
+
+</robot>

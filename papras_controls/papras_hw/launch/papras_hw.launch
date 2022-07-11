@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="usb_port" default="/dev/ttyUSB0" />
+  <arg name="baud_rate" default="1000000" />
+  <arg name="yaml_file" default="$(find papras_hw)/config/hardware.yaml"/>
+  <arg name="interface" default="position"/>
+
+  <node pkg="papras_hw" type="omp_control_node" name="omp_control_node" output="screen">
+    <param name="usb_port" value="$(arg usb_port)"/>
+    <param name="baud_rate" value="$(arg baud_rate)"/>    
+    <param name="interface" value="$(arg interface)"/>
+    <param name="yaml_file" value="$(arg yaml_file)"/>
+  </node>
+
+  <node name="switch_controller_node" pkg="papras_hw" type="switch_controller_node.py" respawn="true" output="screen">
+  </node>
+
+</launch>

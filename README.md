@@ -30,7 +30,22 @@ ros-noetic-moveit-resources-prbt-moveit-config \
 ros-noetic-pilz-industrial-motion-planner \
 ros-noetic-joint-trajectory-controller \
 ros-noetic-effort-controllers \
-ros-noetic-plotjuggler-ros
+ros-noetic-plotjuggler-ros \
+ros-noetic-vision-msgs \
+ros-noetic-rosparam-shortcuts \
+ros-noetic-serial \
+ros-noetic-libcreate \
+ros-noetic-aruco-msgs \
+libspnav-dev \
+```
+```
+git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git \
+    && git clone https://github.com/ROBOTIS-GIT/dynamixel-workbench.git \
+    && git clone https://github.com/ROBOTIS-GIT/dynamixel-workbench-msgs.git \
+    && git clone https://github.com/ROBOTIS-GIT/open_manipulator_msgs.git \
+    && git clone https://github.com/ROBOTIS-GIT/open_manipulator_p_simulations.git \
+    && git clone https://github.com/ROBOTIS-GIT/robotis_manipulator.git \
+    && git clone https://github.com/ROBOTIS-GIT/open_manipulator_dependencies.git 
 ```
 
 3. Go to catkin_ws directory, build the package, and configure ROS

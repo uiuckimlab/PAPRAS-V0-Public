@@ -1,8 +1,0 @@
-<launch>
-  <arg name="with_gripper" default="false" />
-
-  <group if="$(arg with_gripper)">
-    <param name="robot_description"
-      command="$(find xacro)/xacro --inorder '$(find open_manipulator_p_description)/urdf/coffee_arm3.urdf.xacro'"/>
-  </group>
-</launch>

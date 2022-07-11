@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<launch>
+  <group ns="kitchen">
+      <param name="robot_description" command="$(find xacro)/xacro '$(find papras_description)/urdf/kitchen.urdf.xacro'"/>
+      <node pkg="papras_demo" type="kitchen_roomba_handoff" name="kitchen_roomba_handoff" output="screen"/>
+  </group>
+</launch>

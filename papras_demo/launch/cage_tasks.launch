@@ -1,0 +1,9 @@
+<launch>
+
+  <rosparam file="$(find papras_demo)/config/mission_plan_cage.yaml">
+  </rosparam>
+  
+  <node name="cage_tasks" pkg="papras_demo" type="cage_tasks" respawn="false" output="screen">
+  </node>
+
+</launch>
