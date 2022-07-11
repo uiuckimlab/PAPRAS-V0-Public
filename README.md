@@ -37,6 +37,7 @@ ros-noetic-serial \
 ros-noetic-libcreate \
 ros-noetic-aruco-msgs \
 libspnav-dev \
+ros-noetic-trac-ik-kinematics-plugin 
 ```
 ```
 git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git \
@@ -84,4 +85,4 @@ Select all `/ft_sensor_topic` topics and click OK \
 Drag & Drop any of the joint force/torque values onto plot.
 
 # Credits
-This code was written by Kazuki Shin, Dhruv Mathur and Sankalp Yamsani. The grasp detection code was adapted from 2020 PickNik Inc.
+This code was written by Kazuki Shin, Dhruv Mathur and Sankalp Yamsani. 
