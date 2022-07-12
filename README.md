@@ -86,3 +86,42 @@ Drag & Drop any of the joint force/torque values onto plot.
 
 # Credits
 This code was written by Kazuki Shin, Dhruv Mathur and Sankalp Yamsani. 
+
+
+# IK Fast Plugin
+docker run -v /home/kazuki/Workspace:/mnt -it personalrobotics/ros-openrave /bin/bash
+http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html'
+sudo apt-get install ros-indigo-collada-urdf
+
+rosrun xacro xacro --inorder -o simple_robot.urdf simple_robot.urdf.xacro 
+rosrun collada_urdf urdf_to_collada robot.urdf robot.dae
+
+sudo apt-get install ros-indigo-moveit-resources
+&& ros-indigo-shape-tools
+&& ros-indigo-ompl
+&& ros-indigo-interactive-markers
+&& ros-indigo-warehouse-ros
+&& ros-indigo-control-msgs
+&& ros-indigo-controller-manager-msgs
+&& ros-indigo-rviz
+&& ros-indigo-manipulation-msgs
+
+ python ikfast.py --robot=simple_robot.dae --iktype=transform6d --baselink=0 --freeindex=6 --eelink=10 --savefile=ikfast61_arm1.cpp
+
+ name                     index parents                 
+-------------------------------------------------------
+world                    0                             
+robot1/link1             1     world                   
+robot1/link2             2     robot1/link1            
+robot1/link3             3     robot1/link2            
+robot1/link4             4     robot1/link3            
+robot1/link5             5     robot1/link4            
+robot1/link6             6     robot1/link5            
+robot1/end_link          7     robot1/link6            
+robot1/gripper_main_link 8     robot1/end_link         
+robot1/camera_link       9     robot1/gripper_main_link
+robot1/end_effector_link 10    robot1/gripper_main_link
+robot1/gripper_link      11    robot1/gripper_main_link
+robot1/gripper_sub_link  12    robot1/gripper_main_link
+-------------------------------------------------------
+name                     index parents
