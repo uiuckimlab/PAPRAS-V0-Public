@@ -96,6 +96,7 @@ sudo apt-get install ros-indigo-collada-urdf
 rosrun xacro xacro --inorder -o simple_robot.urdf simple_robot.urdf.xacro 
 rosrun collada_urdf urdf_to_collada robot.urdf robot.dae
 
+```
 sudo apt-get install ros-indigo-moveit-resources
 && ros-indigo-shape-tools
 && ros-indigo-ompl
@@ -105,8 +106,9 @@ sudo apt-get install ros-indigo-moveit-resources
 && ros-indigo-controller-manager-msgs
 && ros-indigo-rviz
 && ros-indigo-manipulation-msgs
+```
 
- python ikfast.py --robot=simple_robot.dae --iktype=transform6d --baselink=0 --freeindex=6 --eelink=10 --savefile=ikfast61_arm1.cpp
+ `python ikfast.py --robot=simple_robot.dae --iktype=transform6d --baselink=0 --freeindex=6 --eelink=10 --savefile=ikfast61_arm1.cpp`
 
  name                     index parents                 
 -------------------------------------------------------
@@ -125,3 +127,10 @@ robot1/gripper_link      11    robot1/gripper_main_link
 robot1/gripper_sub_link  12    robot1/gripper_main_link
 -------------------------------------------------------
 name                     index parents
+
+## OpenRave IKfast resources
+- http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html
+- https://moveit.picknik.ai/humble/doc/examples/ikfast/ikfast_tutorial.html?highlight=ik%20fast
+- http://openrave.org/docs/latest_stable/openravepy/ikfast/#ik-types
+- https://github.com/personalrobotics/docker-public-images
+- https://github.com/roboticslab-uc3m/installation-guides/blob/master/install-openrave.md
