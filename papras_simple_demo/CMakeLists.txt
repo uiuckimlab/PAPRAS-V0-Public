@@ -37,7 +37,6 @@ find_package(catkin REQUIRED COMPONENTS
     vision_msgs
     rosparam_shortcuts
     eigen_conversions
-    moveit_grasps
 )
 
 find_package(gazebo REQUIRED)
