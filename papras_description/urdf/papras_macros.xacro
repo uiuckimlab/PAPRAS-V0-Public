@@ -27,6 +27,8 @@
       <maxVel>1.0</maxVel>
       <minDepth>0.001</minDepth>
       <material>Gazebo/White</material>
+      <selfCollide>1</selfCollide>
+      <dampingFactor>0.01</dampingFactor>
     </gazebo>
   </xacro:macro>
   <!-- ros_control plugin -->
@@ -795,7 +797,7 @@
       <child link="robot${id}/end_link"/>
       <origin xyz="0.12300 -0.04500 0.00000" rpy="0 0 0"/>
       <axis xyz="1 0 0"/>
-      <limit velocity="6.5" effort="1000"/>
+      <limit velocity="3.057" effort="1000"/>
       <dynamics damping="0.7"/>
     </joint>
     <xacro:SimpleTransmissionPosition n="6" joint="joint6" id="${id}" />
