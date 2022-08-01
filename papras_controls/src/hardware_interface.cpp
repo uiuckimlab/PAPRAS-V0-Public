@@ -551,10 +551,7 @@ namespace open_manipulator_p_hw
 
 
       // Effort
-      if (strcmp(dxl_wb_->getModelName((uint8_t)id_array[index]), "XL-320") == 0)
-        joints_[id_array[index] - 1].effort = dxl_wb_->convertValue2Load((int16_t)get_current[index]);
-      else
-        joints_[id_array[index] - 1].effort = dxl_wb_->convertValue2Current((int16_t)get_current[index]) * (1.78e-03);
+      joints_[id_array[index] - 1].effort = dxl_wb_->convertValue2Current((int16_t)get_current[index]);
 
 
       // isMoving
