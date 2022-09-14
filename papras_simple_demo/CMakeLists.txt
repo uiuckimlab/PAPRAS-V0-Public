@@ -37,6 +37,8 @@ find_package(catkin REQUIRED COMPONENTS
     vision_msgs
     rosparam_shortcuts
     eigen_conversions
+    control_msgs
+    geometry_msgs
 )
 
 find_package(gazebo REQUIRED)
@@ -175,6 +177,10 @@ include_directories(
 add_executable(papras_simple_demo src/papras_simple_demo.cpp)
 target_link_libraries(papras_simple_demo ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS papras_simple_demo DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(servo_keyboard_input src/servo_keyboard_input.cpp)
+target_link_libraries(servo_keyboard_input ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS servo_keyboard_input DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
