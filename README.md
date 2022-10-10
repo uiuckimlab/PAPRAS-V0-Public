@@ -37,16 +37,15 @@ ros-noetic-serial \
 ros-noetic-libcreate \
 ros-noetic-aruco-msgs \
 libspnav-dev \
-ros-noetic-trac-ik-kinematics-plugin 
+ros-noetic-trac-ik-kinematics-plugin \
+ros-noetic-dynamixel-sdk \
+ros-noetic-dynamixel-workbench \
+ros-noetic-open-manipulator-msgs \
+ros-noetic-open-manipulator-p-simulations \
+ros-noetic-robotis-manipulator
 ```
 ```
-git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git \
-    && git clone https://github.com/ROBOTIS-GIT/dynamixel-workbench.git \
-    && git clone https://github.com/ROBOTIS-GIT/dynamixel-workbench-msgs.git \
-    && git clone https://github.com/ROBOTIS-GIT/open_manipulator_msgs.git \
-    && git clone https://github.com/ROBOTIS-GIT/open_manipulator_p_simulations.git \
-    && git clone https://github.com/ROBOTIS-GIT/robotis_manipulator.git \
-    && git clone https://github.com/ROBOTIS-GIT/open_manipulator_dependencies.git 
+git clone https://github.com/ROBOTIS-GIT/open_manipulator_dependencies.git 
 ```
 
 3. Go to catkin_ws directory, build the package, and configure ROS
