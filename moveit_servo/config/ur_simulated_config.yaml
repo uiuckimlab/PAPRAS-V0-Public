@@ -20,7 +20,7 @@ low_latency_mode: false  # Set this to true to publish as soon as an incoming Tw
 # What type of topic does your robot driver expect?
 # Currently supported are std_msgs/Float64MultiArray (for ros_control JointGroupVelocityController or JointGroupPositionController)
 # or trajectory_msgs/JointTrajectory (for Universal Robots and other non-ros_control robots)
-command_out_type: trajectory_msgs/JointTrajectory
+command_out_type: std_msgs/Float64MultiArray
 
 # What to publish? Can save some bandwidth as most robots only require positions or velocities
 publish_joint_positions: true
@@ -28,12 +28,12 @@ publish_joint_velocities: false
 publish_joint_accelerations: false
 
 ## MoveIt properties
-move_group_name:  arm1  # Often 'manipulator' or 'arm'
-planning_frame: robot1/link1  # The MoveIt planning frame. Often 'base_link' or 'world'
+move_group_name:  manipulator  # Often 'manipulator' or 'arm'
+planning_frame: world  # The MoveIt planning frame. Often 'base_link' or 'world'
 
 ## Other frames
-ee_frame_name: robot1/end_effector_link  # The name of the end effector link, used to return the EE pose
-robot_link_command_frame:  robot1/end_effector_link  # commands must be given in the frame of a robot link. Usually either the base or end effector
+ee_frame_name: ee_link  # The name of the end effector link, used to return the EE pose
+robot_link_command_frame:  world  # commands must be given in the frame of a robot link. Usually either the base or end effector
 
 ## Stopping behaviour
 incoming_command_timeout:  0.1  # Stop servoing if X seconds elapse without a new command
@@ -51,7 +51,7 @@ cartesian_command_in_topic: delta_twist_cmds  # Topic for incoming Cartesian twi
 joint_command_in_topic: delta_joint_cmds # Topic for incoming joint angle commands
 joint_topic: joint_states
 status_topic: status # Publish status to this topic
-command_out_topic: /arm1_controller/command # Publish outgoing commands here
+command_out_topic: /joint_group_position_controller/command # Publish outgoing commands here
 
 ## Collision checking for the entire robot body
 check_collisions: true # Check collisions?

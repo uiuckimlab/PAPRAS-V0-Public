@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   spinner.start();
   ros::Time last_time = ros::Time::now();
   ros::TimerOptions timer_options(
-    ros::Duration(0.020), // 8ms
+    ros::Duration(0.008), // 8ms
     boost::bind(timerCallback, boost::ref(hardware_interface), 
                                boost::ref(cm), 
                                boost::ref(last_time), 

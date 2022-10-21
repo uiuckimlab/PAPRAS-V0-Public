@@ -15,6 +15,7 @@ find_package(catkin REQUIRED
     controller_manager
     dynamixel_workbench_toolbox
     hardware_interface
+    joint_limits_interface
 )
 
 ## YAML-CPP
@@ -57,6 +58,7 @@ catkin_package(
     controller_manager
     dynamixel_workbench_toolbox
     hardware_interface
+    joint_limits_interface
 )
 
 ################################################################################

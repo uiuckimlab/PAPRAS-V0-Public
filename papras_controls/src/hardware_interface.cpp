@@ -27,6 +27,7 @@ namespace open_manipulator_p_hw
     isTorqueOn = false;
     controlLoopCnt = 0;
     droppedPackets = 0;
+    control_period = ros::Duration(0.008);
   }
 
   void HardwareInterface::registerActuatorInterfaces()
@@ -373,6 +374,8 @@ namespace open_manipulator_p_hw
     }
     joints_.resize(joint_size);
 
+    
+
     for (auto iter = dynamixel_.begin(); iter != dynamixel_.end(); iter++)
     {
       // initialize joint vector
@@ -394,12 +397,17 @@ namespace open_manipulator_p_hw
       velocity_joint_interface_.registerHandle(velocity_joint_handle);
       hardware_interface::JointHandle effort_joint_handle(joint_state_handle, &joints_[iter->second - 1].effort_command);
       effort_joint_interface_.registerHandle(effort_joint_handle);
-    }
 
+      // Register handle in joint limits interface
+      // joint_limits_interface::PositionJointSoftLimitsHandle joint_limits_handle(position_joint_handle, limits, soft_limits);
+      // jnt_limits_interface_.registerHandle(joint_limits_handle);
+    }
+    
     registerInterface(&joint_state_interface_);
     registerInterface(&position_joint_interface_);
     registerInterface(&velocity_joint_interface_);
     registerInterface(&effort_joint_interface_);
+    registerInterface(&jnt_limits_interface_);
   }
 
   bool HardwareInterface::motorsStopped()
@@ -609,6 +617,8 @@ namespace open_manipulator_p_hw
 
     if (strcmp(interface_.c_str(), "position") == 0)
     {
+      // jnt_limits_interface_.enforceLimits(control_period);
+
       for (auto const &dxl : dynamixel_)
       {
         id_array[id_cnt] = (uint8_t)dxl.second;

@@ -15,10 +15,12 @@
   <build_depend>dynamixel_workbench_toolbox</build_depend>
   <build_depend>hardware_interface</build_depend>
   <build_depend>yaml-cpp</build_depend>
+  <build_depend>joint_limits_interface</build_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>dynamixel_workbench_toolbox</exec_depend>
   <exec_depend>hardware_interface</exec_depend>
   <exec_depend>yaml-cpp</exec_depend>
+  <exec_depend>joint_limits_interface</exec_depend>
 </package>

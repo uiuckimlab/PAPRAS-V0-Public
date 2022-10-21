@@ -10,12 +10,14 @@
 #include <controller_manager/controller_manager.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
+#include <joint_limits_interface/joint_limits_interface.h>
 #include <hardware_interface/robot_hw.h>
 
 #include "controller_manager_msgs/SwitchController.h"
 #include "std_msgs/Int32.h"
 
 #include "dynamixel_workbench_toolbox/dynamixel_workbench.h"
+
 
 // Control table address
 // Control table address is different in Dynamixel model
@@ -147,6 +149,10 @@ namespace open_manipulator_p_hw
     std::vector<Joint> joints_;
     std::vector<int> joint_ids_;
 
+    const joint_limits_interface::JointLimits limits;
+    const joint_limits_interface::SoftJointLimits soft_limits;
+    joint_limits_interface::PositionJointSoftLimitsInterface jnt_limits_interface_;
+    ros::Duration control_period;
     
     bool isMotorsMissing;
     bool isTorqueOn;

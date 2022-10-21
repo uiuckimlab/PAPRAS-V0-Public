@@ -1,0 +1,48 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/kimlab/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/kimlab/catkin_ws/src/aruco_ros/aruco/include/**",
+        "/home/kimlab/catkin_ws/src/aruco_ros/aruco_ros/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/ati_ft_sensor/include/**",
+        "/home/kimlab/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/**",
+        "/home/kimlab/catkin_ws/src/fast_gicp/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/motion_module_tutorial/include/**",
+        "/home/kimlab/catkin_ws/src/moveit_grasps/include/**",
+        "/home/kimlab/catkin_ws/src/PAPRAS/moveit_servo/include/**",
+        "/home/kimlab/catkin_ws/src/PAPRAS/papras_controls/include/**",
+        "/home/kimlab/catkin_ws/src/papras-soft-gripper/papras_soft_gripper/include/**",
+        "/home/kimlab/catkin_ws/src/open_manipulator_dependencies/roboticsgroup_gazebo_plugins/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-Framework/robotis_controller/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-Framework/robotis_device/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-Framework/robotis_framework_common/include/**",
+        "/home/kimlab/catkin_ws/src/robotis_manipulator/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-Math/robotis_math/include/**",
+        "/home/kimlab/catkin_ws/src/rviz_visual_tools/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/sensor_module_tutorial/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/thormang3_action_module/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/thormang3_balance_control/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/thormang3_base_module/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/thormang3_feet_ft_module/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/thormang3_gripper_module/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/thormang3_head_control_module/include/**",
+        "/home/kimlab/catkin_ws/src/thormang3_kinematics_dynamics/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/thormang3_manipulation_module/include/**",
+        "/home/kimlab/catkin_ws/src/ROBOTIS-THORMANG-MPC/thormang3_walking_module/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

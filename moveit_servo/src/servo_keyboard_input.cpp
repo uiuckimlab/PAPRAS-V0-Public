@@ -25,13 +25,20 @@
 #define KEYCODE_W 0x77
 #define KEYCODE_E 0x65
 #define KEYCODE_R 0x72
+#define KEYCODE_A 0x61
+#define KEYCODE_Z 0x7a
+#define KEYCODE_S 0x73
+#define KEYCODE_X 0x78
+#define KEYCODE_D 0x64
+#define KEYCODE_C 0x63
 
 // Some constants used in the Servo Teleop demo
 const std::string TWIST_TOPIC = "/servo_server/delta_twist_cmds";
 const std::string JOINT_TOPIC = "/servo_server/delta_joint_cmds";
-const size_t ROS_QUEUE_SIZE = 10;
+const size_t ROS_QUEUE_SIZE = 100;
 const std::string EEF_FRAME_ID = "robot1/end_effector_link";
 const std::string BASE_FRAME_ID = "robot1/link1";
+const float CMD_VEL = 0.5;
 
 // A class for reading the key inputs from the terminal
 class KeyboardReader
@@ -160,27 +167,51 @@ int KeyboardServo::keyLoop()
     switch (c)
     {
       case KEYCODE_LEFT:
-        twist_msg.twist.linear.y = -1.0;
+        twist_msg.twist.linear.y = -CMD_VEL;
         publish_twist = true;
         break;
       case KEYCODE_RIGHT:
-        twist_msg.twist.linear.y = 1.0;
+        twist_msg.twist.linear.y = CMD_VEL;
         publish_twist = true;
         break;
       case KEYCODE_UP:
-        twist_msg.twist.linear.x = 1.0;
+        twist_msg.twist.linear.x = CMD_VEL;
         publish_twist = true;
         break;
       case KEYCODE_DOWN:
-        twist_msg.twist.linear.x = -1.0;
+        twist_msg.twist.linear.x = -CMD_VEL;
         publish_twist = true;
         break;
       case KEYCODE_PERIOD:
-        twist_msg.twist.linear.z = -1.0;
+        twist_msg.twist.linear.z = -CMD_VEL;
         publish_twist = true;
         break;
       case KEYCODE_SEMICOLON:
-        twist_msg.twist.linear.z = 1.0;
+        twist_msg.twist.linear.z = CMD_VEL;
+        publish_twist = true;
+        break;
+      case KEYCODE_A:
+        twist_msg.twist.angular.y = -CMD_VEL;
+        publish_twist = true;
+        break;
+      case KEYCODE_Z:
+        twist_msg.twist.angular.y = CMD_VEL;
+        publish_twist = true;
+        break;
+      case KEYCODE_S:
+        twist_msg.twist.angular.x = CMD_VEL;
+        publish_twist = true;
+        break;
+      case KEYCODE_X:
+        twist_msg.twist.angular.x = -CMD_VEL;
+        publish_twist = true;
+        break;
+      case KEYCODE_D:
+        twist_msg.twist.angular.z = -CMD_VEL;
+        publish_twist = true;
+        break;
+      case KEYCODE_C:
+        twist_msg.twist.angular.z = CMD_VEL;
         publish_twist = true;
         break;
       case KEYCODE_E:
