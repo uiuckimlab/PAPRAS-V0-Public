@@ -340,12 +340,22 @@ void ServoCalcs::calculateSingleIteration()
   // Don't end this function without updating the filters
   updated_filters_ = false;
 
+  // If not waiting for initial command, and not paused.
+  // Do servoing calculations only if the robot should move, for efficiency
+  // Create new outgoing joint trajectory command message
+  auto joint_trajectory = moveit::util::make_shared_from_pool<trajectory_msgs::JointTrajectory>();
+
+
   // If paused or while waiting for initial servo commands, just keep the low-pass filters up to date with current
   // joints so a jump doesn't occur when restarting
   if (wait_for_servo_commands_ || paused_)
   {
-    resetLowPassFilters(original_joint_state_);
 
+    if(paused_){
+      suddenHalt(*joint_trajectory);
+      last_sent_command_ = joint_trajectory;
+    }
+    resetLowPassFilters(original_joint_state_);
     // Check if there are any new commands with valid timestamp
     wait_for_servo_commands_ =
         twist_stamped_cmd_.header.stamp == ros::Time(0.) && joint_servo_cmd_.header.stamp == ros::Time(0.);
@@ -354,10 +364,6 @@ void ServoCalcs::calculateSingleIteration()
     return;
   }
 
-  // If not waiting for initial command, and not paused.
-  // Do servoing calculations only if the robot should move, for efficiency
-  // Create new outgoing joint trajectory command message
-  auto joint_trajectory = moveit::util::make_shared_from_pool<trajectory_msgs::JointTrajectory>();
 
   // Prioritize cartesian servoing above joint servoing
   // Only run commands if not stale and nonzero
