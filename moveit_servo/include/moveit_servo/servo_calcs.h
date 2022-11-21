@@ -66,6 +66,7 @@
 #include <moveit_servo/servo_parameters.h>
 #include <moveit_servo/status_codes.h>
 #include <moveit_servo/low_pass_filter.h>
+#include <moveit_servo/update_joint_states.h>
 
 namespace moveit_servo
 {
@@ -324,5 +325,8 @@ private:
   kinematics::KinematicsBaseConstPtr ik_solver_;
   Eigen::Isometry3d ik_base_to_tip_frame_;
   bool use_inv_jacobian_ = false;
+
+  UpdateJointStates * update_joint_states_ptr_; 
+
 };
 }  // namespace moveit_servo

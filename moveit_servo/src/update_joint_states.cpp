@@ -45,17 +45,17 @@ void UpdateJointStates::joint_state_callback(const sensor_msgs::JointState msg){
 }
 
 
-int main(int argc, char** argv)
-{
-    ros::init(argc, argv, "update_joint_states");
+// int main(int argc, char** argv)
+// {
+//     ros::init(argc, argv, "update_joint_states");
 
-    ros::NodeHandle nh;
+//     ros::NodeHandle nh;
 
-    ros::AsyncSpinner spinner(0);
-    spinner.start();
+//     ros::AsyncSpinner spinner(0);
+//     spinner.start();
     
-    UpdateJointStates left_arm(nh, "/arm1_controller/command", "/servo_server/set_servoing_paused");
+//     UpdateJointStates left_arm(nh, "/arm1_controller/command", "/servo_server/set_servoing_paused");
 
     
-    ros::waitForShutdown();
-}
+//     ros::waitForShutdown();
+// }

@@ -38,6 +38,10 @@
  */
 
 #include <moveit_servo/servo.h>
+#include <std_msgs/Bool.h>
+
+moveit_servo::Servo * servo;
+
 
 namespace
 {
@@ -45,6 +49,11 @@ constexpr char LOGNAME[] = "servo_server";
 constexpr char ROS_THREADS = 8;
 
 }  // namespace
+
+void set_servoing_paused_callback(const std_msgs::Bool msg) {
+    servo->setPaused(msg.data);
+}
+
 
 int main(int argc, char** argv)
 {
@@ -62,6 +71,8 @@ int main(int argc, char** argv)
     exit(EXIT_FAILURE);
   }
 
+  ros::Subscriber joint_state_sub = nh.subscribe("set_servoing_paused",10, set_servoing_paused_callback);
+
   // Start the planning scene monitor
   planning_scene_monitor->startSceneMonitor();
   planning_scene_monitor->startWorldGeometryMonitor(
@@ -71,16 +82,16 @@ int main(int argc, char** argv)
   planning_scene_monitor->startStateMonitor("servo_joint_states");
 
   // Create the servo server
-  moveit_servo::Servo servo(nh, planning_scene_monitor);
+  servo = new moveit_servo::Servo(nh, planning_scene_monitor);
 
   // Start the servo server (runs in the ros spinner)
-  servo.start();
+  servo->start();
 
   // Wait for ros to shutdown
   ros::waitForShutdown();
 
   // Stop the servo server
-  servo.setPaused(true);
+  servo->setPaused(true);
 
   return 0;
 }

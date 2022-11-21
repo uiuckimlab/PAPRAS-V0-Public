@@ -44,6 +44,8 @@
 
 #include <moveit_servo/make_shared_from_pool.h>
 #include <moveit_servo/servo_calcs.h>
+// #include <moveit_servo/update_joint_states.h>
+
 
 static const std::string LOGNAME = "servo_calcs";
 constexpr size_t ROS_LOG_THROTTLE_PERIOD = 30;  // Seconds to throttle logs inside loops
@@ -128,6 +130,7 @@ ServoCalcs::ServoCalcs(ros::NodeHandle& nh, ServoParameters& parameters,
   else if (parameters_.command_out_type == "std_msgs/Float64MultiArray")
     outgoing_cmd_pub_ = nh_.advertise<std_msgs::Float64MultiArray>(parameters_.command_out_topic, ROS_QUEUE_SIZE);
 
+  update_joint_states_ptr_ = new UpdateJointStates(nh, parameters_.command_out_topic, "set_servoing_paused");
   // Publish status
   status_pub_ = nh_.advertise<std_msgs::Int8>(parameters_.status_topic, ROS_QUEUE_SIZE);
 

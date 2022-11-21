@@ -60,6 +60,7 @@ add_library(${SERVO_LIB_NAME}
   src/servo_calcs.cpp
   src/servo.cpp
   src/low_pass_filter.cpp
+  src/update_joint_states.cpp
 )
 set_target_properties(${SERVO_LIB_NAME} PROPERTIES VERSION "${${PROJECT_NAME}_VERSION}")
 add_dependencies(${SERVO_LIB_NAME} ${catkin_EXPORTED_TARGETS})
@@ -91,9 +92,9 @@ target_link_libraries(pose_tracking_example
 )
 
 # An example of pose tracking
-add_executable(update_joint_states src/update_joint_states.cpp)
-target_link_libraries(update_joint_states ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS update_joint_states DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+# add_executable(update_joint_states src/update_joint_states.cpp)
+# target_link_libraries(update_joint_states ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+# install(TARGETS update_joint_states DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 # Keyboard input for servoing
 add_executable(servo_keyboard_input src/servo_keyboard_input.cpp)

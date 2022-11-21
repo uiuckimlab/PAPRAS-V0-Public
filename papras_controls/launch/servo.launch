@@ -5,6 +5,6 @@
     <rosparam ns="optional_parameter_namespace" command="load" file="$(find papras_controls)/config/papras_servo_config_hw.yaml" />
   </node>
 
-  <node name="update_joint_states" pkg="moveit_servo" type="update_joint_states" respawn="false" output="screen"/>
+  <!-- <node name="update_joint_states" pkg="moveit_servo" type="update_joint_states" respawn="false" output="screen"/> -->
 
 </launch>
