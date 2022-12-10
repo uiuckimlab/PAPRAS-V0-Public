@@ -70,14 +70,14 @@ include_directories(
   ${YAML_CPP_INCLUDE_DIRS}
 )
 
-add_executable(omp_control_node src/omp_control_node.cpp src/hardware_interface.cpp)
-add_dependencies(omp_control_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(omp_control_node ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
+add_executable(papras_control_node src/papras_control_node.cpp src/hardware_interface.cpp)
+add_dependencies(papras_control_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(papras_control_node ${catkin_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
 ################################################################################
 # Install
 ################################################################################
-install(TARGETS omp_control_node
+install(TARGETS papras_control_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

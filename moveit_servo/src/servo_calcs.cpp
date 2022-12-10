@@ -41,6 +41,7 @@
 
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64MultiArray.h>
+#include <moveit_msgs/DisplayTrajectory.h>
 
 #include <moveit_servo/make_shared_from_pool.h>
 #include <moveit_servo/servo_calcs.h>
@@ -130,7 +131,9 @@ ServoCalcs::ServoCalcs(ros::NodeHandle& nh, ServoParameters& parameters,
   else if (parameters_.command_out_type == "std_msgs/Float64MultiArray")
     outgoing_cmd_pub_ = nh_.advertise<std_msgs::Float64MultiArray>(parameters_.command_out_topic, ROS_QUEUE_SIZE);
 
+
   update_joint_states_ptr_ = new UpdateJointStates(nh, parameters_.command_out_topic, "set_servoing_paused");
+
   // Publish status
   status_pub_ = nh_.advertise<std_msgs::Int8>(parameters_.status_topic, ROS_QUEUE_SIZE);
 
@@ -172,6 +175,9 @@ ServoCalcs::ServoCalcs(ros::NodeHandle& nh, ServoParameters& parameters,
     ROS_WARN_STREAM_THROTTLE_NAMED(ROS_LOG_THROTTLE_PERIOD, LOGNAME,
                                      "No kinematics solver instantiated for group. Will use inverse Jacobian for servo calculations instead.");
   }
+  totg = new trajectory_processing::TimeOptimalTrajectoryGeneration(0.1, 0.008, 0.01);
+  iptp = new trajectory_processing::IterativeParabolicTimeParameterization(100, 0.008);
+
 }
 
 ServoCalcs::~ServoCalcs()
@@ -306,8 +312,10 @@ void ServoCalcs::calculateSingleIteration()
   // Update from latest state
   current_state_ = planning_scene_monitor_->getStateMonitor()->getCurrentState();
 
-  if (latest_twist_stamped_)
+  if (latest_twist_stamped_){
     twist_stamped_cmd_ = *latest_twist_stamped_;
+    twist_stamped_cmd_.header.stamp = ros::Time::now();
+  }
   if (latest_joint_cmd_)
     joint_servo_cmd_ = *latest_joint_cmd_;
 
@@ -346,8 +354,8 @@ void ServoCalcs::calculateSingleIteration()
   // If not waiting for initial command, and not paused.
   // Do servoing calculations only if the robot should move, for efficiency
   // Create new outgoing joint trajectory command message
-  auto joint_trajectory = moveit::util::make_shared_from_pool<trajectory_msgs::JointTrajectory>();
 
+  auto joint_trajectory = moveit::util::make_shared_from_pool<trajectory_msgs::JointTrajectory>();
 
   // If paused or while waiting for initial servo commands, just keep the low-pass filters up to date with current
   // joints so a jump doesn't occur when restarting
@@ -372,14 +380,17 @@ void ServoCalcs::calculateSingleIteration()
   // Only run commands if not stale and nonzero
   if (have_nonzero_twist_stamped_ && !twist_command_is_stale_)
   {
+    ROS_INFO_STREAM("381\n");
     if (!cartesianServoCalcs(twist_stamped_cmd_, *joint_trajectory))
     {
+      ROS_INFO_STREAM("384\n");
       resetLowPassFilters(original_joint_state_);
       return;
     }
   }
   else if (have_nonzero_joint_command_ && !joint_command_is_stale_)
   {
+    ROS_INFO_STREAM("391\n");
     if (!jointServoCalcs(joint_servo_cmd_, *joint_trajectory))
     {
       resetLowPassFilters(original_joint_state_);
@@ -389,11 +400,15 @@ void ServoCalcs::calculateSingleIteration()
   else
   {
     // Joint trajectory is not populated with anything, so set it to the last positions and 0 velocity
+    ROS_INFO_STREAM("401\n");
+
     *joint_trajectory = *last_sent_command_;
     for (auto& point : joint_trajectory->points)
     {
       point.velocities.assign(point.velocities.size(), 0);
+      point.accelerations.assign(point.accelerations.size(),0);
     }
+    // return;
   }
 
   // Print a warning to the user if both are stale
@@ -410,6 +425,7 @@ void ServoCalcs::calculateSingleIteration()
     suddenHalt(*joint_trajectory);
     have_nonzero_twist_stamped_ = false;
     have_nonzero_joint_command_ = false;
+    ROS_INFO("in zero command");
   }
 
   // Skip the servoing publication if all inputs have been zero for several cycles in a row.
@@ -446,6 +462,7 @@ void ServoCalcs::calculateSingleIteration()
     {
       // When a joint_trajectory_controller receives a new command, a stamp of 0 indicates "begin immediately"
       // See http://wiki.ros.org/joint_trajectory_controller#Trajectory_replacement
+
       joint_trajectory->header.stamp = ros::Time(0);
       outgoing_cmd_pub_.publish(joint_trajectory);
     }
@@ -478,6 +495,7 @@ bool ServoCalcs::cartesianServoCalcs(geometry_msgs::TwistStamped& cmd,
                                    "nan in incoming command. Skipping this datapoint.");
     return false;
   }
+
 
   // If incoming commands should be in the range [-1:1], check for |delta|>1
   if (parameters_.command_in_type == "unitless")
@@ -633,6 +651,24 @@ bool ServoCalcs::cartesianServoCalcs(geometry_msgs::TwistStamped& cmd,
     delta_theta_ = pseudo_inverse * delta_x;
   }
 
+
+
+  // auto joints = moveit::util::make_shared_from_pool<std_msgs::Float64MultiArray>();
+  // joints->data = {delta_theta_[0], delta_theta_[1], delta_theta_[2], delta_theta_[4], delta_theta_[5], delta_theta_[6]};
+  // delta_theta_pub_.publish(joints);
+
+  double threshold = 1.0e-4; // this will need to change will make it an actual parameter in lab.
+  int count = 0;
+  for(int i = 0; i < delta_theta_.size(); i++){
+    if(delta_theta_[i] < threshold){
+      count++;
+    }
+  }
+
+  if(count == delta_theta_.size()){
+    return false;       // not enough movement keep robot still
+  }
+  
   enforceVelLimits(delta_theta_);
 
   // If close to a collision or a singularity, decelerate
@@ -641,7 +677,7 @@ bool ServoCalcs::cartesianServoCalcs(geometry_msgs::TwistStamped& cmd,
 
   prev_joint_velocity_ = delta_theta_ / parameters_.publish_period;
 
-  return convertDeltasToOutgoingCmd(joint_trajectory);
+  return convertDeltasToOutgoingCmd(joint_trajectory, cmd.header.stamp);
 }
 
 bool ServoCalcs::jointServoCalcs(const control_msgs::JointJog& cmd, trajectory_msgs::JointTrajectory& joint_trajectory)
@@ -667,21 +703,28 @@ bool ServoCalcs::jointServoCalcs(const control_msgs::JointJog& cmd, trajectory_m
 
   prev_joint_velocity_ = delta_theta_ / parameters_.publish_period;
 
-  return convertDeltasToOutgoingCmd(joint_trajectory);
+  return convertDeltasToOutgoingCmd(joint_trajectory, cmd.header.stamp);
 }
 
-bool ServoCalcs::convertDeltasToOutgoingCmd(trajectory_msgs::JointTrajectory& joint_trajectory)
+bool ServoCalcs::convertDeltasToOutgoingCmd(trajectory_msgs::JointTrajectory& joint_trajectory,
+                                            ros::Time cmd_stamp)
 {
   internal_joint_state_ = original_joint_state_;
   if (!addJointIncrements(internal_joint_state_, delta_theta_))
     return false;
-
-  // lowPassFilterPositions(internal_joint_state_);
+  ROS_INFO_STREAM("LEKJRL:KJFSALKJ:SDFLKJ");
+  ROS_INFO_STREAM("internal_joint_state_: " << internal_joint_state_.position[0] << " "
+                            << internal_joint_state_.position[1] << " "
+                            << internal_joint_state_.position[2]<< " "
+                            << internal_joint_state_.position[3] << " "
+                            << internal_joint_state_.position[4] << " "
+                            << internal_joint_state_.position[5]);
+  lowPassFilterPositions(internal_joint_state_);
 
   // Calculate joint velocities here so that positions are filtered and SRDF bounds still get checked
   calculateJointVelocities(internal_joint_state_, delta_theta_);
 
-  composeJointTrajMessage(internal_joint_state_, joint_trajectory);
+  composeJointTrajMessage(internal_joint_state_, joint_trajectory, cmd_stamp);
 
   if (!enforcePositionLimits(internal_joint_state_))
   {
@@ -739,18 +782,22 @@ void ServoCalcs::calculateJointVelocities(sensor_msgs::JointState& joint_state, 
   {
     joint_state.velocity[i] = delta_theta[i] / parameters_.publish_period;
   }
-  ROS_INFO_STREAM("delta_theta: " << delta_theta[0] << " "
-                                           << delta_theta[1] << " "
-                                           << delta_theta[2] << " "
-                                           << delta_theta[3] << " "
-                                           << delta_theta[4] << " "
-                                           << delta_theta[5]);
+  // ROS_INFO_STREAM("delta_theta: " << delta_theta[0] << " "
+  //                                          << delta_theta[1] << " "
+  //                                          << delta_theta[2] << " "
+  //                                          << delta_theta[3] << " "
+  //                                          << delta_theta[4] << " "
+  //                                          << delta_theta[5]);
 
 }
 
 void ServoCalcs::composeJointTrajMessage(const sensor_msgs::JointState& joint_state,
-                                         trajectory_msgs::JointTrajectory& joint_trajectory) const
-{
+                                         trajectory_msgs::JointTrajectory& joint_trajectory,
+                                         ros::Time cmd_stamp) 
+{ 
+  // When a joint_trajectory_controller receives a new command, a stamp of 0 indicates "begin immediately"
+  // See http://wiki.ros.org/joint_trajectory_controller#Trajectory_replacement
+  
   // When a joint_trajectory_controller receives a new command, a stamp of 0 indicates "begin immediately"
   // See http://wiki.ros.org/joint_trajectory_controller#Trajectory_replacement
   joint_trajectory.header.stamp = ros::Time(0);
@@ -772,6 +819,75 @@ void ServoCalcs::composeJointTrajMessage(const sensor_msgs::JointState& joint_st
     point.accelerations = acceleration;
   }
   joint_trajectory.points.push_back(point);
+  // sensor_msgs::JointState current_joint_state;
+  // current_joint_state.header.stamp = cmd_stamp;
+  // current_joint_state.header.frame_id = parameters_.planning_frame;
+  // current_joint_state.name = joint_state.name;
+  // current_joint_state.position = joint_state.position;
+  // current_joint_state.velocity = joint_state.velocity;
+
+  // // Update the theta buffer
+  // theta_buffer.push_back(current_joint_state);
+  // while (theta_buffer.size() < 4){
+  //   theta_buffer.push_back(current_joint_state);
+  // } 
+  // if (theta_buffer.size() > 4) 
+  //   theta_buffer.pop_front();
+
+  // // set new traj time to theta_0
+  // joint_trajectory.header.stamp = theta_buffer.front().header.stamp; 
+  // joint_trajectory.header.frame_id = parameters_.planning_frame;
+  // joint_trajectory.joint_names = joint_state.name;
+
+  // ros::Time t0_stamp = joint_trajectory.header.stamp;
+
+  // trajectory_msgs::JointTrajectoryPoint theta_0;
+  // theta_0.time_from_start = theta_buffer[1].header.stamp - t0_stamp;  // 22
+  // theta_0.positions = theta_buffer[0].position;
+  // theta_0.velocities = theta_buffer[0].velocity;
+
+  // trajectory_msgs::JointTrajectoryPoint theta_1;
+  // theta_1.time_from_start = theta_buffer[2].header.stamp - t0_stamp; // 55
+  // theta_1.positions = theta_buffer[1].position;
+  // theta_1.velocities = theta_buffer[1].velocity;
+
+  // trajectory_msgs::JointTrajectoryPoint theta_2;
+  // theta_2.time_from_start =  theta_buffer[3].header.stamp - t0_stamp; // 88
+  // theta_2.positions = theta_buffer[2].position;
+  // theta_2.velocities = theta_buffer[2].velocity;
+
+  // joint_trajectory.points.push_back(theta_0);
+  // joint_trajectory.points.push_back(theta_1);
+  // joint_trajectory.points.push_back(theta_2);
+
+  // // RHC control using TOTG Time Parameterization
+  // robot_trajectory::RobotTrajectory robot_traj(current_state_->getRobotModel(), parameters_.move_group_name);
+  // robot_traj.setRobotTrajectoryMsg(*current_state_, joint_trajectory);
+  // // totg->computeTimeStamps(robot_traj, 0.1, 0.1);
+  // iptp->computeTimeStamps(robot_traj, 0.1, 0.1);
+  // moveit_msgs::RobotTrajectory robot_traj_msg;
+  // robot_traj.getRobotTrajectoryMsg(robot_traj_msg);
+  // joint_trajectory = robot_traj_msg.joint_trajectory;
+  // joint_trajectory.points[joint_trajectory.points.size()-1].time_from_start += ros::Duration(0.0080);
+
+
+  // moveit_msgs::DisplayTrajectory disp_traj_msg;
+  // disp_traj_msg.model_id = "papras_table";
+  // disp_traj_msg.trajectory = {robot_traj_msg};
+  // moveit_msgs::RobotState robot_state;
+  // std::vector<double> joint_values;
+  // current_state_->copyJointGroupPositions(current_state_->getJointModelGroup(parameters_.move_group_name), joint_values);
+  // sensor_msgs::JointState bruh;
+  // bruh.header.stamp = cmd_stamp;
+  // bruh.header.frame_id = parameters_.planning_frame;
+  // bruh.name = joint_state.name;
+  // bruh.position = joint_values;
+  // robot_state.joint_state = bruh;
+
+  // disp_traj_msg.trajectory_start = robot_state;
+  // display_traj_pub_.publish(disp_traj_msg);
+
+
 }
 
 // Apply velocity scaling for proximity of collisions and singularities.
@@ -952,6 +1068,8 @@ void ServoCalcs::suddenHalt(trajectory_msgs::JointTrajectory& joint_trajectory)
     point.positions.resize(num_joints_);
   if (parameters_.publish_joint_velocities)
     point.velocities.resize(num_joints_);
+  if (parameters_.publish_joint_accelerations)
+    point.accelerations.resize(num_joints_);
 
   // Assert the following loop is safe to execute
   assert(original_joint_state_.position.size() >= num_joints_);
@@ -960,12 +1078,15 @@ void ServoCalcs::suddenHalt(trajectory_msgs::JointTrajectory& joint_trajectory)
   for (std::size_t i = 0; i < num_joints_; ++i)
   {
     // For position-controlled robots, can reset the joints to a known, good state
-    if (parameters_.publish_joint_positions)
+  
       point.positions[i] = original_joint_state_.position[i];
 
     // For velocity-controlled robots, stop
     if (parameters_.publish_joint_velocities)
       point.velocities[i] = 0;
+    
+    if (parameters_.publish_joint_accelerations)
+      point.accelerations[i] = 0;
   }
 }
 
@@ -1113,6 +1234,7 @@ bool ServoCalcs::addJointIncrements(sensor_msgs::JointState& output, const Eigen
     try
     {
       output.position[i] += increments[i];
+
     }
     catch (const std::out_of_range& e)
     {
@@ -1193,9 +1315,11 @@ void ServoCalcs::twistStampedCB(const geometry_msgs::TwistStampedConstPtr& msg)
   latest_twist_stamped_ = msg;
   latest_nonzero_twist_stamped_ = isNonZero(*latest_twist_stamped_);
 
-  if (msg->header.stamp != ros::Time(0.))
+  if (msg->header.stamp != ros::Time(0.)){
     latest_twist_command_stamp_ = msg->header.stamp;
-
+  }else{
+    latest_twist_command_stamp_ = ros::Time::now();
+  }
   // notify that we have a new input
   new_input_cmd_ = true;
   input_cv_.notify_all();

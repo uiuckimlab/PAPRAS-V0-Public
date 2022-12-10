@@ -42,7 +42,9 @@ ros-noetic-dynamixel-sdk \
 ros-noetic-dynamixel-workbench \
 ros-noetic-open-manipulator-msgs \
 ros-noetic-open-manipulator-p-simulations \
-ros-noetic-robotis-manipulator
+ros-noetic-robotis-manipulator \
+ros-noetic-realsense2-camera \
+ros-noetic-aruco-ros
 ```
 ```
 git clone https://github.com/ROBOTIS-GIT/open_manipulator_dependencies.git 

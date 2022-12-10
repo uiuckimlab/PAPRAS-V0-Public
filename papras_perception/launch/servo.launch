@@ -1,0 +1,9 @@
+<launch>
+
+
+  <node name="servo_server" pkg="moveit_servo" type="servo_server" output="screen" >
+    <rosparam ns="" command="load" file="$(find papras_perception)/config/visual_servo_config_hw.yaml" />
+  </node>
+  <node name="update_joint_states" pkg="moveit_servo" type="update_joint_states" respawn="false" output="screen"/>
+
+</launch>

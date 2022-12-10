@@ -31,11 +31,11 @@ void UpdateJointStates::command_callback(const trajectory_msgs::JointTrajectory 
     }
     new_joint_state_pub_.publish(publish_joint_state);
 
-}
 
 void UpdateJointStates::pause_servoing_callback(const std_msgs::Bool msg){
     estimated_publish_ = !msg.data;
 }
+
 
 void UpdateJointStates::joint_state_callback(const sensor_msgs::JointState msg){
     current_joint_state = msg;
@@ -43,7 +43,6 @@ void UpdateJointStates::joint_state_callback(const sensor_msgs::JointState msg){
         new_joint_state_pub_.publish(msg);
     }
 }
-
 
 // int main(int argc, char** argv)
 // {
@@ -55,7 +54,6 @@ void UpdateJointStates::joint_state_callback(const sensor_msgs::JointState msg){
 //     spinner.start();
     
 //     UpdateJointStates left_arm(nh, "/arm1_controller/command", "/servo_server/set_servoing_paused");
-
     
 //     ros::waitForShutdown();
 // }

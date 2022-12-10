@@ -50,6 +50,7 @@ constexpr char ROS_THREADS = 8;
 
 }  // namespace
 
+
 void set_servoing_paused_callback(const std_msgs::Bool msg) {
     servo->setPaused(msg.data);
 }
@@ -60,7 +61,6 @@ int main(int argc, char** argv)
   ros::init(argc, argv, LOGNAME);
   ros::AsyncSpinner spinner(ROS_THREADS);
   spinner.start();
-
   ros::NodeHandle nh("~");
 
   // Load the planning scene monitor
@@ -70,6 +70,7 @@ int main(int argc, char** argv)
     ROS_ERROR_STREAM_NAMED(LOGNAME, "Error in setting up the PlanningSceneMonitor.");
     exit(EXIT_FAILURE);
   }
+
 
   ros::Subscriber joint_state_sub = nh.subscribe("set_servoing_paused",10, set_servoing_paused_callback);
 
@@ -82,6 +83,7 @@ int main(int argc, char** argv)
   planning_scene_monitor->startStateMonitor("servo_joint_states");
 
   // Create the servo server
+
   servo = new moveit_servo::Servo(nh, planning_scene_monitor);
 
   // Start the servo server (runs in the ros spinner)

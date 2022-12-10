@@ -1,9 +1,10 @@
 <launch>
   <!-- This node does the servoing calculations -->
-  <node name="servo_server" pkg="moveit_servo" type="servo_server" output="screen" >
-    <param name="parameter_ns" type="string" value="optional_parameter_namespace" />
-    <rosparam ns="optional_parameter_namespace" command="load" file="$(find papras_controls)/config/papras_servo_config_hw.yaml" />
+  <node name="left_arm_servo_server" pkg="moveit_servo" type="servo_server" output="screen" >
+    <!-- <param name="parameter_ns" type="string" value="left_arm_servo" /> -->
+    <rosparam ns="" command="load" file="$(find papras_controls)/config/left_arm_servo_config.yaml" />
   </node>
+
 
   <!-- <node name="update_joint_states" pkg="moveit_servo" type="update_joint_states" respawn="false" output="screen"/> -->
 

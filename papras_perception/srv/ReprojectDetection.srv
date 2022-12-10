@@ -1,0 +1,11 @@
+# This service requests 3D world coordinates XYZ given
+# the depth image and 2D pixel coord XY of the predicted object.
+
+sensor_msgs/Image depth_image
+int64 x
+int64 y
+---
+bool success            # True if the call succeeded
+float64 world_coord_X   # X 
+float64 world_coord_Y   # Y
+float64 world_coord_Z   # Z

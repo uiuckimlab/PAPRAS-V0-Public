@@ -90,3 +90,31 @@ gripper3_controller:
   gains: # Required because we're controlling an effort interface
     robot3/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
 
+  
+
+soft_gripper1_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - robot1/soft_gripper_pulley
+    - robot1/soft_gripper_jaw
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+  gains: # Required because we're controlling an effort interface
+    robot1/soft_gripper_pulley: {p: 100,  d: 10, i: 1, i_clamp: 1}
+    robot1/soft_gripper_jaw: {p: 100,  d: 10, i: 1, i_clamp: 1}
+
+soft_gripper2_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - robot2/soft_gripper_pulley
+    - robot2/soft_gripper_jaw
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+  gains: # Required because we're controlling an effort interface
+    robot2/soft_gripper_pulley: {p: 100,  d: 10, i: 1, i_clamp: 1}
+    robot2/soft_gripper_jaw: {p: 100,  d: 10, i: 1, i_clamp: 1}
+
+
+

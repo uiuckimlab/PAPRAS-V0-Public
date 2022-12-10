@@ -43,6 +43,7 @@
 #include <mutex>
 #include <thread>
 #include <atomic>
+#include <queue>
 
 // ROS
 #include <control_msgs/JointJog.h>
@@ -61,6 +62,9 @@
 
 // moveit_core
 #include <moveit/kinematics_base/kinematics_base.h>
+#include <moveit/trajectory_processing/time_optimal_trajectory_generation.h>
+#include <moveit/trajectory_processing/iterative_time_parameterization.h>
+#include <moveit/robot_trajectory/robot_trajectory.h>
 
 // moveit_servo
 #include <moveit_servo/servo_parameters.h>
@@ -170,7 +174,8 @@ private:
 
   /** \brief Compose the outgoing JointTrajectory message */
   void composeJointTrajMessage(const sensor_msgs::JointState& joint_state,
-                               trajectory_msgs::JointTrajectory& joint_trajectory) const;
+                               trajectory_msgs::JointTrajectory& joint_trajectory,
+                               ros::Time cmd);
 
   /** \brief Smooth position commands with a lowpass filter */
   void lowPassFilterPositions(sensor_msgs::JointState& joint_state);
@@ -184,7 +189,8 @@ private:
   /** \brief Convert joint deltas to an outgoing JointTrajectory command.
    * This happens for joint commands and Cartesian commands.
    */
-  bool convertDeltasToOutgoingCmd(trajectory_msgs::JointTrajectory& joint_trajectory);
+  bool convertDeltasToOutgoingCmd(trajectory_msgs::JointTrajectory& joint_trajectory,
+                                  ros::Time cmd);
 
   /** \brief Gazebo simulations have very strict message timestamp requirements.
    * Satisfy Gazebo by stuffing multiple messages into one.
@@ -263,6 +269,7 @@ private:
   // original_joint_state_ is the same as incoming_joint_state_ except it only contains the joints the servo node acts
   // on.
   sensor_msgs::JointState internal_joint_state_, original_joint_state_;
+  // trajectory_msgs::JointTrajectory delta_theta_buffer_;
   std::map<std::string, std::size_t> joint_state_name_map_;
 
   std::vector<LowPassFilter> position_filters_;
@@ -277,6 +284,8 @@ private:
   ros::Publisher status_pub_;
   ros::Publisher worst_case_stop_time_pub_;
   ros::Publisher outgoing_cmd_pub_;
+  ros::Publisher display_traj_pub_;
+  // ros::Publisher delta_theta_pub_;
   ros::ServiceServer drift_dimensions_server_;
   ros::ServiceServer control_dimensions_server_;
   ros::ServiceServer reset_servo_status_;
@@ -317,6 +326,13 @@ private:
   ros::Time latest_joint_command_stamp_ = ros::Time(0.);
   bool latest_nonzero_twist_stamped_ = false;
   bool latest_nonzero_joint_cmd_ = false;
+  trajectory_processing::TimeOptimalTrajectoryGeneration *totg;
+  trajectory_processing::IterativeParabolicTimeParameterization *iptp;
+  std::deque<sensor_msgs::JointState> theta_buffer;
+  // trajectory_msgs::JointTrajectoryPoint  delta_theta_buffer[3];
+  // std::array<sensor_msgs::JointState, 3> delta_theta_buffer;
+  // sensor_msgs::JointState delta_theta_buffer[3];
+
 
   // input condition variable used for low latency mode
   std::condition_variable input_cv_;

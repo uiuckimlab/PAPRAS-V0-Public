@@ -91,10 +91,16 @@ target_link_libraries(pose_tracking_example
   pose_tracking
 )
 
+
 # An example of pose tracking
 # add_executable(update_joint_states src/update_joint_states.cpp)
 # target_link_libraries(update_joint_states ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 # install(TARGETS update_joint_states DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+# Gripper Service to move the actual grippers
+add_executable(gripper_service src/gripper_service.cpp)
+target_link_libraries(gripper_service ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS gripper_service DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 # Keyboard input for servoing
 add_executable(servo_keyboard_input src/servo_keyboard_input.cpp)
