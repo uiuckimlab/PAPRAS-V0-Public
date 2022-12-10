@@ -30,7 +30,7 @@ void UpdateJointStates::command_callback(const trajectory_msgs::JointTrajectory 
         }
     }
     new_joint_state_pub_.publish(publish_joint_state);
-
+}
 
 void UpdateJointStates::pause_servoing_callback(const std_msgs::Bool msg){
     estimated_publish_ = !msg.data;
