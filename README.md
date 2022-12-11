@@ -46,9 +46,6 @@ ros-noetic-robotis-manipulator \
 ros-noetic-realsense2-camera \
 ros-noetic-aruco-ros
 ```
-```
-git clone https://github.com/ROBOTIS-GIT/open_manipulator_dependencies.git 
-```
 
 3. Go to catkin_ws directory, build the package, and configure ROS
 ```

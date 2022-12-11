@@ -79,7 +79,7 @@ private:
   int32_t baud_rate_;
   std::string yaml_file_;
 
-  std::unordered_set<uint16_t> PH_model_numbers {2000, 2010, 2020};
+  std::unordered_set<uint16_t> PH_model_numbers {2000, 2010, 2020, 35074};
   std::unordered_set<uint16_t> XM_model_numbers {1030, 1020};
 
   // Variables
