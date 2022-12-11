@@ -91,41 +91,6 @@ Streaming Panel -> Select `ROS Topic Subscriber` -> Click Start \
 Select all `/ft_sensor_topic` topics and click OK \
 Drag & Drop any of the joint force/torque values onto plot.
 
-# Headless Docker env setup for NUC
-
-1. Build Docker environment
-
-```
-docker build -t papras .
-```
-
-2. Open a terminal inside the environment with this repository mounted
-
-```
-docker run -it -v `pwd`:/opt/catkin_ws/src/PAPRAS papras
-
-or
-
-./gui-docker -it -v `pwd`:/opt/catkin_ws/src/PAPRAS papras
-./gui-docker -c <container>
-```
-
-3. Go to `/opt/arpp`, the mounted directory, build the package, and configure ROS
-
-```
-cd /opt/catkin_ws
-catkin_make
-source devel/setup.bash
-```
-
-# IK Fast Plugin
-
-docker run -v /home/kazuki/Workspace:/mnt -it personalrobotics/ros-openrave /bin/bash \
-http://docs.ros.org/en/indigo/api/moveit_tutorials/html/doc/ikfast_tutorial.html' \
-sudo apt-get install ros-indigo-collada-urdf \
-
-rosrun xacro xacro --inorder -o simple_robot.urdf simple_robot.urdf.xacro \
-rosrun collada_urdf urdf_to_collada robot.urdf robot.dae
 
 # Credits
 
