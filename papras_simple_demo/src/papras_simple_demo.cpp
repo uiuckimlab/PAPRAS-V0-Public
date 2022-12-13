@@ -19,6 +19,13 @@
 
 std::string tf_prefix_ = "robot1/";
 
+/*
+ * Move to cartesian pose
+ * 
+ * @param group MoveGroupInterface
+ * @param target_pose target pose
+ * @return MoveItErrorCode 
+ */
 moveit::core::MoveItErrorCode moveToCartesianPose(moveit::planning_interface::MoveGroupInterface &group,
                                                            geometry_msgs::Pose target_pose)
 {
@@ -41,6 +48,13 @@ moveit::core::MoveItErrorCode moveToCartesianPose(moveit::planning_interface::Mo
     return error_code;
 }
 
+/*
+ * Move to named pose
+ * 
+ * @param group MoveGroupInterface
+ * @param named_pose named pose
+ * @return MoveItErrorCode 
+ */
 moveit::core::MoveItErrorCode moveToNamedPose(moveit::planning_interface::MoveGroupInterface &group,
                                                            std::string named_pose)
 {
@@ -61,6 +75,13 @@ moveit::core::MoveItErrorCode moveToNamedPose(moveit::planning_interface::MoveGr
     return error_code;
 }
 
+/*
+ * Move to joint pose
+ * 
+ * @param group MoveGroupInterface
+ * @param joint_pose joint pose
+ * @return MoveItErrorCode 
+ */
 moveit::core::MoveItErrorCode moveToJointPose(moveit::planning_interface::MoveGroupInterface &group,
                                                            std::vector<double> joint_pose)
 {
@@ -81,7 +102,14 @@ moveit::core::MoveItErrorCode moveToJointPose(moveit::planning_interface::MoveGr
     return error_code;
 }
 
-// find IK solutions for a target pose without planning or using setPoseTarget() or kinematic_state->setFromIK()
+/*
+ * Find IK solutions using setFromIK()
+ * 
+ * @param group MoveGroupInterface
+ * @param target_pose target pose
+ * @param ik_solutions vector of joint values
+ * @return MoveItErrorCode
+ */
 moveit::core::MoveItErrorCode findIKSolutions(moveit::planning_interface::MoveGroupInterface &group,
                                                            geometry_msgs::Pose target_pose,
                                                            std::vector<std::vector<double>> &ik_solutions)
@@ -100,7 +128,7 @@ moveit::core::MoveItErrorCode findIKSolutions(moveit::planning_interface::MoveGr
     kinematic_state->copyJointGroupPositions(joint_model_group, joint_values);
 
     // find IK solutions using setFromIK()
-    bool found_ik = kinematic_state->setFromIK(joint_model_group, target_pose, 10, 0.1);
+    bool found_ik = kinematic_state->setFromIK(joint_model_group, target_pose);
 
     if (found_ik)
     {
@@ -117,7 +145,8 @@ moveit::core::MoveItErrorCode findIKSolutions(moveit::planning_interface::MoveGr
     return moveit::core::MoveItErrorCode::SUCCESS;
 }
 
-int test_findIKSolutions_moveToJointPose(moveit::planning_interface::MoveGroupInterface &group)
+
+int unitTest1(moveit::planning_interface::MoveGroupInterface &group)
 {
     geometry_msgs::Pose target_pose;
     target_pose.orientation.w = 1.0;
@@ -173,7 +202,7 @@ int main(int argc, char** argv)
   moveToNamedPose(gripper_group, "close");
   moveToNamedPose(arm_group, "rest");
   
-  test_findIKSolutions_moveToJointPose(arm_group);
+  unitTest1(arm_group);
 
   ROS_INFO_STREAM("Finished.");
   return 0;
