@@ -380,17 +380,14 @@ void ServoCalcs::calculateSingleIteration()
   // Only run commands if not stale and nonzero
   if (have_nonzero_twist_stamped_ && !twist_command_is_stale_)
   {
-    ROS_INFO_STREAM("381\n");
     if (!cartesianServoCalcs(twist_stamped_cmd_, *joint_trajectory))
     {
-      ROS_INFO_STREAM("384\n");
       resetLowPassFilters(original_joint_state_);
       return;
     }
   }
   else if (have_nonzero_joint_command_ && !joint_command_is_stale_)
   {
-    ROS_INFO_STREAM("391\n");
     if (!jointServoCalcs(joint_servo_cmd_, *joint_trajectory))
     {
       resetLowPassFilters(original_joint_state_);
@@ -400,7 +397,6 @@ void ServoCalcs::calculateSingleIteration()
   else
   {
     // Joint trajectory is not populated with anything, so set it to the last positions and 0 velocity
-    ROS_INFO_STREAM("401\n");
 
     *joint_trajectory = *last_sent_command_;
     for (auto& point : joint_trajectory->points)
@@ -425,7 +421,6 @@ void ServoCalcs::calculateSingleIteration()
     suddenHalt(*joint_trajectory);
     have_nonzero_twist_stamped_ = false;
     have_nonzero_joint_command_ = false;
-    ROS_INFO("in zero command");
   }
 
   // Skip the servoing publication if all inputs have been zero for several cycles in a row.
@@ -712,13 +707,7 @@ bool ServoCalcs::convertDeltasToOutgoingCmd(trajectory_msgs::JointTrajectory& jo
   internal_joint_state_ = original_joint_state_;
   if (!addJointIncrements(internal_joint_state_, delta_theta_))
     return false;
-  ROS_INFO_STREAM("LEKJRL:KJFSALKJ:SDFLKJ");
-  ROS_INFO_STREAM("internal_joint_state_: " << internal_joint_state_.position[0] << " "
-                            << internal_joint_state_.position[1] << " "
-                            << internal_joint_state_.position[2]<< " "
-                            << internal_joint_state_.position[3] << " "
-                            << internal_joint_state_.position[4] << " "
-                            << internal_joint_state_.position[5]);
+
   lowPassFilterPositions(internal_joint_state_);
 
   // Calculate joint velocities here so that positions are filtered and SRDF bounds still get checked
