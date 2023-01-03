@@ -33,8 +33,8 @@
 #define KEYCODE_C 0x63
 
 // Some constants used in the Servo Teleop demo
-const std::string TWIST_TOPIC = "/left_arm_servo_server/delta_twist_cmds";
-const std::string JOINT_TOPIC = "/left_arm_servo_server/delta_joint_cmds";
+const std::string TWIST_TOPIC = "/servo_server/delta_twist_cmds";
+const std::string JOINT_TOPIC = "/servo_server/delta_joint_cmds";
 const size_t ROS_QUEUE_SIZE = 100;
 const std::string EEF_FRAME_ID = "robot1/end_effector_link";
 const std::string BASE_FRAME_ID = "robot1/link1";

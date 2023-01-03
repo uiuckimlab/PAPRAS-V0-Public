@@ -152,8 +152,11 @@ private:
    */
   void suddenHalt(trajectory_msgs::JointTrajectory& joint_trajectory);
 
-  /** \brief  Scale the delta theta to match joint velocity/acceleration limits */
+  /** \brief  Scale the delta theta to match joint velocity limits */
   void enforceVelLimits(Eigen::ArrayXd& delta_theta);
+
+  /** \brief  Scale the delta theta to match joint acceleration limits */
+  void enforceAccelLimits(Eigen::ArrayXd& delta_theta);
 
   /** \brief Avoid overshooting joint limits */
   bool enforcePositionLimits(sensor_msgs::JointState& joint_state);
