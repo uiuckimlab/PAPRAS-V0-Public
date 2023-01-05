@@ -141,6 +141,7 @@ ServoCalcs::ServoCalcs(ros::NodeHandle& nh, ServoParameters& parameters,
   num_joints_ = internal_joint_state_.name.size();
   internal_joint_state_.position.resize(num_joints_);
   internal_joint_state_.velocity.resize(num_joints_);
+  prev_joint_state_velocity.resize(num_joints_);
   delta_theta_.setZero(num_joints_);
 
   // A map for the indices of incoming joint commands
@@ -363,6 +364,9 @@ void ServoCalcs::calculateSingleIteration()
   {
 
     if(paused_){
+      for(size_t i = 0; i < prev_joint_state_velocity.size(); i++){
+        prev_joint_state_velocity[i] = 0;
+      }
       suddenHalt(*joint_trajectory);
       last_sent_command_ = joint_trajectory;
     }
@@ -795,6 +799,7 @@ void ServoCalcs::composeJointTrajMessage(const sensor_msgs::JointState& joint_st
     point.positions = joint_state.position;
   if (parameters_.publish_joint_velocities)
     point.velocities = joint_state.velocity;
+    
   if (parameters_.publish_joint_accelerations)
   {
     // I do not know of a robot that takes acceleration commands.
@@ -802,9 +807,11 @@ void ServoCalcs::composeJointTrajMessage(const sensor_msgs::JointState& joint_st
     // Send all zeros, for now.
     std::vector<double> acceleration(num_joints_);
     for(int i = 0; i < acceleration.size(); i++){
-      acceleration[i] = joint_state.velocity[i] / parameters_.publish_period;
+      // acceleration[i] = joint_state.velocity[i] / parameters_.publish_period;
+      acceleration[i] = (joint_state.velocity[i] - prev_joint_state_velocity[i]) / parameters_.publish_period;
     }
     point.accelerations = acceleration;
+    prev_joint_state_velocity = joint_state.velocity;
   }
   joint_trajectory.points.push_back(point);
   // sensor_msgs::JointState current_joint_state;
@@ -997,8 +1004,8 @@ void ServoCalcs::enforceVelLimits(Eigen::ArrayXd& delta_theta)
 void ServoCalcs::enforceAccelLimits(Eigen::ArrayXd& delta_theta)
 {
   // Convert to joint angle velocities for checking and applying joint specific velocity limits.
-  Eigen::ArrayXd acceleration = delta_theta / (parameters_.publish_period * parameters_.publish_period);
-
+  Eigen::ArrayXd velocity = delta_theta / (parameters_.publish_period);
+  Eigen::ArrayXd acceleration = (velocity - prev_joint_velocity_) / (parameters_.publish_period);
   std::size_t joint_delta_index{ 0 };
   double acceleration_scaling_factor{ 1.0 };
   for (const moveit::core::JointModel* joint : joint_model_group_->getActiveJointModels())
@@ -1015,14 +1022,7 @@ void ServoCalcs::enforceAccelLimits(Eigen::ArrayXd& delta_theta)
     ++joint_delta_index;
   }
 
-  // ROS_INFO_STREAM("before : " << delta_theta(0) << " "
-  //                                         << delta_theta(1) << " "
-  //                                         << delta_theta(2) << " "
-  //                                         << delta_theta(3) << " "
-  //                                         << delta_theta(4) << " "
-  //                                         << delta_theta(5));
-
-  delta_theta = acceleration_scaling_factor * acceleration * (parameters_.publish_period * parameters_.publish_period);
+  delta_theta = prev_joint_velocity_ * parameters_.publish_period + acceleration_scaling_factor * acceleration * (parameters_.publish_period * parameters_.publish_period);
   
 
   // Convert back to joint angle increments.

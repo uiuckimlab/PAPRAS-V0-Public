@@ -332,6 +332,7 @@ private:
   trajectory_processing::TimeOptimalTrajectoryGeneration *totg;
   trajectory_processing::IterativeParabolicTimeParameterization *iptp;
   std::deque<sensor_msgs::JointState> theta_buffer;
+  std::vector<double> prev_joint_state_velocity;
   // trajectory_msgs::JointTrajectoryPoint  delta_theta_buffer[3];
   // std::array<sensor_msgs::JointState, 3> delta_theta_buffer;
   // sensor_msgs::JointState delta_theta_buffer[3];
