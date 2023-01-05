@@ -1022,7 +1022,7 @@ void ServoCalcs::enforceAccelLimits(Eigen::ArrayXd& delta_theta)
     ++joint_delta_index;
   }
 
-  delta_theta = prev_joint_velocity_ * parameters_.publish_period + acceleration_scaling_factor * acceleration * (parameters_.publish_period * parameters_.publish_period);
+  delta_theta = prev_joint_velocity_ * parameters_.publish_period + (acceleration_scaling_factor / 2) * acceleration * (parameters_.publish_period * parameters_.publish_period);
   
 
   // Convert back to joint angle increments.
