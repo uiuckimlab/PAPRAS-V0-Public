@@ -790,11 +790,13 @@ void ServoCalcs::composeJointTrajMessage(const sensor_msgs::JointState& joint_st
   // When a joint_trajectory_controller receives a new command, a stamp of 0 indicates "begin immediately"
   // See http://wiki.ros.org/joint_trajectory_controller#Trajectory_replacement
   joint_trajectory.header.stamp = ros::Time(0);
+  // joint_trajectory.header.stamp = ros::Time(1);
+
   joint_trajectory.header.frame_id = parameters_.planning_frame;
   joint_trajectory.joint_names = joint_state.name;
 
   trajectory_msgs::JointTrajectoryPoint point;
-  point.time_from_start = ros::Duration(parameters_.publish_period);
+  point.time_from_start = ros::Duration(parameters_.publish_period + 0.06);
   if (parameters_.publish_joint_positions)
     point.positions = joint_state.position;
   if (parameters_.publish_joint_velocities)
