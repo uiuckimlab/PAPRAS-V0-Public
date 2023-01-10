@@ -796,7 +796,7 @@ void ServoCalcs::composeJointTrajMessage(const sensor_msgs::JointState& joint_st
   joint_trajectory.joint_names = joint_state.name;
 
   trajectory_msgs::JointTrajectoryPoint point;
-  point.time_from_start = ros::Duration(parameters_.publish_period + 0.06);
+  point.time_from_start = ros::Duration(parameters_.publish_period + 0.04);
   if (parameters_.publish_joint_positions)
     point.positions = joint_state.position;
   if (parameters_.publish_joint_velocities)
