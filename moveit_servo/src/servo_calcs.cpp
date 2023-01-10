@@ -1243,7 +1243,7 @@ Eigen::VectorXd ServoCalcs::scaleJointCommand(const control_msgs::JointJog& comm
       result[c] = command.velocities[m] * parameters_.joint_scale * parameters_.publish_period;
     // Otherwise, commands are in m/s and rad/s
     else if (parameters_.command_in_type == "speed_units")
-      result[c] = command.velocities[m] * parameters_.publish_period;
+      result[c] = command.velocities[m] * parameters_.publish_period * 2.0;
     else
       ROS_ERROR_STREAM_THROTTLE_NAMED(ROS_LOG_THROTTLE_PERIOD, LOGNAME, "Unexpected command_in_type, check yaml file.");
   }
