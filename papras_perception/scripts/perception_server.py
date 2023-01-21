@@ -1,16 +1,19 @@
-# pub /found_object when object first detected
-# ros srv server to /papras_perception/object_detection to send detected object pose  
+#!/usr/bin/env python3
 
 import rospy
 from std_msgs.msg import String, Bool
 from geometry_msgs.msg import Pose
 from sensor_msgs.msg import CameraInfo
+import tf2_ros
 from tf.transformations import quaternion_matrix
 from papras_perception.srv import GetDetectedObjectPose, GetDetectedObjectPoseResponse
 
 import cv2
 import numpy as np
 import pyrealsense2 as rs2
+
+# pub /found_object when object first detected
+# ros srv server to /papras_perception/object_detection to send detected object pose  
 
 
 class ObjectDetector(object):
@@ -20,8 +23,11 @@ class ObjectDetector(object):
         self.init_camera_intrinsics()
         self.init_rs_pipeline()
 
-        self.pub = rospy.Publisher('/found_object', Bool, queue_size=1)
+        self.pub = rospy.Publisher('/found_object', Bool, queue_size=10)
         self.srv = rospy.Service('/papras_perception/GetDetectedObjectPose', GetDetectedObjectPose, self.handle_object_detection)
+        self.tfBuffer = tf2_ros.Buffer()
+        listener = tf2_ros.TransformListener(self.tfBuffer)
+        
         self.object_detected = False
         self.object_pose = None
 
@@ -114,22 +120,53 @@ class ObjectDetector(object):
         return blob_keypoint
 
     def detect_yellow_trash(self, img):
-        lower_yellow = np.array([20,100,100])
+        lower_yellow = np.array([20,50,50])
         upper_yellow = np.array([40,255,255])
 
         blob_keypoint = self.detect_blob(img, lower_yellow, upper_yellow)
         return blob_keypoint
+    
+    def rs2_deproject_pixel_to_point(self, instrinsics, pixel_value, depth):
+        print("pixel_value: ", pixel_value)
+        print("depth: ", depth)
 
+        # Deproject pixel to point in 3D
+        point_x = (pixel_value[0] - instrinsics.ppx) * depth / instrinsics.fx
+        point_y = (pixel_value[1] - instrinsics.ppy) * depth / instrinsics.fy
+        point_z = depth
+
+        # Distortion model - Brown Conrady (plumb bob)
+        if instrinsics.model == rs2.distortion.brown_conrady:
+            for i in range(10):
+                r2 = point_x * point_x + point_y * point_y
+                f = 1 + instrinsics.coeffs[0] * r2 + instrinsics.coeffs[1] * r2 * r2 + instrinsics.coeffs[4] * r2 * r2 * r2
+                ux = point_x * f + 2 * instrinsics.coeffs[2] * point_x * point_y + instrinsics.coeffs[3] * (r2 + 2 * point_x * point_x)
+                uy = point_y * f + 2 * instrinsics.coeffs[3] * point_x * point_y + instrinsics.coeffs[2] * (r2 + 2 * point_y * point_y)
+                dx = ux - point_x
+                dy = uy - point_y
+                if dx * dx + dy * dy < 1e-6:
+                    break
+                point_x = ux
+                point_y = uy
+
+        point = np.array([point_x, point_y, point_z])
+
+        return point
     def scan_for_object(self):
         # get realsense frames
+        print("start function")
         color_image, depth_image = self.get_rs_frames()
-        print('frame dims: ', color_image.shape, depth_image.shape)    
+        # print('frame dims: ', color_image.shape, depth_image.shape)    
 
-        # detect target object
+        # if self.object_detected:
+            # self.pub.publish(self.object_detected)
+
+            # return
         obj_pixel_pos = self.detect_yellow_trash(color_image)
+        # print(color_image)
 
         # if object not detected, return
-        if obj_pixel_pos is None:
+        if obj_pixel_pos is None :
             self.object_detected = False
             return
 
@@ -137,17 +174,20 @@ class ObjectDetector(object):
         self.object_detected = True
         self.depth_image = depth_image
         self.obj_pixel_pos = obj_pixel_pos
+        print("about to publish")
         self.pub.publish(self.object_detected)
+        print("after publish")
+        
 
     def calc_object_pose(self):
         depth_image = self.depth_image
         obj_pixel_pos = self.obj_pixel_pos
-
+        print(obj_pixel_pos)
         if depth_image is None or obj_pixel_pos is None:
             self.object_detected = False
             return
 
-        depth = depth_image[obj_pixel_pos[0], obj_pixel_pos[1]] * self.depth_scale
+        depth = depth_image[int(obj_pixel_pos[0]), int(obj_pixel_pos[1])] * self.depth_scale
         print("depth at (x, y) in meters", depth)
 
         predicted_3D_coord_c = self.rs2_deproject_pixel_to_point(self.intrinsics, obj_pixel_pos, depth)
@@ -173,21 +213,21 @@ class ObjectDetector(object):
         Gets current camera pose used for camera extrinsics
         Returns: R (3x3 rotation matrix), t (3x1 translation vector)
         '''
-        if self.use_tf:
-            # get camera pose from tf
-            trans = self.tfBuffer.lookup_transform("world", "robot1/camera_link", rospy.Time())
-            R = quaternion_matrix([trans.transform.rotation.x, 
-                                            trans.transform.rotation.y,
-                                            trans.transform.rotation.z,
-                                            trans.transform.rotation.w])[:3,:3]
-            t = np.array([trans.transform.translation.x, 
-                          trans.transform.translation.y,
-                          trans.transform.translation.z])
-        else:
-            R = np.array([  [0.0279773,  0.7066555, -0.7070044],
-                        [0.9882467,  0.0867825,  0.1258461],
-                        [0.1502855, -0.7022157, -0.6959220]])
-            t = np.array([0.9624604 , 0.291157812, 0.6327067])
+        # if self.use_tf:
+        # get camera pose from tf
+        trans = self.tfBuffer.lookup_transform("env", "robot1/camera_link", rospy.Time())
+        R = quaternion_matrix([trans.transform.rotation.x, 
+                                        trans.transform.rotation.y,
+                                        trans.transform.rotation.z,
+                                        trans.transform.rotation.w])[:3,:3]
+        t = np.array([trans.transform.translation.x, 
+                        trans.transform.translation.y,
+                        trans.transform.translation.z])
+        # else:
+        #     R = np.array([  [0.0279773,  0.7066555, -0.7070044],
+        #                 [0.9882467,  0.0867825,  0.1258461],
+        #                 [0.1502855, -0.7022157, -0.6959220]])
+        #     t = np.array([0.9624604 , 0.291157812, 0.6327067])
 
         return R, t
 
