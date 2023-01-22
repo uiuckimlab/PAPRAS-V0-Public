@@ -102,12 +102,23 @@ class ObjectDetector(object):
     def detect_blob(self, img, lower_hsv, upper_hsv):
         # convert to HSV
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-
+        # print(hsv[350:360,300:310])
         # Threshold the HSV image to get only yellow colors
         mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
 
+        # create the params and deactivate the 3 filters
+        params = cv2.SimpleBlobDetector_Params()
+        params.filterByArea = False
+        params.filterByInertia = False
+        params.filterByConvexity = False
+
+
         # Bitwise-AND mask and original image
         res = cv2.bitwise_and(img,img, mask= mask)
+
+
+        cv2.imwrite('/home/kimlab/catkin_ws/my_images/latest_image_res.png',res);    
+
         detector = cv2.SimpleBlobDetector_create()
 
         # Detect blobs.
@@ -120,8 +131,8 @@ class ObjectDetector(object):
         return blob_keypoint
 
     def detect_yellow_trash(self, img):
-        lower_yellow = np.array([20,50,50])
-        upper_yellow = np.array([40,255,255])
+        lower_yellow = np.array([15,100,100])
+        upper_yellow = np.array([100,200,200])
 
         blob_keypoint = self.detect_blob(img, lower_yellow, upper_yellow)
         return blob_keypoint
@@ -154,9 +165,10 @@ class ObjectDetector(object):
         return point
     def scan_for_object(self):
         # get realsense frames
-        print("start function")
+        # print("start function")
         color_image, depth_image = self.get_rs_frames()
-        # print('frame dims: ', color_image.shape, depth_image.shape)    
+        # print('frame dims: ', color_image.shape, depth_image.shape)
+        # cv2.imwrite('/home/kimlab/catkin_ws/my_images/latest_image.png',color_image);    
 
         # if self.object_detected:
             # self.pub.publish(self.object_detected)
@@ -174,7 +186,7 @@ class ObjectDetector(object):
         self.object_detected = True
         self.depth_image = depth_image
         self.obj_pixel_pos = obj_pixel_pos
-        print("about to publish")
+        # print("about to publish")
         self.pub.publish(self.object_detected)
         print("after publish")
         
@@ -187,7 +199,7 @@ class ObjectDetector(object):
             self.object_detected = False
             return
 
-        depth = depth_image[int(obj_pixel_pos[0]), int(obj_pixel_pos[1])] * self.depth_scale
+        depth = depth_image[int(obj_pixel_pos[1]),int(obj_pixel_pos[0])] * self.depth_scale
         print("depth at (x, y) in meters", depth)
 
         predicted_3D_coord_c = self.rs2_deproject_pixel_to_point(self.intrinsics, obj_pixel_pos, depth)
@@ -234,7 +246,7 @@ class ObjectDetector(object):
     def run(self):
         while not rospy.is_shutdown():
             self.scan_for_object()
-            rospy.sleep(1)
+            rospy.sleep(0.5)
 
 if __name__ == '__main__':
     object_detector = ObjectDetector()
