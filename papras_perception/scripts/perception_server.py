@@ -200,7 +200,8 @@ class ObjectDetector(object):
             return
 
         depth_bounding_box = depth_image[max(0,int(obj_pixel_pos[1]) - 10): min(int(obj_pixel_pos[1]) + 10, depth_image.shape[0]),max(0,int(obj_pixel_pos[0]) - 10): min(int(obj_pixel_pos[0]) + 10, depth_image.shape[1])] 
-        depth = cv2.mean(depth_bounding_box) * self.depth_scale
+        print(depth_bounding_box)
+        depth = np.sum(depth_bounding_box) / (depth_bounding_box.shape[0] * depth_bounding_box.shape[1])  * self.depth_scale
         print("depth at (x, y) in meters", depth)
 
         predicted_3D_coord_c = self.rs2_deproject_pixel_to_point(self.intrinsics, obj_pixel_pos, depth)
