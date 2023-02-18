@@ -60,6 +60,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   ReprojectDetection.srv
+  GetDetectedObjectPose.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -74,6 +75,7 @@ generate_messages(
   DEPENDENCIES
   std_msgs  # Or other packages containing msgs
   sensor_msgs
+  geometry_msgs
 )
 
 ################################################

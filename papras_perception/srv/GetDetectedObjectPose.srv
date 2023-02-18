@@ -1,0 +1,6 @@
+# This service requests 3D world coordinate of detected object
+
+int64 num_obj
+---
+bool success            # True if the call succeeded
+geometry_msgs/Pose pose # The 3D world coordinates of the object

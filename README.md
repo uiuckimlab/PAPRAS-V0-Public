@@ -47,7 +47,8 @@ ros-noetic-open-manipulator-msgs \
 ros-noetic-open-manipulator-p-simulations \
 ros-noetic-robotis-manipulator \
 ros-noetic-realsense2-camera \
-ros-noetic-aruco-ros
+ros-noetic-aruco-ros \
+ros-noetic-roboticsgroup-upatras-gazebo-plugins
 ```
 
 3. Go to catkin_ws directory, build the package, and configure ROS

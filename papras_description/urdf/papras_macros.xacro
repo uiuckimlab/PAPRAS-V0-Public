@@ -974,7 +974,7 @@
 
     <gazebo>
       <!-- loading plugin: mimic joints works in gazebo now -->
-      <plugin name="gazebo_gripper${id}_ros_control" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+      <plugin name="gazebo_gripper${id}_ros_control" filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so">
         <joint>robot${id}/gripper</joint>
         <mimicJoint>robot${id}/gripper_sub</mimicJoint>
         <multiplier>1.0</multiplier>
@@ -1168,6 +1168,68 @@
       </inertial>
     </link>
     <xacro:RefLink ref="robot${id}/camera_link"/>
+
+    <joint name="robot${id}/camera_fixed_plugin_joint" type="fixed">
+      <parent link="robot${id}/camera_link"/>
+      <child link="robot${id}/camera_plugin_link"/>
+      <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+    </joint>
+
+    <link name="robot${id}/camera_plugin_link"/>
+    <xacro:RefLink ref="robot${id}/camera_plugin_link"/>
+
+    <gazebo reference="robot${id}/camera_plugin_link">
+      <sensor type="depth" name="robot${id}/camera_sensor">
+        <update_rate>30.0</update_rate>
+        <camera name="head">
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <!-- Noise is sampled independently per pixel on each frame.
+                That pixel's noise value is added to each of its color
+                channels, which at that point lie in the range [0,1]. -->
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
+          <baseline>0.2</baseline>
+          <alwaysOn>true</alwaysOn>
+          <!-- Keep this zero, update_rate in the parent <sensor> tag
+            will control the frame rate. -->
+          <updateRate>0.0</updateRate>
+          <cameraName>robot${id}/camera</cameraName>
+          <imageTopicName>color/image_raw</imageTopicName>
+          <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <pointCloudTopicName>depth/points</pointCloudTopicName>
+          <frameName>robot${id}/camera_link</frameName>
+          <pointCloudCutoff>0.1</pointCloudCutoff>
+          <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
+          <distortionK1>0</distortionK1>
+          <distortionK2>0</distortionK2>
+          <distortionK3>0</distortionK3>
+          <distortionT1>0</distortionT1>
+          <distortionT2>0</distortionT2>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+          <focalLength>0</focalLength>
+          <hackBaseline>0</hackBaseline>
+        </plugin>
+      </sensor>
+    </gazebo>
+
   </xacro:macro>
 
 </robot>

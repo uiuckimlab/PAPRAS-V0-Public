@@ -152,8 +152,11 @@ private:
    */
   void suddenHalt(trajectory_msgs::JointTrajectory& joint_trajectory);
 
-  /** \brief  Scale the delta theta to match joint velocity/acceleration limits */
+  /** \brief  Scale the delta theta to match joint velocity limits */
   void enforceVelLimits(Eigen::ArrayXd& delta_theta);
+
+  /** \brief  Scale the delta theta to match joint acceleration limits */
+  void enforceAccelLimits(Eigen::ArrayXd& delta_theta);
 
   /** \brief Avoid overshooting joint limits */
   bool enforcePositionLimits(sensor_msgs::JointState& joint_state);
@@ -329,6 +332,7 @@ private:
   trajectory_processing::TimeOptimalTrajectoryGeneration *totg;
   trajectory_processing::IterativeParabolicTimeParameterization *iptp;
   std::deque<sensor_msgs::JointState> theta_buffer;
+  std::vector<double> prev_joint_state_velocity;
   // trajectory_msgs::JointTrajectoryPoint  delta_theta_buffer[3];
   // std::array<sensor_msgs::JointState, 3> delta_theta_buffer;
   // sensor_msgs::JointState delta_theta_buffer[3];

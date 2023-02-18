@@ -141,6 +141,7 @@ ServoCalcs::ServoCalcs(ros::NodeHandle& nh, ServoParameters& parameters,
   num_joints_ = internal_joint_state_.name.size();
   internal_joint_state_.position.resize(num_joints_);
   internal_joint_state_.velocity.resize(num_joints_);
+  prev_joint_state_velocity.resize(num_joints_);
   delta_theta_.setZero(num_joints_);
 
   // A map for the indices of incoming joint commands
@@ -363,6 +364,9 @@ void ServoCalcs::calculateSingleIteration()
   {
 
     if(paused_){
+      for(size_t i = 0; i < prev_joint_state_velocity.size(); i++){
+        prev_joint_state_velocity[i] = 0;
+      }
       suddenHalt(*joint_trajectory);
       last_sent_command_ = joint_trajectory;
     }
@@ -380,17 +384,14 @@ void ServoCalcs::calculateSingleIteration()
   // Only run commands if not stale and nonzero
   if (have_nonzero_twist_stamped_ && !twist_command_is_stale_)
   {
-    ROS_INFO_STREAM("381\n");
     if (!cartesianServoCalcs(twist_stamped_cmd_, *joint_trajectory))
     {
-      ROS_INFO_STREAM("384\n");
       resetLowPassFilters(original_joint_state_);
       return;
     }
   }
   else if (have_nonzero_joint_command_ && !joint_command_is_stale_)
   {
-    ROS_INFO_STREAM("391\n");
     if (!jointServoCalcs(joint_servo_cmd_, *joint_trajectory))
     {
       resetLowPassFilters(original_joint_state_);
@@ -400,7 +401,6 @@ void ServoCalcs::calculateSingleIteration()
   else
   {
     // Joint trajectory is not populated with anything, so set it to the last positions and 0 velocity
-    ROS_INFO_STREAM("401\n");
 
     *joint_trajectory = *last_sent_command_;
     for (auto& point : joint_trajectory->points)
@@ -425,7 +425,6 @@ void ServoCalcs::calculateSingleIteration()
     suddenHalt(*joint_trajectory);
     have_nonzero_twist_stamped_ = false;
     have_nonzero_joint_command_ = false;
-    ROS_INFO("in zero command");
   }
 
   // Skip the servoing publication if all inputs have been zero for several cycles in a row.
@@ -670,6 +669,7 @@ bool ServoCalcs::cartesianServoCalcs(geometry_msgs::TwistStamped& cmd,
   }
   
   enforceVelLimits(delta_theta_);
+  enforceAccelLimits(delta_theta_);
 
   // If close to a collision or a singularity, decelerate
   // applyVelocityScaling(delta_theta_, velocityScalingFactorForSingularity(delta_x, svd, pseudo_inverse));
@@ -697,6 +697,7 @@ bool ServoCalcs::jointServoCalcs(const control_msgs::JointJog& cmd, trajectory_m
   delta_theta_ = scaleJointCommand(cmd);
 
   enforceVelLimits(delta_theta_);
+  enforceAccelLimits(delta_theta_);
 
   // If close to a collision, decelerate
   applyVelocityScaling(delta_theta_, 1.0 /* scaling for singularities -- ignore for joint motions */);
@@ -712,13 +713,7 @@ bool ServoCalcs::convertDeltasToOutgoingCmd(trajectory_msgs::JointTrajectory& jo
   internal_joint_state_ = original_joint_state_;
   if (!addJointIncrements(internal_joint_state_, delta_theta_))
     return false;
-  ROS_INFO_STREAM("LEKJRL:KJFSALKJ:SDFLKJ");
-  ROS_INFO_STREAM("internal_joint_state_: " << internal_joint_state_.position[0] << " "
-                            << internal_joint_state_.position[1] << " "
-                            << internal_joint_state_.position[2]<< " "
-                            << internal_joint_state_.position[3] << " "
-                            << internal_joint_state_.position[4] << " "
-                            << internal_joint_state_.position[5]);
+
   lowPassFilterPositions(internal_joint_state_);
 
   // Calculate joint velocities here so that positions are filtered and SRDF bounds still get checked
@@ -782,12 +777,6 @@ void ServoCalcs::calculateJointVelocities(sensor_msgs::JointState& joint_state, 
   {
     joint_state.velocity[i] = delta_theta[i] / parameters_.publish_period;
   }
-  // ROS_INFO_STREAM("delta_theta: " << delta_theta[0] << " "
-  //                                          << delta_theta[1] << " "
-  //                                          << delta_theta[2] << " "
-  //                                          << delta_theta[3] << " "
-  //                                          << delta_theta[4] << " "
-  //                                          << delta_theta[5]);
 
 }
 
@@ -801,22 +790,30 @@ void ServoCalcs::composeJointTrajMessage(const sensor_msgs::JointState& joint_st
   // When a joint_trajectory_controller receives a new command, a stamp of 0 indicates "begin immediately"
   // See http://wiki.ros.org/joint_trajectory_controller#Trajectory_replacement
   joint_trajectory.header.stamp = ros::Time(0);
+  // joint_trajectory.header.stamp = ros::Time(1);
+
   joint_trajectory.header.frame_id = parameters_.planning_frame;
   joint_trajectory.joint_names = joint_state.name;
 
   trajectory_msgs::JointTrajectoryPoint point;
-  point.time_from_start = ros::Duration(parameters_.publish_period);
+  point.time_from_start = ros::Duration(parameters_.publish_period + 0.04);
   if (parameters_.publish_joint_positions)
     point.positions = joint_state.position;
   if (parameters_.publish_joint_velocities)
     point.velocities = joint_state.velocity;
+    
   if (parameters_.publish_joint_accelerations)
   {
     // I do not know of a robot that takes acceleration commands.
     // However, some controllers check that this data is non-empty.
     // Send all zeros, for now.
     std::vector<double> acceleration(num_joints_);
+    for(int i = 0; i < acceleration.size(); i++){
+      // acceleration[i] = joint_state.velocity[i] / parameters_.publish_period;
+      acceleration[i] = (joint_state.velocity[i] - prev_joint_state_velocity[i]) / parameters_.publish_period;
+    }
     point.accelerations = acceleration;
+    prev_joint_state_velocity = joint_state.velocity;
   }
   joint_trajectory.points.push_back(point);
   // sensor_msgs::JointState current_joint_state;
@@ -993,6 +990,7 @@ void ServoCalcs::enforceVelLimits(Eigen::ArrayXd& delta_theta)
     const auto& bounds = joint->getVariableBounds(joint->getName());
     if (bounds.velocity_bounded_ && velocity(joint_delta_index) != 0.0)
     {
+
       const double unbounded_velocity = velocity(joint_delta_index);
       // Clamp each joint velocity to a joint specific [min_velocity, max_velocity] range.
       const auto bounded_velocity = std::min(std::max(unbounded_velocity, bounds.min_velocity_), bounds.max_velocity_);
@@ -1003,6 +1001,33 @@ void ServoCalcs::enforceVelLimits(Eigen::ArrayXd& delta_theta)
 
   // Convert back to joint angle increments.
   delta_theta = velocity_scaling_factor * velocity * parameters_.publish_period;
+}
+
+void ServoCalcs::enforceAccelLimits(Eigen::ArrayXd& delta_theta)
+{
+  // Convert to joint angle velocities for checking and applying joint specific velocity limits.
+  Eigen::ArrayXd velocity = delta_theta / (parameters_.publish_period);
+  Eigen::ArrayXd acceleration = (velocity - prev_joint_velocity_) / (parameters_.publish_period);
+  std::size_t joint_delta_index{ 0 };
+  double acceleration_scaling_factor{ 1.0 };
+  for (const moveit::core::JointModel* joint : joint_model_group_->getActiveJointModels())
+  {
+    const auto& bounds = joint->getVariableBounds(joint->getName());
+    if (bounds.acceleration_bounded_ && acceleration(joint_delta_index) != 0.0)
+    {
+      // ROS_INFO_STREAM("Bounds " << bounds);
+      const double unbounded_accel = acceleration(joint_delta_index);
+      // Clamp each joint velocity to a joint specific [min_velocity, max_velocity] range.
+      const auto bounded_accel = std::min(std::max(unbounded_accel, bounds.min_acceleration_), bounds.max_acceleration_);
+      acceleration_scaling_factor = std::min(acceleration_scaling_factor, bounded_accel / unbounded_accel);
+    }
+    ++joint_delta_index;
+  }
+
+  delta_theta = prev_joint_velocity_ * parameters_.publish_period + (acceleration_scaling_factor / 2) * acceleration * (parameters_.publish_period * parameters_.publish_period);
+  
+
+  // Convert back to joint angle increments.
 }
 
 bool ServoCalcs::enforcePositionLimits(sensor_msgs::JointState& joint_state)
@@ -1218,7 +1243,7 @@ Eigen::VectorXd ServoCalcs::scaleJointCommand(const control_msgs::JointJog& comm
       result[c] = command.velocities[m] * parameters_.joint_scale * parameters_.publish_period;
     // Otherwise, commands are in m/s and rad/s
     else if (parameters_.command_in_type == "speed_units")
-      result[c] = command.velocities[m] * parameters_.publish_period;
+      result[c] = command.velocities[m] * parameters_.publish_period * 2.0;
     else
       ROS_ERROR_STREAM_THROTTLE_NAMED(ROS_LOG_THROTTLE_PERIOD, LOGNAME, "Unexpected command_in_type, check yaml file.");
   }
