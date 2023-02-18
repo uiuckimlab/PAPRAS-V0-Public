@@ -52,7 +52,7 @@ endif(NOT ${YAML_CPP_VERSION} VERSION_LESS "0.5")
 ################################################################################
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES open_manipulator_p
+  # LIBRARIES open_manipulator_p
   CATKIN_DEPENDS 
     roscpp
     controller_manager
