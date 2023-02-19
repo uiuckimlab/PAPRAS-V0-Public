@@ -23,7 +23,7 @@ class SingleArmCommandInterface:
         self.marker_pub = rospy.Publisher('grasp_pose', PoseStamped, queue_size=1)
         self.ik_service = rospy.ServiceProxy('compute_ik', GetPositionIK)
 
-        self.init_follow_joint_trajectory_client()
+        # self.init_follow_joint_trajectory_client()
         self.init_moveit()
 
     def init_follow_joint_trajectory_client(self):
@@ -73,38 +73,38 @@ class SingleArmCommandInterface:
         if len(collision_objects) > 0:
             self.planning_scene.remove_world_object(collision_objects)
 
-    def close_gripper(self, move_group):
-        move_group.set_named_target("close")
-        move_group.go(wait=True)
-        move_group.stop()
-        move_group.clear_pose_targets()
+    def close_gripper(self):
+        self.gripper_group1.set_named_target("close")
+        self.gripper_group1.go(wait=True)
+        self.gripper_group1.stop()
+        self.gripper_group1.clear_pose_targets()
 
-    def open_gripper(self, move_group):
-        move_group.set_named_target("open")
-        move_group.go(wait=True)
-        move_group.stop()
-        move_group.clear_pose_targets()
+    def open_gripper(self):
+        self.gripper_group1.set_named_target("open")
+        self.gripper_group1.go(wait=True)
+        self.gripper_group1.stop()
+        self.gripper_group1.clear_pose_targets()
 
-    def move_arm_to_cartesian_pose(self, goal_pose, move_group):
-        move_group.set_start_state_to_current_state()
-        move_group.set_pose_target(goal_pose)
-        success = move_group.go(wait=True)
-        move_group.stop()
-        move_group.clear_pose_targets()
+    def move_arm_to_cartesian_pose(self, goal_pose,):
+        self.arm_group1.set_start_state_to_current_state()
+        self.arm_group1.set_pose_target(goal_pose)
+        success = self.arm_group1.go(wait=True)
+        self.arm_group1.stop()
+        self.arm_group1.clear_pose_targets()
 
-    def move_arm_to_named_pose(self, pose_name, move_group):
-        move_group.set_start_state_to_current_state()
-        move_group.set_named_target(pose_name)
-        success = move_group.go(wait=True)
-        move_group.stop()
-        move_group.clear_pose_targets()
+    def move_arm_to_named_pose(self, pose_name):
+        self.arm_group1.set_start_state_to_current_state()
+        self.arm_group1.set_named_target(pose_name)
+        success = self.arm_group1.go(wait=True)
+        self.arm_group1.stop()
+        self.arm_group1.clear_pose_targets()
 
-    def move_arm_to_joint_pose(self, goal_pose, move_group):
-        move_group.set_start_state_to_current_state()
-        move_group.set_joint_value_target(goal_pose)
-        success = move_group.go(wait=True)
-        move_group.stop()
-        move_group.clear_pose_targets()
+    def move_arm_to_joint_pose(self, goal_pose):
+        self.arm_group1.set_start_state_to_current_state()
+        self.arm_group1.set_joint_value_target(goal_pose)
+        success = self.arm_group1.go(wait=True)
+        self.arm_group1.stop()
+        self.arm_group1.clear_pose_targets()
 
     def move_arm_to_joint_pose_direct(self, goal_pose, time=3):
         if goal_pose is not None:
