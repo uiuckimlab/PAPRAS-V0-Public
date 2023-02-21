@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module papras_controls.command_interface</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="papras_controls.html"><font color="#ffffff">papras_controls</font></a>.command_interface</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/kazukis2/ws_stand/src/PAPRAS/papras_controls/scripts/papras_controls/command_interface.py">/home/kazukis2/ws_stand/src/PAPRAS/papras_controls/scripts/papras_controls/command_interface.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="actionlib.html">actionlib</a><br>
+<a href="geometry_msgs.html">geometry_msgs</a><br>
+</td><td width="25%" valign=top><a href="moveit_commander.html">moveit_commander</a><br>
+<a href="moveit_msgs.html">moveit_msgs</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="rospy.html">rospy</a><br>
+</td><td width="25%" valign=top><a href="shape_msgs.html">shape_msgs</a><br>
+<a href="sys.html">sys</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="papras_controls.command_interface.html#DualArmCommandInterface">DualArmCommandInterface</a>
+</font></dt><dt><font face="helvetica, arial"><a href="papras_controls.command_interface.html#SingleArmCommandInterface">SingleArmCommandInterface</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DualArmCommandInterface">class <strong>DualArmCommandInterface</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#DualArmCommandInterface">DualArmCommandInterface</a>(prefix1='robot1',&nbsp;prefix2='robot2',&nbsp;vel_scale=0.5,&nbsp;accel_scale=0.5)<br>
+&nbsp;<br>
+Class&nbsp;for&nbsp;interfacing&nbsp;with&nbsp;the&nbsp;dual&nbsp;arm&nbsp;robot<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+prefix1&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prefix&nbsp;for&nbsp;the&nbsp;first&nbsp;robot<br>
+prefix2&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prefix&nbsp;for&nbsp;the&nbsp;second&nbsp;robot<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Attributes<br>
+----------<br>
+prefix1&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prefix&nbsp;for&nbsp;the&nbsp;first&nbsp;robot<br>
+robot1_num&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;of&nbsp;the&nbsp;first&nbsp;robot<br>
+prefix2&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prefix&nbsp;for&nbsp;the&nbsp;second&nbsp;robot<br>
+robot2_num&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;of&nbsp;the&nbsp;second&nbsp;robot<br>
+arm1_2_group_name&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;moveit&nbsp;group&nbsp;name&nbsp;for&nbsp;the&nbsp;first&nbsp;arm<br>
+gripper1_2_group_name&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;moveit&nbsp;group&nbsp;name&nbsp;for&nbsp;the&nbsp;first&nbsp;gripper<br>
+NUM_PLANNING_ATTEMPTS&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;of&nbsp;planning&nbsp;attempts<br>
+PLANNING_TIME&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;planning&nbsp;time<br>
+MAX_VELOCITY_SCALING_FACTOR&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;maximum&nbsp;velocity&nbsp;scaling&nbsp;factor<br>
+MAX_ACCELERATION_SCALING_FACTOR&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;maximum&nbsp;acceleration&nbsp;scaling&nbsp;factor<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+<a href="#DualArmCommandInterface-move_arm_to_cartesian_pose">move_arm_to_cartesian_pose</a>(self,&nbsp;goal_pose)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;the&nbsp;arm&nbsp;to&nbsp;a&nbsp;cartesian&nbsp;pose<br>
+<a href="#DualArmCommandInterface-move_arm_to_named_pose">move_arm_to_named_pose</a>(self,&nbsp;pose_name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;the&nbsp;arm&nbsp;to&nbsp;a&nbsp;named&nbsp;pose<br>
+<a href="#DualArmCommandInterface-move_arm_to_joint_pose">move_arm_to_joint_pose</a>(self,&nbsp;goal_pose)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;the&nbsp;arm&nbsp;to&nbsp;a&nbsp;joint&nbsp;pose<br>
+<a href="#DualArmCommandInterface-move_arm_to_joint_pose_direct">move_arm_to_joint_pose_direct</a>(self,&nbsp;goal_pose,&nbsp;time=3)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;the&nbsp;arm&nbsp;to&nbsp;a&nbsp;joint&nbsp;pose&nbsp;directly<br>
+<a href="#DualArmCommandInterface-close_gripper">close_gripper</a>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Close&nbsp;the&nbsp;gripper&nbsp;to&nbsp;a&nbsp;predefined&nbsp;position&nbsp;using&nbsp;moveit&nbsp;(collision&nbsp;checking&nbsp;enabled)<br>
+<a href="#DualArmCommandInterface-open_gripper">open_gripper</a>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Open&nbsp;the&nbsp;gripper&nbsp;to&nbsp;a&nbsp;predefined&nbsp;position&nbsp;using&nbsp;moveit&nbsp;(collision&nbsp;checking&nbsp;enabled)<br>
+<a href="#DualArmCommandInterface-move_gripper_direct">move_gripper_direct</a>(self,&nbsp;pos=0.77,&nbsp;time=1)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Move&nbsp;the&nbsp;gripper&nbsp;directly&nbsp;to&nbsp;a&nbsp;specified&nbsp;position&nbsp;(no&nbsp;collision&nbsp;checking)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="DualArmCommandInterface-__init__"><strong>__init__</strong></a>(self, prefix1='robot1', prefix2='robot2', vel_scale=0.5, accel_scale=0.5)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-close_gripper"><strong>close_gripper</strong></a>(self, gripper_move_group)</dt><dd><tt>Close&nbsp;gripper<br>
+:param&nbsp;gripper_move_group:&nbsp;moveit_commander.MoveGroupCommander&nbsp;(moveit&nbsp;group)<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-init_follow_joint_trajectory_client"><strong>init_follow_joint_trajectory_client</strong></a>(self)</dt><dd><tt>Initialize&nbsp;follow_joint_trajectory&nbsp;actionlib&nbsp;clients&nbsp;for&nbsp;arm&nbsp;and&nbsp;gripper</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-init_moveit"><strong>init_moveit</strong></a>(self)</dt><dd><tt>Initialize&nbsp;moveit&nbsp;commander&nbsp;and&nbsp;planning&nbsp;scene</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-move_arm_to_cartesian_pose"><strong>move_arm_to_cartesian_pose</strong></a>(self, goal_pose, move_group)</dt><dd><tt>Move&nbsp;arm&nbsp;to&nbsp;cartesian&nbsp;pose<br>
+:param&nbsp;goal_pose:&nbsp;geometry_msgs.msg.PoseStamped&nbsp;(pose&nbsp;of&nbsp;the&nbsp;end&nbsp;effector)<br>
+:param&nbsp;move_group:&nbsp;moveit_commander.MoveGroupCommander&nbsp;(moveit&nbsp;group)<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-move_arm_to_joint_pose"><strong>move_arm_to_joint_pose</strong></a>(self, goal_pose, move_group)</dt><dd><tt>Move&nbsp;arm&nbsp;to&nbsp;joint&nbsp;pose<br>
+:param&nbsp;goal_pose:&nbsp;list&nbsp;of&nbsp;floats&nbsp;(joint&nbsp;values)<br>
+:param&nbsp;move_group:&nbsp;moveit_commander.MoveGroupCommander&nbsp;(moveit&nbsp;group)<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-move_arm_to_joint_pose_direct"><strong>move_arm_to_joint_pose_direct</strong></a>(self, goal_pose, robot_num=-1, time=3)</dt><dd><tt>Move&nbsp;arm&nbsp;to&nbsp;joint&nbsp;pose<br>
+:param&nbsp;goal_pose:&nbsp;list&nbsp;of&nbsp;floats&nbsp;(joint&nbsp;values,&nbsp;dim=12)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;both&nbsp;arm&nbsp;-&gt;&nbsp;&nbsp;joint&nbsp;order:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[robot1/joint1,&nbsp;robot1/joint2,&nbsp;robot1/joint3,&nbsp;robot1/joint4,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;robot1/joint5,&nbsp;robot1/joint6,&nbsp;robot2/joint1,&nbsp;robot2/joint2,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;robot2/joint3,&nbsp;robot2/joint4,&nbsp;robot2/joint5,&nbsp;robot2/joint6]<br>
+:param&nbsp;robot_num:&nbsp;int&nbsp;(1&nbsp;or&nbsp;2&nbsp;or&nbsp;-1)&nbsp;where&nbsp;-1&nbsp;means&nbsp;both&nbsp;arms<br>
+:param&nbsp;time:&nbsp;float&nbsp;(time&nbsp;to&nbsp;reach&nbsp;goal&nbsp;pose)<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-move_arm_to_named_pose"><strong>move_arm_to_named_pose</strong></a>(self, pose_name, move_group)</dt><dd><tt>Move&nbsp;arm&nbsp;to&nbsp;named&nbsp;pose<br>
+:param&nbsp;pose_name:&nbsp;string&nbsp;(name&nbsp;of&nbsp;the&nbsp;pose)<br>
+:param&nbsp;move_group:&nbsp;moveit_commander.MoveGroupCommander&nbsp;(moveit&nbsp;group)<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-move_gripper_direct"><strong>move_gripper_direct</strong></a>(self, pos=1.08, robot_num=-1, time=1)</dt><dd><tt>Move&nbsp;gripper&nbsp;directly&nbsp;to&nbsp;specified&nbsp;position&nbsp;(without&nbsp;planning&nbsp;or&nbsp;collision&nbsp;checking)<br>
+:param&nbsp;pos:&nbsp;float<br>
+:param&nbsp;robot_num:&nbsp;int&nbsp;(1&nbsp;or&nbsp;2&nbsp;or&nbsp;-1)&nbsp;where&nbsp;-1&nbsp;means&nbsp;both&nbsp;grippers<br>
+:param&nbsp;time:&nbsp;float<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="DualArmCommandInterface-open_gripper"><strong>open_gripper</strong></a>(self, gripper_move_group)</dt><dd><tt>Open&nbsp;gripper<br>
+:param&nbsp;gripper_move_group:&nbsp;moveit_commander.MoveGroupCommander&nbsp;(moveit&nbsp;group)<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SingleArmCommandInterface">class <strong>SingleArmCommandInterface</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SingleArmCommandInterface">SingleArmCommandInterface</a>(prefix='robot1',&nbsp;vel_scale=0.8,&nbsp;accel_scale=0.8)<br>
+&nbsp;<br>
+<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SingleArmCommandInterface-__init__"><strong>__init__</strong></a>(self, prefix='robot1', vel_scale=0.8, accel_scale=0.8)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-clear_collision_objects"><strong>clear_collision_objects</strong></a>(self)</dt><dd><tt>Removes&nbsp;all&nbsp;collision&nbsp;objects&nbsp;from&nbsp;the&nbsp;planning&nbsp;scene</tt></dd></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-close_gripper"><strong>close_gripper</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-close_gripper_direct"><strong>close_gripper_direct</strong></a>(self, pos=1.08, time=1)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-get_ik_request"><strong>get_ik_request</strong></a>(self, pose)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-init_follow_joint_trajectory_client"><strong>init_follow_joint_trajectory_client</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-init_moveit"><strong>init_moveit</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-move_arm_to_cartesian_pose"><strong>move_arm_to_cartesian_pose</strong></a>(self, goal_pose)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-move_arm_to_joint_pose"><strong>move_arm_to_joint_pose</strong></a>(self, goal_pose)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-move_arm_to_joint_pose_direct"><strong>move_arm_to_joint_pose_direct</strong></a>(self, goal_pose, time=3)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-move_arm_to_named_pose"><strong>move_arm_to_named_pose</strong></a>(self, pose_name)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-open_gripper"><strong>open_gripper</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SingleArmCommandInterface-open_gripper_direct"><strong>open_gripper_direct</strong></a>(self, pos=0.77, time=1)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>()</dt></dl>
+</td></tr></table>
+</body></html>
