@@ -15,6 +15,12 @@ from moveit_msgs.srv import GetPositionIK
 import moveit_msgs
 import os
 
+import moveit_msgs.msg
+import shape_msgs.msg
+import geometry_msgs.msg
+import rospy
+
+
 '''
 http://docs.ros.org/en/noetic/api/moveit_commander/html/move__group_8py_source.html
 '''
@@ -92,6 +98,31 @@ class SingleArmCommandInterface:
         self.gripper_group1.go(wait=True)
         self.gripper_group1.stop()
         self.gripper_group1.clear_pose_targets()
+
+    def close_gripper_direct(self, pos=1.08, time=1):
+        goal = FollowJointTrajectoryGoal()
+        goal.trajectory.joint_names = ["robot1/gripper"]
+        point = JointTrajectoryPoint()
+        point.positions = [pos]
+        point.time_from_start = rospy.Duration(time)
+        goal.trajectory.points.append(point)
+        self._gripper_1_client.send_goal_and_wait(goal)
+        
+        if not self._gripper_1_client.wait_for_result(rospy.Duration(5.0)):
+            res = self._gripper_1_client.get_result()
+            print(res)
+
+    def open_gripper_direct(self, pos=0.77, time=1):
+        goal = FollowJointTrajectoryGoal()
+        goal.trajectory.joint_names = ["robot1/gripper"]
+        point = JointTrajectoryPoint()
+        point.positions = [pos]
+        point.time_from_start = rospy.Duration(time)
+        goal.trajectory.points.append(point)
+        self._gripper_1_client.send_goal_and_wait(goal)
+        
+        if not self._gripper_1_client.wait_for_result(rospy.Duration(5.0)):
+            self._gripper_1_client.get_result()
 
     def move_arm_to_cartesian_pose(self, goal_pose,):
         self.arm_group1.set_start_state_to_current_state()
