@@ -52,12 +52,20 @@ ros-noetic-roboticsgroup-upatras-gazebo-plugins
 ```
 
 3. Go to catkin_ws directory, build the package, and configure ROS
-
 ```
 cd && mkdir catkin_ws && cd catkin_ws && mkdir src && cd src
 git clone repo
 cd ~/catkin_ws && catkin_make
 source devel/setup.bash
+```
+
+4. Run ./create_udev_rules bash script located in PAPRAS/scripts
+This script copies a udev rule to /etc to facilitate bringing up the PAPRAS usb connection.
+```
+cd ~/catkin_ws/src/PAPRAS/scripts
+```
+```
+chmod +x create_udev_rules && ./create_udev_rules
 ```
 
 4. Run the executable
