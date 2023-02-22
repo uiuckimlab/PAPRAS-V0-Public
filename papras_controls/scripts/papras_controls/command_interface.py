@@ -106,10 +106,10 @@ class SingleArmCommandInterface:
         point.positions = [pos]
         point.time_from_start = rospy.Duration(time)
         goal.trajectory.points.append(point)
-        self._gripper_1_client.send_goal_and_wait(goal)
+        self._gripper_client.send_goal_and_wait(goal)
         
-        if not self._gripper_1_client.wait_for_result(rospy.Duration(5.0)):
-            res = self._gripper_1_client.get_result()
+        if not self._gripper_client.wait_for_result(rospy.Duration(5.0)):
+            res = self._gripper_client.get_result()
             print(res)
 
     def move_arm_to_cartesian_pose(self, goal_pose):
