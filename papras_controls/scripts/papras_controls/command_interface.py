@@ -112,12 +112,13 @@ class SingleArmCommandInterface:
             res = self._gripper_client.get_result()
             print(res)
 
-    def move_arm_to_cartesian_pose(self, goal_pose):
-        self.arm_group.set_start_state_to_current_state()
-        self.arm_group.set_pose_target(goal_pose)
-        success = self.arm_group.go(wait=True)
-        self.arm_group.stop()
-        self.arm_group.clear_pose_targets()
+    def move_arm_to_cartesian_pose(self, goal_cartesian_pose):
+        # use get_ik_request() to get the joint angles for the goal pose from cartesian goal pose
+        goal_joint_pose = self.get_ik_request(goal_cartesian_pose)
+        if goal_joint_pose is not None:
+            self.move_arm_to_joint_pose(goal_joint_pose)
+        else:
+            print("Goal joint pose is None")
 
     def move_arm_to_named_pose(self, pose_name):
         self.arm_group.set_start_state_to_current_state()
@@ -148,6 +149,9 @@ class SingleArmCommandInterface:
                 return self._arm_client.get_result()
 
     def get_ik_request(self, pose):
+        '''
+        Returns joint state positions for a given cartesian pose
+        '''
         
         ik_request = moveit_msgs.msg.PositionIKRequest()
         ik_request.group_name = self.arm_group_name
@@ -156,17 +160,49 @@ class SingleArmCommandInterface:
         ik_request.timeout = rospy.Duration(5.0)
         ik_request.attempts = 20
 
-        # send ik request to moveit server
-        try:
-            resp = self.ik_service(ik_request)
-        except rospy.ServiceException:
-            rospy.logerr("Service call failed: %s" )
-            return None
+        # create joint constraint for the first joint
+        joint_constraint = moveit_msgs.msg.JointConstraint()
+        joint_constraint.joint_name = self.prefix+"/joint3"
+        joint_constraint.position = 0
+        joint_constraint.tolerance_above = 1.57
+        joint_constraint.tolerance_below = -1.57
+        joint_constraint.weight = 1.0
 
-        # check if ik solution is found
-        if resp.error_code.val != resp.error_code.SUCCESS:
-            rospy.logerr("IK solution not found")
-            return None
+        # add joint constraint to the request
+        ik_request.constraints.joint_constraints.append(joint_constraint)
+
+        # call the ik service until joint 3 is within a certain range
+        max_tries = 100
+        joint3_idx = 2
+        for i in range(max_tries):
+            try:
+                ik_response = self.ik_service(ik_request)
+                if ik_response.error_code.val == ik_response.error_code.SUCCESS \
+                                and ik_response.solution.joint_state.position[joint3_idx] > -1.57 \
+                                                and ik_response.solution.joint_state.position[joint3_idx] < 1.57:
+                        return ik_response.solution.joint_state.position
+                else:
+                    rospy.logerr("IK solution not found")
+            except rospy.ServiceException:
+                rospy.logerr("Service call failed.")
+
+    def get_fk_request(self, joint_state):
+        '''
+        Returns cartesian pose for a given joint state
+        
+        Output
+        ------
+        pose_stamped : geometry_msgs.msg.PoseStamped
+        '''
+        fk_request = moveit_msgs.msg.PositionFKRequest()
+        fk_request.header.frame_id = self.robot_base_frame
+        fk_request.fk_link_names = [self.robot_eef_frame]
+        fk_request.robot_state.joint_state = joint_state
+        try:
+            fk_response = self.fk_service(fk_request)
+            return fk_response.pose_stamped[0]
+        except rospy.ServiceException:
+            rospy.logerr("Service call failed.")
 
 class DualArmCommandInterface(object):
     '''
