@@ -6,31 +6,36 @@ import moveit_commander
 import actionlib
 from control_msgs.msg import (
     FollowJointTrajectoryAction,
-    FollowJointTrajectoryGoal
+    FollowJointTrajectoryGoal,
+    JointTolerance
 )
 from trajectory_msgs.msg import JointTrajectoryPoint
 import sys
 
-from moveit_msgs.srv import GetPositionIK
-import moveit_msgs
-import os
+from moveit_msgs.srv import GetPositionIK, GetPositionFK, GetPositionFKRequest, GetPositionIKRequest
+from shape_msgs.msg import SolidPrimitive
+import numpy as np
 
 import moveit_msgs.msg
-import shape_msgs.msg
-import geometry_msgs.msg
 import rospy
-
+from tf.transformations import quaternion_matrix
+import tf2_ros
+import tf2_geometry_msgs
+from trac_ik_python.trac_ik import IK
 
 '''
 http://docs.ros.org/en/noetic/api/moveit_commander/html/move__group_8py_source.html
 '''
 class SingleArmCommandInterface:
-    def __init__(self, prefix='robot1', vel_scale=0.2, accel_scale=0.2):    
+    def __init__(self, prefix='robot1', vel_scale=0.2, accel_scale=0.2):  
+  
         self.prefix = prefix
         self.robot_num = int(prefix[-1])
         self.arm_group_name = "arm" + str(self.robot_num)
         self.gripper_group_name = "gripper" + str(self.robot_num)
+        self.URDFstring = rospy.get_param("/robot_description")
 
+        self.trac_ik_service = IK('robot1/link1', 'robot1/end_effector_link', timeout=5, urdf_string=self.URDFstring, solve_type="Speed")
         # set planning parameters
         self.NUM_PLANNING_ATTEMPTS = 30
         self.PLANNING_TIME = 20.0
@@ -39,9 +44,14 @@ class SingleArmCommandInterface:
         
         self.marker_pub = rospy.Publisher(prefix + '/grasp_pose', PoseStamped, queue_size=1)
         self.ik_service = rospy.ServiceProxy('compute_ik', GetPositionIK)
+        self.fk_service = rospy.ServiceProxy('compute_fk', GetPositionFK)
+
+        self.tfBuffer = tf2_ros.Buffer()
+        listener = tf2_ros.TransformListener(self.tfBuffer)
 
         self.init_follow_joint_trajectory_client()
         self.init_moveit()
+
 
     def init_follow_joint_trajectory_client(self):
         print("in init_follow_joint_trajectory_client")
@@ -80,6 +90,15 @@ class SingleArmCommandInterface:
 
         # set end effector frame
         self.robot_eef_frame = self.arm_group.get_end_effector_link()
+    
+    def set_planning_parameters(self, num_planning_attempts=30, planning_time=20.0, max_velocity_scaling_factor=0.2, max_acceleration_scaling_factor=0.2):
+        self.arm_group.set_num_planning_attempts(num_planning_attempts)
+        self.arm_group.set_planning_time(planning_time)
+        self.arm_group.set_max_velocity_scaling_factor(max_velocity_scaling_factor)
+        self.arm_group.set_max_acceleration_scaling_factor(max_acceleration_scaling_factor)
+        self.gripper_group.set_max_velocity_scaling_factor(max_velocity_scaling_factor)
+        self.gripper_group.set_max_acceleration_scaling_factor(max_acceleration_scaling_factor)
+        print("Changed scaling factors: ", max_velocity_scaling_factor, " acceleration_scaling_factor: ", max_acceleration_scaling_factor)
 
     def clear_collision_objects(self):
         '''
@@ -106,6 +125,12 @@ class SingleArmCommandInterface:
         point.positions = [pos]
         point.time_from_start = rospy.Duration(time)
         goal.trajectory.points.append(point)
+        joint_tolerance = JointTolerance()
+        joint_tolerance.name = "robot1/gripper"
+        joint_tolerance.position = 3.14
+        joint_tolerance.velocity = 3.14
+        joint_tolerance.acceleration = 3.14
+        goal.path_tolerance = [joint_tolerance]
         self._gripper_client.send_goal_and_wait(goal)
         
         if not self._gripper_client.wait_for_result(rospy.Duration(5.0)):
@@ -148,45 +173,112 @@ class SingleArmCommandInterface:
             if self._arm_client.wait_for_result(rospy.Duration(10.0)):
                 return self._arm_client.get_result()
 
-    def get_ik_request(self, pose):
+
+    def call_ik_service(self, ik_request, max_tries=5, joint3_idx=2):
         '''
-        Returns joint state positions for a given cartesian pose
+        Calls the IK service to find a joint solution for the given pose
+        Args:
+        ik_request (PositionIKRequest): request to the IK service
+        max_tries (int): maximum number of times to call the IK service
+        joint3_idx (int): index of joint3 in the joint solution
+
+        Returns:
+        joint_angles (list): list of joint angles for the given pose
         '''
-        
-        ik_request = moveit_msgs.msg.PositionIKRequest()
-        ik_request.group_name = self.arm_group_name
-        ik_request.ik_link_name = self.robot_eef_frame
-        ik_request.pose_stamped = pose
-        ik_request.timeout = rospy.Duration(5.0)
-        ik_request.attempts = 20
-
-        # create joint constraint for the first joint
-        joint_constraint = moveit_msgs.msg.JointConstraint()
-        joint_constraint.joint_name = self.prefix+"/joint3"
-        joint_constraint.position = 0
-        joint_constraint.tolerance_above = 1.57
-        joint_constraint.tolerance_below = -1.57
-        joint_constraint.weight = 1.0
-
-        # add joint constraint to the request
-        ik_request.constraints.joint_constraints.append(joint_constraint)
-
-        # call the ik service until joint 3 is within a certain range
-        max_tries = 100
-        joint3_idx = 2
+        joint1_idx = 0
         for i in range(max_tries):
             try:
                 ik_response = self.ik_service(ik_request)
-                if ik_response.error_code.val == ik_response.error_code.SUCCESS \
-                                and ik_response.solution.joint_state.position[joint3_idx] > -1.57 \
-                                                and ik_response.solution.joint_state.position[joint3_idx] < 1.57:
-                        return ik_response.solution.joint_state.position
+                if ik_response.error_code.val == ik_response.error_code.SUCCESS:
+                    rospy.loginfo("IK solution found for pose: %s", ik_response.solution.joint_state.position)
+                    rospy.loginfo("Checking if joint3 is within bounds: %s", ik_response.solution.joint_state.position[joint3_idx])
+                    if ik_response.solution.joint_state.position[joint3_idx] > -1.75 and ik_response.solution.joint_state.position[joint3_idx] < 1.57 \
+                       and (ik_response.solution.joint_state.position[joint1_idx] > -1.57 and ik_response.solution.joint_state.position[joint1_idx] < 1.57):
+                            return ik_response.solution.joint_state.position
+                    else:
+                        rospy.logerr("IK solution found, but joint3 is out of bounds: %s", ik_response.solution.joint_state.position[joint3_idx])
                 else:
-                    rospy.logerr("IK solution not found")
+                    rospy.logerr("IK solution not found for pose: %s", ik_request.ik_request.pose_stamped)
             except rospy.ServiceException:
                 rospy.logerr("Service call failed.")
+        return None
 
-    def get_fk_request(self, joint_state):
+    def trac_ik(self, pose_stamped):
+        '''
+        Finds an IK solution for the given pose using trak_ik directly
+        
+        Args:
+        pose_stamped (PoseStamped): pose to find IK solution for (in the world frame)
+
+        Returns:
+        ik_soln (list): list of joint angles for the given pose
+        '''
+
+        seed_state = [0.0] * self.trac_ik_service.number_of_joints
+        transforme = self.tfBuffer.lookup_transform("robot1/link1", "world", rospy.Time(0), rospy.Duration(1.0))
+        transformed_pose_stamped = tf2_geometry_msgs.do_transform_pose(pose_stamped, transform=transforme)
+        
+        
+        x = transformed_pose_stamped.pose.position.x
+        y = transformed_pose_stamped.pose.position.y
+        z = transformed_pose_stamped.pose.position.z
+        rx = transformed_pose_stamped.pose.orientation.x
+        ry = transformed_pose_stamped.pose.orientation.y
+        rz = transformed_pose_stamped.pose.orientation.z
+        rw = transformed_pose_stamped.pose.orientation.w
+        boundx = 0.008
+        boundy = 0.008
+        boundz = 0.000
+        boundrx = np.radians(5)
+        boundry = np.radians(5)
+        boundrz = np.radians(5)
+
+        joint3_idx = 2
+        joint1_idx = 0
+        for i in range(3):
+            ret_ik = self.trac_ik_service.get_ik(seed_state, x,y,z,rx,ry,rz,rw,bx=boundx, by=boundy, bz=boundz, brx=boundrx, bry=boundry, brz=boundrz)
+            # pdb.set_trace()
+
+            if ret_ik[joint3_idx] > -1.75 and ret_ik[joint3_idx] < 1.57 \
+                        and (ret_ik[joint1_idx] > -1.57 and ret_ik[joint1_idx] < 1.57):
+                            return ret_ik
+
+        return None
+
+
+
+    def moveit_ik(self, pose_stamped):
+        '''
+        Finds an IK solution for the given pose
+        
+        Args:
+        pose_stamped (PoseStamped): pose to find IK solution for (in the world frame)
+
+        Returns:
+        ik_soln (list): list of joint angles for the given pose
+        '''
+
+        # find ik solution for the given pose, add joint3 position constraint
+        rospy.loginfo("Finding IK solution for pose with joint 3 constraint")
+        ik_request = self.get_ik_request(pose_stamped)
+        ik_soln = self.call_ik_service(ik_request, max_tries=1)
+        if ik_soln is not None:
+            return ik_soln
+        
+        return None
+
+    def get_ik_request(self, pose_stamped):
+        '''
+        Returns joint state positions for a given cartesian pose
+        '''
+        request = GetPositionIKRequest()
+        request.ik_request.group_name = self.arm_group_name
+        request.ik_request.ik_link_name = self.robot_eef_frame
+        request.ik_request.pose_stamped = pose_stamped
+        request.ik_request.timeout = rospy.Duration(10.0)
+        return request
+
+    def moveit_fk(self, joint_values):
         '''
         Returns cartesian pose for a given joint state
         
@@ -194,10 +286,13 @@ class SingleArmCommandInterface:
         ------
         pose_stamped : geometry_msgs.msg.PoseStamped
         '''
-        fk_request = moveit_msgs.msg.PositionFKRequest()
-        fk_request.header.frame_id = self.robot_base_frame
+        fk_request = GetPositionFKRequest()
+        fk_request.header.frame_id = "world"
         fk_request.fk_link_names = [self.robot_eef_frame]
-        fk_request.robot_state.joint_state = joint_state
+       
+        fk_request.robot_state.joint_state.name = [self.prefix+"/joint1", self.prefix+"/joint2", self.prefix+"/joint3",
+                                            self.prefix+"/joint4", self.prefix+"/joint5", self.prefix+"/joint6"]
+        fk_request.robot_state.joint_state.position = joint_values
         try:
             fk_response = self.fk_service(fk_request)
             return fk_response.pose_stamped[0]
