@@ -16,6 +16,7 @@
   <build_depend>hardware_interface</build_depend>
   <build_depend>yaml-cpp</build_depend>
   <build_depend>joint_limits_interface</build_depend>
+  <build_depend>moveit_visual_tools</build_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>controller_manager</exec_depend>
@@ -23,4 +24,6 @@
   <exec_depend>hardware_interface</exec_depend>
   <exec_depend>yaml-cpp</exec_depend>
   <exec_depend>joint_limits_interface</exec_depend>
+  <exec_depend>moveit_visual_tools</exec_depend>
+
 </package>
