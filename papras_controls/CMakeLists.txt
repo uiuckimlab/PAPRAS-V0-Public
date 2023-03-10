@@ -62,6 +62,7 @@ catkin_package(
     dynamixel_workbench_toolbox
     hardware_interface
     joint_limits_interface
+    moveit_visual_tools
 )
 
 ################################################################################

@@ -22,7 +22,6 @@ from tf.transformations import quaternion_matrix
 import tf2_ros
 import tf2_geometry_msgs
 from trac_ik_python.trac_ik import IK
-
 '''
 http://docs.ros.org/en/noetic/api/moveit_commander/html/move__group_8py_source.html
 '''
@@ -51,7 +50,6 @@ class SingleArmCommandInterface:
 
         self.init_follow_joint_trajectory_client()
         self.init_moveit()
-
 
     def init_follow_joint_trajectory_client(self):
         print("in init_follow_joint_trajectory_client")
@@ -155,7 +153,11 @@ class SingleArmCommandInterface:
     def move_arm_to_joint_pose(self, goal_pose):
         self.arm_group.set_start_state_to_current_state()
         self.arm_group.set_joint_value_target(goal_pose)
-        success = self.arm_group.go(wait=True)
+        # plan and execute instead of go() to get the result
+        plan = self.arm_group.plan()
+        input("Press Enter to continue...")
+        success = self.arm_group.execute(plan, wait=True)
+        # success = self.arm_group.go(wait=True)
         self.arm_group.stop()
         self.arm_group.clear_pose_targets()
 
@@ -215,7 +217,7 @@ class SingleArmCommandInterface:
         '''
 
         seed_state = [0.0] * self.trac_ik_service.number_of_joints
-        transforme = self.tfBuffer.lookup_transform("robot1/link1", "world", rospy.Time(0), rospy.Duration(1.0))
+        transforme = self.tfBuffer.lookup_transform(self.prefix+"/link1", "world", rospy.Time(0), rospy.Duration(1.0))
         transformed_pose_stamped = tf2_geometry_msgs.do_transform_pose(pose_stamped, transform=transforme)
         
         
@@ -228,16 +230,15 @@ class SingleArmCommandInterface:
         rw = transformed_pose_stamped.pose.orientation.w
         boundx = 0.008
         boundy = 0.008
-        boundz = 0.000
+        boundz = 0.008
         boundrx = np.radians(5)
         boundry = np.radians(5)
         boundrz = np.radians(5)
 
         joint3_idx = 2
         joint1_idx = 0
-        for i in range(3):
+        for i in range(100):
             ret_ik = self.trac_ik_service.get_ik(seed_state, x,y,z,rx,ry,rz,rw,bx=boundx, by=boundy, bz=boundz, brx=boundrx, bry=boundry, brz=boundrz)
-            # pdb.set_trace()
 
             if ret_ik[joint3_idx] > -1.75 and ret_ik[joint3_idx] < 1.57 \
                         and (ret_ik[joint1_idx] > -1.57 and ret_ik[joint1_idx] < 1.57):
@@ -363,7 +364,7 @@ class DualArmCommandInterface(object):
         self.MAX_ACCELERATION_SCALING_FACTOR = accel_scale
 
         self.robot1 = SingleArmCommandInterface(prefix1, vel_scale, accel_scale)
-        self.robot2 = SingleArmCommandInterface(prefix2, vel_scale, accel_scale)
+        self.robot2 = SingleArmCommandInterface(prefix2, vel_scale, accel_scale)    
 
         # moveit groups names
         self.arm1_group = self.robot1.arm_group
@@ -392,6 +393,30 @@ class DualArmCommandInterface(object):
         self.gripper1_2_group.set_max_velocity_scaling_factor(self.MAX_VELOCITY_SCALING_FACTOR)
         self.gripper1_2_group.set_max_acceleration_scaling_factor(0.3)
 
+    def set_planning_parameters(self, num_planning_attempts=30, planning_time=20.0, max_velocity_scaling_factor=0.2, max_acceleration_scaling_factor=0.2):
+        self.arm1_group.set_num_planning_attempts(num_planning_attempts)
+        self.arm1_group.set_planning_time(planning_time)
+        self.arm1_group.set_max_velocity_scaling_factor(max_velocity_scaling_factor)
+        self.arm1_group.set_max_acceleration_scaling_factor(max_acceleration_scaling_factor)
+        self.gripper1_group.set_max_velocity_scaling_factor(max_velocity_scaling_factor)
+        self.gripper1_group.set_max_acceleration_scaling_factor(max_acceleration_scaling_factor)
+        
+        self.arm2_group.set_num_planning_attempts(num_planning_attempts)
+        self.arm2_group.set_planning_time(planning_time)
+        self.arm2_group.set_max_velocity_scaling_factor(max_velocity_scaling_factor)
+        self.arm2_group.set_max_acceleration_scaling_factor(max_acceleration_scaling_factor)
+        self.gripper2_group.set_max_velocity_scaling_factor(max_velocity_scaling_factor)
+        self.gripper2_group.set_max_acceleration_scaling_factor(max_acceleration_scaling_factor)
+
+        self.arm1_2_group.set_num_planning_attempts(num_planning_attempts)
+        self.arm1_2_group.set_planning_time(planning_time)
+        self.arm1_2_group.set_max_velocity_scaling_factor(max_velocity_scaling_factor)
+        self.arm1_2_group.set_max_acceleration_scaling_factor(max_acceleration_scaling_factor)
+        self.gripper1_2_group.set_max_velocity_scaling_factor(max_velocity_scaling_factor)
+        self.gripper1_2_group.set_max_acceleration_scaling_factor(max_acceleration_scaling_factor)
+        
+        print("Changed scaling factors: ", max_velocity_scaling_factor, " acceleration_scaling_factor: ", max_acceleration_scaling_factor)
+
     def move_arm_to_cartesian_pose(self, goal_pose, move_group):
         '''
         Move arm to cartesian pose
@@ -400,7 +425,6 @@ class DualArmCommandInterface(object):
         :return: None
         '''
         if goal_pose is not None and move_group is not None:
-            assert(goal_pose.header.frame_id == move_group.get_planning_frame())
             move_group.set_pose_target(goal_pose)
             success = move_group.go(wait=True)
             move_group.stop()
@@ -556,5 +580,5 @@ class DualArmCommandInterface(object):
                 return gripper1_client.get_result(), gripper2_client.get_result()
             else:
                 rospy.logerr("Failed to move gripper")
-                
+            
             
