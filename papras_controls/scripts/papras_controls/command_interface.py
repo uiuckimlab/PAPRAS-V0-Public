@@ -205,18 +205,22 @@ class SingleArmCommandInterface:
                 rospy.logerr("Service call failed.")
         return None
 
-    def trac_ik(self, pose_stamped):
+    def trac_ik(self, pose_stamped, seed_state=None, 
+                boundx_=0.005, boundy_=0.005, boundz_=0.005, 
+                boundroll_=0.01, boundpitch_=0.01, boundyaw_=0.01):
         '''
         Finds an IK solution for the given pose using trak_ik directly
         
         Args:
         pose_stamped (PoseStamped): pose to find IK solution for (in the world frame)
+        seed_state (list): list of joint angles to use as seed state for IK solver
 
         Returns:
         ik_soln (list): list of joint angles for the given pose
         '''
 
-        seed_state = [0.0] * self.trac_ik_service.number_of_joints
+        if seed_state is None:
+            seed_state = [0.0] * self.trac_ik_service.number_of_joints
         transforme = self.tfBuffer.lookup_transform(self.prefix+"/link1", "world", rospy.Time(0), rospy.Duration(1.0))
         transformed_pose_stamped = tf2_geometry_msgs.do_transform_pose(pose_stamped, transform=transforme)
         
@@ -228,21 +232,46 @@ class SingleArmCommandInterface:
         ry = transformed_pose_stamped.pose.orientation.y
         rz = transformed_pose_stamped.pose.orientation.z
         rw = transformed_pose_stamped.pose.orientation.w
-        boundx = 0.008
-        boundy = 0.008
-        boundz = 0.008
-        boundrx = np.radians(5)
-        boundry = np.radians(5)
-        boundrz = np.radians(5)
+        boundx = boundx_
+        boundy = boundy_
+        boundz = boundz_
+        boundrx = boundroll_
+        boundry = boundpitch_
+        boundrz =  boundyaw_
 
         joint3_idx = 2
         joint1_idx = 0
         for i in range(100):
+            print("Attempt: ", i, "for pose: ", pose_stamped.pose.position.x, pose_stamped.pose.position.y, pose_stamped.pose.position.z)
+            
+            # if attemp is factor of 10, increase bound
+            if i % 5 == 0 and i < 20:
+                boundx += boundx_
+                boundy += boundy_
+                boundz += boundz_
+                boundrx += boundroll_
+                boundry +=  boundpitch_
+                boundrz +=  boundyaw_
+
             ret_ik = self.trac_ik_service.get_ik(seed_state, x,y,z,rx,ry,rz,rw,bx=boundx, by=boundy, bz=boundz, brx=boundrx, bry=boundry, brz=boundrz)
 
-            if ret_ik[joint3_idx] > -1.75 and ret_ik[joint3_idx] < 1.57 \
-                        and (ret_ik[joint1_idx] > -1.57 and ret_ik[joint1_idx] < 1.57):
-                            return ret_ik
+            if ret_ik is not None:
+                rospy.loginfo("IK solution found for pose: %s", ret_ik)
+                rospy.loginfo("Checking if joint3 is within bounds: %s", ret_ik[joint3_idx])
+            else:
+                rospy.logerr("IK solution not found for pose: %s", pose_stamped)
+                continue
+
+            # # if joint deviation from seed state is too large, try again
+            # if np.linalg.norm(np.array(ret_ik) - np.array(seed_state)) > 1.0:
+            #     rospy.logerr("IK solution found, but joint deviation from seed state is too large: %s", ret_ik)
+            #     continue
+
+            if ret_ik[joint3_idx] > -1.75 and ret_ik[joint3_idx] < 1.57:
+                return ret_ik
+            else:
+                rospy.logerr("IK solution found, but joint3 is out of bounds: %s", ret_ik[joint3_idx])
+                continue
 
         return None
 
@@ -299,6 +328,18 @@ class SingleArmCommandInterface:
             return fk_response.pose_stamped[0]
         except rospy.ServiceException:
             rospy.logerr("Service call failed.")
+
+    def get_current_joint_state(self):
+        '''
+        Returns the current joint state using movit
+
+        Returns
+        -------
+        joint_state : list
+            list of joint angles
+        '''
+        joint_state = self.arm_group.get_current_joint_values()
+        return joint_state
 
 class DualArmCommandInterface(object):
     '''
