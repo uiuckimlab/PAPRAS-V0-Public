@@ -54,7 +54,7 @@ ros-noetic-roboticsgroup-upatras-gazebo-plugins
 3. Go to catkin_ws directory, build the package, and configure ROS
 ```
 cd && mkdir catkin_ws && cd catkin_ws && mkdir src && cd src
-git clone repo
+git clone https://github.com/uiuckimlab/PAPRAS-V0.git
 cd ~/catkin_ws && catkin_make
 source devel/setup.bash
 ```
