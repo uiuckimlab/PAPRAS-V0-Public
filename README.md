@@ -59,6 +59,13 @@ cd ~/catkin_ws && catkin_make
 source devel/setup.bash
 ```
 
+3. Optional for grasping in gazebo to work with the position controllers, clone these two repositories in your catkin_ws
+```
+git clone https://github.com/JenniferBuehler/gazebo-pkgs.git
+git clone https://github.com/JenniferBuehler/general-message-pkgs.git
+
+```
+
 4. Run ./create_udev_rules bash script located in PAPRAS/scripts
 This script copies a udev rule to /etc to facilitate bringing up the PAPRAS usb connection.
 ```
