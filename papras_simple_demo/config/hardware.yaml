@@ -1,0 +1,57 @@
+robot1/joint1:
+  ID: 92
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 1500
+  Profile_Velocity: 750
+robot1/joint2:
+  ID: 93
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 1500
+  Profile_Velocity: 750
+robot1/joint3:
+  ID: 94
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 1500
+  Profile_Velocity: 750
+  Homing_Offset: -125480
+robot1/joint4:
+  ID: 95
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 1500
+  Profile_Velocity: 750
+robot1/joint5:
+  ID: 96
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 1500
+  Profile_Velocity: 750
+robot1/joint6:
+  ID: 97
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 1500
+  Profile_Velocity: 750
+robot1/joint7:
+  ID: 98
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 1500
+  Profile_Velocity: 750
+robot1/gripper:
+  ID: 162
+  Return_Delay_Time: 25
+  Acceleration_Limit: 9982
+  Velocity_Limit: 2900
+  Profile_Acceleration: 6000
+  Profile_Velocity: 2900

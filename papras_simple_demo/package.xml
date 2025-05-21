@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>papras_simple_demo</name>
+  <version>0.0.0</version>
+  <description>
+    Package for papras simple demo
+  </description>
+  <author email="kazukis2@illinois.edu">Kazuki Shin</author>
+  <maintainer email="sankalp.yamsani@gmail.com">Sankalp Yamsani</maintainer>
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>std_msgs</depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_ros_control</depend>
+  <depend>controller_manager</depend>
+  <depend>xacro</depend>
+  <depend>urdf</depend>
+  <depend>sensor_msgs</depend>
+  <depend>robotis_manipulator</depend>
+  <depend>open_manipulator_msgs</depend>
+  <depend>qtbase5-dev</depend>
+  <depend>qt5-qmake</depend>
+  <depend>libqt5-core</depend>
+  <depend>libqt5-gui</depend>
+  <depend>cmake_modules</depend>
+  <depend>eigen</depend>
+  <depend>eigen_conversions</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>rviz</depend>
+
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+      <export>
+    <gazebo_ros plugin_path="${prefix}/lib" gazebo_media_path="${prefix}" gazebo_model_path="${prefix}/models"/>
+  </export>
+  </export>
+</package>

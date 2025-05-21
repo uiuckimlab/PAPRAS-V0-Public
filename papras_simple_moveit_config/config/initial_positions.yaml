@@ -1,0 +1,11 @@
+# Default initial positions for simple_robot's ros2_control fake system
+
+initial_positions:
+  robot1/gripper: 0
+  robot1/joint1: 0
+  robot1/joint2: 0
+  robot1/joint3: 0
+  robot1/joint4: 0
+  robot1/joint5: 0
+  robot1/joint6: 0
+  robot1/joint7: 0

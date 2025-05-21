@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>papras_controls</name>
+  <version>2.0.1</version>
+  <description>ROS2 package for papras_controls</description>
+  <license>Apache 2.0</license>
+
+  <author email="TODO@illinois.edu">Kazuki Shin</author>
+  <maintainer email="sankalp.yamsani@gmail.com">Sankalp Yamsani</maintainer>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>lifecycle_msgs</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>realtime_tools</depend>
+  <depend>dynamixel_sdk</depend>
+  <depend>std_srvs</depend>
+  <depend>ros2_controllers</depend>
+  <depend>ros2_control</depend>
+  <depend>dynamixel_interfaces</depend>
+  <depend>yaml-cpp</depend>
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>

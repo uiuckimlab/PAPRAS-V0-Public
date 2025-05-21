@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="create_papras_joints" params="prefix arm_id joint_id num_joints">
+      <xacro:if value="${joint_id&lt;=num_joints}">
+        <joint name="${prefix}/joint${joint_id}">
+          <!-- <param name="id">${arm_id + joint_id}</param> -->
+          <param name="id">${(arm_id - 1)*num_joints + joint_id}</param>
+          <command_interface name="position"/>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+          <state_interface name="effort" />
+        </joint>
+        <gpio name="${prefix}/joint${joint_id}">
+          <param name="type">dxl</param>
+          <!-- <param name="ID">${arm_id + joint_id}</param> -->
+          <param name="ID">${(arm_id - 1)*num_joints + joint_id}</param>
+          <command_interface name="Goal Position"/>
+          <state_interface name="Present Position"/>
+          <state_interface name="Present Velocity"/>
+          <state_interface name="Present Current"/>
+          <state_interface name="Torque Enable"/>
+          <state_interface name="Present Input Voltage"/>
+          <param name="Position P Gain">800</param>
+          <param name="Position I Gain">100</param>
+          <param name="Position D Gain">100</param>
+          <param name="Drive Mode">0</param>
+        </gpio>
+        <xacro:create_papras_joints prefix="${prefix}" arm_id="${arm_id}" joint_id="${joint_id + 1}" num_joints="${num_joints}"/>
+      </xacro:if>
+    </xacro:macro>
+    <xacro:macro name="gripper" params="prefix arm_id">
+        <joint name="${prefix}/gripper">
+            <param name="id">${100 + arm_id*10 + 1}</param>
+            <!-- <param name="id">162</param> -->
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+
+        <gpio name="${prefix}/gripper">
+          <param name="type">dxl</param>
+          <!-- <param name="ID">162</param> -->
+          <param name="ID">${100 + arm_id*10 + 1}</param>
+          <command_interface name="Goal Position"/>
+          <state_interface name="Present Position"/>
+          <state_interface name="Present Velocity"/>
+          <state_interface name="Present Current"/>
+          <state_interface name="Torque Enable"/>
+          <state_interface name="Present Input Voltage"/>
+        </gpio>
+    </xacro:macro>
+
+    <xacro:macro name="gazebo_gripper" params="prefix arm_id">
+        <joint name="${prefix}/gripper">
+            <param name="id">${100 + arm_id*10 + 1}</param>
+            <command_interface name="effort"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="acceleration" />
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="system_loop" params="systems:=^ system_prefix:=^ arm_ids:=^">
+      <xacro:if value="${systems}">
+        <xacro:property name="system" value="${systems.pop(0)}"/>
+        <xacro:property name="prefix" value="${system_prefix.pop(0)}"/>
+        <xacro:property name="arm_id" value="${arm_ids.pop(0)}"/>
+        
+        <xacro:if value="${system == 'papras_6dof'}">
+          <xacro:create_papras_joints prefix="${prefix}" arm_id="${arm_id}" joint_id="1" num_joints="6"/>
+        </xacro:if>
+        <xacro:if value="${system == 'gripper'}">
+          <xacro:gripper prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'papras_7dof'}">
+          <xacro:create_papras_joints prefix="${prefix}" arm_id="${arm_id}" joint_id="1" num_joints="7"/>
+        </xacro:if>
+        <xacro:system_loop/>
+      </xacro:if>
+    
+    </xacro:macro>
+
+    <xacro:macro name="system_loop_gazebo" params="systems:=^ system_prefix:=^ arm_ids:=^">
+      <xacro:if value="${systems}">
+        <xacro:property name="system" value="${systems.pop(0)}"/>
+        <xacro:property name="prefix" value="${system_prefix.pop(0)}"/>
+        <xacro:property name="arm_id" value="${arm_ids.pop(0)}"/>
+        
+        <xacro:if value="${system == 'papras_6dof'}">
+          <xacro:papras_6dof prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'gripper'}">
+          <xacro:gazebo_gripper prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'papras_7dof'}">
+          <xacro:papras_7dof prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:system_loop/>
+      </xacro:if>
+    
+    </xacro:macro>
+
+    <xacro:macro name="papras_ros2_control_hw" params="baud_rate_val usb_port_location yaml_file systems system_prefix arm_ids">
+        <ros2_control name="papras_hw_controller" type="system">
+            <hardware>
+              <plugin>papras_hardware_interface/DynamixelHardware</plugin>
+              <param name="port_name">${usb_port_location}</param>
+              <param name="baud_rate">${baud_rate_val}</param>
+              <param name="yaml_file">${yaml_file}</param>
+              <param name="error_timeout_ms">500</param>
+              <param name="dynamixel_model_folder">/param/dxl_model</param>
+              <param name="dynamixel_state_pub_msg_name">papras_hardware_interface/dxl_state</param>
+              <param name="get_dynamixel_data_srv_name">papras_hardware_interface/get_dxl_data</param>
+              <param name="set_dynamixel_data_srv_name">papras_hardware_interface/set_dxl_data</param>
+              <param name="reboot_dxl_srv_name">papras_hardware_interface/reboot_dxl</param>
+              <param name="set_dxl_torque_srv_name">papras_hardware_interface/set_dxl_torque</param>
+            </hardware>
+            <xacro:system_loop systems="${systems}" system_prefix="${system_prefix}" arm_ids="${arm_ids}"/>
+        </ros2_control>
+    </xacro:macro>
+
+   
+</robot>

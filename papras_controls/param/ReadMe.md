@@ -1,0 +1,1 @@
+https://github.com/ROBOTIS-GIT/dynamixel_hardware_interface/tree/humble/param/dxl_model

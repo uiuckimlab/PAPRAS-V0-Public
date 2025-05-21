@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="papras_6dof" params="prefix arm_id">
+        <joint name="${prefix}/joint1">
+            <param name="id">${(arm_id - 1)*6 + 1}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort" />
+        </joint>
+        <joint name="${prefix}/joint2">
+            <param name="id">${(arm_id - 1)*6 + 2}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort" />
+        </joint>
+        <joint name="${prefix}/joint3">
+            <param name="id">${(arm_id - 1)*6 + 3}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+        <joint name="${prefix}/joint4">
+            <param name="id">${(arm_id - 1)*6 + 4}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+        <joint name="${prefix}/joint5">
+            <param name="id">${(arm_id - 1)*6 + 5}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+        <joint name="${prefix}/joint6">
+            <param name="id">${(arm_id - 1)*6 + 6}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="papras_7dof" params="prefix arm_id">
+        <joint name="${prefix}/joint1">
+            <param name="id">${(arm_id - 1)*7 + 1}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort" />
+        </joint>
+        <joint name="${prefix}/joint2">
+            <param name="id">${(arm_id - 1)*7 + 2}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort" />
+        </joint>
+        <joint name="${prefix}/joint3">
+            <param name="id">${(arm_id - 1)*7 + 3}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+        <joint name="${prefix}/joint4">
+            <param name="id">${(arm_id - 1)*7 + 4}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+        <joint name="${prefix}/joint5">
+            <param name="id">${(arm_id - 1)*7 + 5}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+        <joint name="${prefix}/joint6">
+            <param name="id">${(arm_id - 1)*7 + 6}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+        <joint name="${prefix}/joint7">
+            <param name="id">${(arm_id - 1)*7 + 7}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="gripper" params="prefix arm_id">
+        <joint name="${prefix}/gripper">
+            <param name="id">${100 + arm_id*10 + 1}</param>
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="gazebo_gripper" params="prefix arm_id">
+        <joint name="${prefix}/gripper">
+            <param name="id">${100 + arm_id*10 + 1}</param>
+            <command_interface name="effort"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort" />
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="system_loop" params="systems:=^ system_prefix:=^ arm_ids:=^">
+      <xacro:if value="${systems}">
+        <xacro:property name="system" value="${systems.pop(0)}"/>
+        <xacro:property name="prefix" value="${system_prefix.pop(0)}"/>
+        <xacro:property name="arm_id" value="${arm_ids.pop(0)}"/>
+        
+        <xacro:if value="${system == 'papras_6dof'}">
+          <xacro:papras_6dof prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'gripper'}">
+          <xacro:gripper prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'papras_7dof'}">
+          <xacro:papras_7dof prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:system_loop/>
+      </xacro:if>
+    
+    </xacro:macro>
+    
+    <xacro:macro name="system_loop" params="systems:=^ system_prefix:=^ arm_ids:=^">
+      <xacro:if value="${systems}">
+        <xacro:property name="system" value="${systems.pop(0)}"/>
+        <xacro:property name="prefix" value="${system_prefix.pop(0)}"/>
+        <xacro:property name="arm_id" value="${arm_ids.pop(0)}"/>
+        
+        <xacro:if value="${system == 'papras_6dof'}">
+          <xacro:papras_6dof prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'gripper'}">
+          <xacro:gripper prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'papras_7dof'}">
+          <xacro:papras_7dof prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:system_loop/>
+      </xacro:if>
+    
+    </xacro:macro>
+
+    <xacro:macro name="system_loop_gazebo" params="systems:=^ system_prefix:=^ arm_ids:=^">
+      <xacro:if value="${systems}">
+        <xacro:property name="system" value="${systems.pop(0)}"/>
+        <xacro:property name="prefix" value="${system_prefix.pop(0)}"/>
+        <xacro:property name="arm_id" value="${arm_ids.pop(0)}"/>
+        
+        <xacro:if value="${system == 'papras_6dof'}">
+          <xacro:papras_6dof prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'gripper'}">
+          <xacro:gazebo_gripper prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:if value="${system == 'papras_7dof'}">
+          <xacro:papras_7dof prefix="${prefix}" arm_id="${arm_id}"/>
+        </xacro:if>
+        <xacro:system_loop/>
+      </xacro:if>
+    
+    </xacro:macro>
+    
+
+    <xacro:macro name="papras_ros2_control_gazebo" params="systems:=^ system_prefix:=^ arm_ids:=^ controller_params">
+      <ros2_control name="papras_gazebo_controller" type="system">
+          <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+          </hardware>
+          <xacro:system_loop systems="${systems}" system_prefix="${system_prefix}" arm_ids="${arm_ids}"/>
+      </ros2_control>
+
+      <gazebo>
+        <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+          <parameters>${controller_params}</parameters>
+          <controller_manager_node_name>/controller_manager</controller_manager_node_name>
+        </plugin>
+      </gazebo>
+    </xacro:macro>
+
+   
+</robot>

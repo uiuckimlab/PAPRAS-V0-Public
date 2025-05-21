@@ -1,0 +1,153 @@
+# https://bytemeta.vip/repo/ros-simulation/gazebo_ros2_control/issues/124
+# Need to have the main name as controller_manager 
+controller_manager:
+  ros__parameters:
+    update_rate: 125
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    arm1_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    arm2_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    arm3_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    arm4_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    gripper1_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    gripper2_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    gripper3_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    gripper4_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+arm1_controller:
+  ros__parameters:
+    joints:
+      - robot1/joint1
+      - robot1/joint2
+      - robot1/joint3
+      - robot1/joint4
+      - robot1/joint5
+      - robot1/joint6
+    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+
+
+arm2_controller:
+  ros__parameters:
+    joints:
+      - robot2/joint1
+      - robot2/joint2
+      - robot2/joint3
+      - robot2/joint4
+      - robot2/joint5
+      - robot2/joint6
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+
+arm3_controller:
+  ros__parameters:
+    joints:
+      - robot3/joint1
+      - robot3/joint2
+      - robot3/joint3
+      - robot3/joint4
+      - robot3/joint5
+      - robot3/joint6
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+
+arm4_controller:    
+  ros__parameters:
+    joints:
+      - robot4/joint1
+      - robot4/joint2
+      - robot4/joint3
+      - robot4/joint4
+      - robot4/joint5
+      - robot4/joint6
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+
+gripper1_controller:
+  ros__parameters:
+    joints:
+      - robot1/gripper
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+    gains: # Required because we're controlling an effort interface
+      robot1/gripper: {p: 100.0,  d: 10.0, i: 1.0, i_clamp: 1.0}
+
+gripper2_controller:
+  ros__parameters:
+    joints:
+      - robot2/gripper
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+    gains: # Required because we're controlling an effort interface
+      robot2/gripper: {p: 100.0,  d: 10.0, i: 1.0, i_clamp: 1.0}
+
+gripper3_controller:
+  ros__parameters:
+    joints:
+      - robot3/gripper
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+    gains: # Required because we're controlling an effort interface
+      robot3/gripper: {p: 100.0,  d: 10.0, i: 1.0, i_clamp: 1.0}
+
+
+gripper4_controller:
+  ros__parameters:
+    joints:
+      - robot4/gripper
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+    gains: # Required because we're controlling an effort interface
+      robot4/gripper: {p: 100.0,  d: 10.0, i: 1.0, i_clamp: 1.0}
+
+
+

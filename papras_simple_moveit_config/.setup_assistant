@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: papras_simple_demo
+    relative_path: urdf/simple_robot.urdf.xacro
+  srdf:
+    relative_path: config/simple_robot.srdf
+  package_settings:
+    author_name: obin kwon
+    author_email: obinkwon@illinois.edu
+    generated_timestamp: 1743633378
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<robot name="simple_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Import PAPRAS Macros -->
+  <xacro:include filename="$(find papras_description)/urdf/papras_macros.xacro"/>
+  <xacro:include filename="$(find papras_description)/urdf/papras_ros2_control.xacro"/>
+
+  <xacro:arg name="usb_port" default="/dev/ttyUSB0"/>
+  <xacro:arg name="baud_rate" default="1000000"/>
+
+  <xacro:property name="systems" value="${['papras_7dof', 'gripper']}"/>
+  <xacro:property name="system_prefix" value="${['robot1', 'robot1']}"/>
+  <xacro:property name="arm_ids" value="${[1, 1]}"/>
+  <xacro:property name="controller_params" value="$(find papras_controls)/config/joint_trajectory_controller.yaml"/>
+  <xacro:property name="yaml_file" value="$(find papras_simple_demo)/config/hardware.yaml"/>
+
+  <link name="world"/>
+
+  <joint name="robot1/env_arm_fixed" type="fixed">
+    <parent link="world"/>
+    <child link="robot1/link1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:papras_arm_7dof id="1"/>
+  <xacro:papras_gripper id="1"/>
+  <xacro:papras_camera id="1"/>
+
+  <xacro:papras_ros2_control_hw systems="${systems}" system_prefix="${system_prefix}" arm_ids= "${arm_ids}" 
+                            usb_port_location='$(arg usb_port)' baud_rate_val="$(arg baud_rate)" yaml_file="${yaml_file}"/>
+
+</robot>

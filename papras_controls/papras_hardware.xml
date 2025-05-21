@@ -1,0 +1,9 @@
+<library path="papras_controls">
+  <class name="papras_hardware_interface/DynamixelHardware"
+         type="papras_hardware_interface::DynamixelHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+           The PAPRAS ROBOT Dynamixel system interface.
+    </description>
+  </class>
+</library>

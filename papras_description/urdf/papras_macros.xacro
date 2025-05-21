@@ -1,0 +1,2841 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- PAPRAS URDF Macros -->
+  <!-- Main URDF File should contain
+        - world link
+        - world-env joint
+        - env link
+        - env-robotn/link1 joint for each mount -->
+  <!-- This file contains URDF geometry, transmission data and Gazebo references -->
+
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find papras_description)/urdf/materials.xacro"/>
+
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <!-- World -->
+  <gazebo reference="world"/>
+  <!-- Evn Link -->
+  <gazebo reference="env"/>
+  <!-- Gazebo Reference macro -->
+  <xacro:macro name="RefLink" params="ref">
+    <gazebo reference="${ref}">
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+      <mu1>30.0</mu1>
+      <mu2>30.0</mu2>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <material>Gazebo/White</material>
+      <selfCollide>1</selfCollide>
+      <dampingFactor>0.01</dampingFactor>
+    </gazebo>
+  </xacro:macro>
+  <!-- ros_control plugin -->
+
+  <!-- Import Transmission -->
+  <!-- Transmission macro -->
+  <xacro:macro name="SimpleTransmissionPosition" params="joint n id">
+    <transmission name="robot${id}/tran${n}">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="robot${id}/${joint}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="robot${id}/motor${n}">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+  <!-- Transmission macro -->
+  <xacro:macro name="SimpleTransmissionEffort" params="joint n id">
+    <transmission name="robot${id}/tran${n}">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="robot${id}/${joint}">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="robot${id}/motor${n}">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:macro name="papras_arm" params="id">
+    <!-- link 1 -->
+    <link name="robot${id}/link1">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00023 0.00000 0.06223" rpy="0 0 0"/>
+        <mass value="0.85644"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00121064" ixy="0.0" ixz="0.00001100" iyy="0.00120886" iyz="0.0" izz="0.00038103" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link1"/>
+
+    <!-- Joint 1 -->
+    <joint name="robot${id}/joint1" type="revolute">
+      <parent link="robot${id}/link1"/>
+      <child link="robot${id}/link2"/>
+      <origin xyz="0.0 0.0 0.126" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="1" joint="joint1" id="${id}" />
+
+    <!-- link 2 -->
+    <link name="robot${id}/link2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00000 0.00080 0.03183" rpy="0 0 0"/>
+        <!--<origin xyz="0.00000 -0.06820 -0.00117" rpy="0 0 0"/>-->
+        <mass value="0.94658"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00152547" ixy="0.0" ixz="0.0" iyy="0.00045954" iyz="-0.00001086" izz="0.00151740" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link2"/>
+
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint2" type="revolute">
+      <parent link="robot${id}/link2"/>
+      <child link="robot${id}/link3"/>
+      <origin xyz="0.0 0.069 0.033" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="-2.0" upper="2.0" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="2" joint="joint2" id="${id}" />
+
+    <!-- link 3 -->
+    <link name="robot${id}/link3">
+      <visual>
+        <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.01768 -0.06881 0.20524" rpy="0 0 0"/>
+        <!--<origin xyz="-0.01232 -0.05731 -0.05876" rpy="0 0 0"/>-->
+        <mass value="1.30260"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.01111021" ixy="0.00001331" ixz="-0.00134208" iyy="0.01046642" iyz="0.00016235" izz="0.00202081" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link3"/>
+
+    <!-- Joint 3 -->
+    <joint name="robot${id}/joint3" type="revolute">
+      <parent link="robot${id}/link3"/>
+      <child link="robot${id}/link4"/>
+      <origin xyz="0.03000 -0.01150 0.26400" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="3" joint="joint3" id="${id}" />
+
+    <!-- link 4 -->
+    <link name="robot${id}/link4">
+      <visual>
+        <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.12475 -0.05716 0.02979" rpy="0 0 0"/>
+        <!--<origin xyz="-0.07025 0.00034 -0.00021" rpy="0 0 0"/>-->
+        <mass value="1.15977"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00096726" ixy="0.00004383" ixz="-0.00002771" iyy="0.00318801" iyz="0.00000627" izz="0.00341484" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link4"/>
+
+    <!-- Joint 4 -->
+    <joint name="robot${id}/joint4" type="revolute">
+      <parent link="robot${id}/link4"/>
+      <child link="robot${id}/link5"/>
+      <origin xyz="0.19500 -0.05750 0.03000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.875}" upper="${pi*0.875}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="4" joint="joint4" id="${id}" />
+
+    <!-- link 5 -->
+    <link name="robot${id}/link5">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.05642 -0.00217 0.00002" rpy="0 0 0"/>
+        <!--<origin xyz="-0.00658 -0.04717 0.00002" rpy="0 0 0"/>-->
+        <mass value="0.44688"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00030285" ixy="0.00000761" ixz="0.00000031" iyy="0.00022339" iyz="-0.00000001" izz="0.00039766" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link5"/>
+
+    <!-- Joint 5 -->
+    <joint name="robot${id}/joint5" type="revolute">
+      <parent link="robot${id}/link5"/>
+      <child link="robot${id}/link6"/>
+      <origin xyz="0.06300 0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="5" joint="joint5" id="${id}" />
+
+    <!-- link 6 -->
+    <link name="robot${id}/link6">
+      <visual>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.06831 -0.04457 0.00000" rpy="0 0 0"/>
+        <!--<origin xyz="-0.05469 0.00043 0.00000" rpy="0 0 0"/>-->
+        <mass value="0.43273"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00021512" ixy="0.00001009" ixz="0.00000000" iyy="0.00042827" iyz="0.00000000" izz="0.00051436" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link6"/>
+
+    <!-- Joint 6 -->
+    <joint name="robot${id}/joint6" type="revolute">
+      <parent link="robot${id}/link6"/>
+      <child link="robot${id}/end_link"/>
+      <origin xyz="0.12300 -0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="6" joint="joint6" id="${id}" />
+
+    <!-- end link -->
+    <link name="robot${id}/end_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00337 0.00000 0.00000" rpy="0 0 0"/>
+        <mass value="0.01919"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00000938" ixy="0.0" ixz="0.0" iyy="0.00000338" iyz="0.0" izz="0.00000635" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/end_link"/>
+  </xacro:macro>
+
+  <xacro:macro name="papras_arm_no_end_link" params="id">
+    <!-- link 1 -->
+    <link name="robot${id}/link1">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00023 0.00000 0.06223" rpy="0 0 0"/>
+        <mass value="0.85644"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00121064" ixy="0.0" ixz="0.00001100" iyy="0.00120886" iyz="0.0" izz="0.00038103" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link1"/>
+
+    <!-- Joint 1 -->
+    <joint name="robot${id}/joint1" type="revolute">
+      <parent link="robot${id}/link1"/>
+      <child link="robot${id}/link2"/>
+      <origin xyz="0.0 0.0 0.126" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="1" joint="joint1" id="${id}" />
+
+    <!-- link 2 -->
+    <link name="robot${id}/link2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00000 0.00080 0.03183" rpy="0 0 0"/>
+        <!--<origin xyz="0.00000 -0.06820 -0.00117" rpy="0 0 0"/>-->
+        <mass value="0.94658"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00152547" ixy="0.0" ixz="0.0" iyy="0.00045954" iyz="-0.00001086" izz="0.00151740" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link2"/>
+
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint2" type="revolute">
+      <parent link="robot${id}/link2"/>
+      <child link="robot${id}/link3"/>
+      <origin xyz="0.0 0.069 0.033" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="-2.0" upper="2.0" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="2" joint="joint2" id="${id}" />
+
+    <!-- link 3 -->
+    <link name="robot${id}/link3">
+      <visual>
+        <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.01768 -0.06881 0.20524" rpy="0 0 0"/>
+        <!--<origin xyz="-0.01232 -0.05731 -0.05876" rpy="0 0 0"/>-->
+        <mass value="1.30260"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.01111021" ixy="0.00001331" ixz="-0.00134208" iyy="0.01046642" iyz="0.00016235" izz="0.00202081" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link3"/>
+
+    <!-- Joint 3 -->
+    <joint name="robot${id}/joint3" type="revolute">
+      <parent link="robot${id}/link3"/>
+      <child link="robot${id}/link4"/>
+      <origin xyz="0.03000 -0.01150 0.26400" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="3" joint="joint3" id="${id}" />
+
+    <!-- link 4 -->
+    <link name="robot${id}/link4">
+      <visual>
+        <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.12475 -0.05716 0.02979" rpy="0 0 0"/>
+        <!--<origin xyz="-0.07025 0.00034 -0.00021" rpy="0 0 0"/>-->
+        <mass value="1.15977"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00096726" ixy="0.00004383" ixz="-0.00002771" iyy="0.00318801" iyz="0.00000627" izz="0.00341484" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link4"/>
+
+    <!-- Joint 4 -->
+    <joint name="robot${id}/joint4" type="revolute">
+      <parent link="robot${id}/link4"/>
+      <child link="robot${id}/link5"/>
+      <origin xyz="0.19500 -0.05750 0.03000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.875}" upper="${pi*0.875}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="4" joint="joint4" id="${id}" />
+
+    <!-- link 5 -->
+    <link name="robot${id}/link5">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.05642 -0.00217 0.00002" rpy="0 0 0"/>
+        <!--<origin xyz="-0.00658 -0.04717 0.00002" rpy="0 0 0"/>-->
+        <mass value="0.44688"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00030285" ixy="0.00000761" ixz="0.00000031" iyy="0.00022339" iyz="-0.00000001" izz="0.00039766" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link5"/>
+
+    <!-- Joint 5 -->
+    <joint name="robot${id}/joint5" type="revolute">
+      <parent link="robot${id}/link5"/>
+      <child link="robot${id}/link6"/>
+      <origin xyz="0.06300 0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="5" joint="joint5" id="${id}" />
+
+    <!-- link 6 -->
+    <link name="robot${id}/link6">
+      <visual>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.06831 -0.04457 0.00000" rpy="0 0 0"/>
+        <!--<origin xyz="-0.05469 0.00043 0.00000" rpy="0 0 0"/>-->
+        <mass value="0.43273"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00021512" ixy="0.00001009" ixz="0.00000000" iyy="0.00042827" iyz="0.00000000" izz="0.00051436" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link6"/>
+
+    <!-- Joint 6 -->
+    <joint name="robot${id}/joint6" type="revolute">
+      <parent link="robot${id}/link6"/>
+      <child link="robot${id}/end_link"/>
+      <origin xyz="0.12300 -0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="6" joint="joint6" id="${id}" />
+
+     <!-- end link -->
+    <link name="robot${id}/end_link">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.0001" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>     
+    </link>
+    <xacro:RefLink ref="robot${id}/end_link"/>
+
+  </xacro:macro>
+
+  <xacro:macro name="papras_arm_long" params="id">
+    <!-- link 1 -->
+    <link name="robot${id}/link1">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00023 0.00000 0.06223" rpy="0 0 0"/>
+        <mass value="0.85644"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00121064" ixy="0.0" ixz="0.00001100" iyy="0.00120886" iyz="0.0" izz="0.00038103" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link1"/>
+
+    <!-- Joint 1 -->
+    <joint name="robot${id}/joint1" type="revolute">
+      <parent link="robot${id}/link1"/>
+      <child link="robot${id}/link2"/>
+      <origin xyz="0.0 0.0 0.126" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="1" joint="joint1" id="${id}" />
+
+    <!-- link 2 -->
+    <link name="robot${id}/link2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00000 0.00080 0.03183" rpy="0 0 0"/>
+        <!--<origin xyz="0.00000 -0.06820 -0.00117" rpy="0 0 0"/>-->
+        <mass value="0.94658"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00152547" ixy="0.0" ixz="0.0" iyy="0.00045954" iyz="-0.00001086" izz="0.00151740" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link2"/>
+
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint2" type="revolute">
+      <parent link="robot${id}/link2"/>
+      <child link="robot${id}/link3"/>
+      <origin xyz="0.0 0.069 0.033" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="-2.0" upper="2.0" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="2" joint="joint2" id="${id}" />
+
+    <!-- link 3 -->
+    <link name="robot${id}/link3">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras_long.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras_long_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.01768 -0.06881 0.20524" rpy="0 0 0"/>
+        <!--<origin xyz="-0.01232 -0.05731 -0.05876" rpy="0 0 0"/>-->
+        <mass value="1.30260"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.01111021" ixy="0.00001331" ixz="-0.00134208" iyy="0.01046642" iyz="0.00016235" izz="0.00202081" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link3"/>
+
+    <!-- Joint 3 -->
+    <joint name="robot${id}/joint3" type="revolute">
+      <parent link="robot${id}/link3"/>
+      <child link="robot${id}/link4"/>
+      <origin xyz="0.03000 -0.01200 0.31400" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="3" joint="joint3" id="${id}" />
+
+    <!-- link 4 -->
+    <link name="robot${id}/link4">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras_long.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras_long_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.12475 -0.05716 0.02979" rpy="0 0 0"/>
+        <!--<origin xyz="-0.07025 0.00034 -0.00021" rpy="0 0 0"/>-->
+        <mass value="1.15977"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00096726" ixy="0.00004383" ixz="-0.00002771" iyy="0.00318801" iyz="0.00000627" izz="0.00341484" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link4"/>
+
+    <!-- Joint 4 -->
+    <joint name="robot${id}/joint4" type="revolute">
+      <parent link="robot${id}/link4"/>
+      <child link="robot${id}/link5"/>
+      <origin xyz="0.24500 -0.05750 0.03000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.875}" upper="${pi*0.875}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="4" joint="joint4" id="${id}" />
+
+    <!-- link 5 -->
+    <link name="robot${id}/link5">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.05642 -0.00217 0.00002" rpy="0 0 0"/>
+        <!--<origin xyz="-0.00658 -0.04717 0.00002" rpy="0 0 0"/>-->
+        <mass value="0.44688"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00030285" ixy="0.00000761" ixz="0.00000031" iyy="0.00022339" iyz="-0.00000001" izz="0.00039766" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link5"/>
+
+    <!-- Joint 5 -->
+    <joint name="robot${id}/joint5" type="revolute">
+      <parent link="robot${id}/link5"/>
+      <child link="robot${id}/link6"/>
+      <origin xyz="0.06300 0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="5" joint="joint5" id="${id}" />
+
+    <!-- link 6 -->
+    <link name="robot${id}/link6">
+      <visual>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.06831 -0.04457 0.00000" rpy="0 0 0"/>
+        <!--<origin xyz="-0.05469 0.00043 0.00000" rpy="0 0 0"/>-->
+        <mass value="0.43273"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00021512" ixy="0.00001009" ixz="0.00000000" iyy="0.00042827" iyz="0.00000000" izz="0.00051436" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link6"/>
+
+    <!-- Joint 6 -->
+    <joint name="robot${id}/joint6" type="revolute">
+      <parent link="robot${id}/link6"/>
+      <child link="robot${id}/end_link"/>
+      <origin xyz="0.12300 -0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="6" joint="joint6" id="${id}" />
+
+    <!-- end link -->
+    <link name="robot${id}/end_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00337 0.00000 0.00000" rpy="0 0 0"/>
+        <mass value="0.01919"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00000938" ixy="0.0" ixz="0.0" iyy="0.00000338" iyz="0.0" izz="0.00000635" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/end_link"/>
+  </xacro:macro>
+
+  <xacro:macro name="papras_arm_long_no_end" params="id">
+    <!-- link 1 -->
+    <link name="robot${id}/link1">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00023 0.00000 0.06223" rpy="0 0 0"/>
+        <mass value="0.85644"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00121064" ixy="0.0" ixz="0.00001100" iyy="0.00120886" iyz="0.0" izz="0.00038103" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link1"/>
+
+    <!-- Joint 1 -->
+    <joint name="robot${id}/joint1" type="revolute">
+      <parent link="robot${id}/link1"/>
+      <child link="robot${id}/link2"/>
+      <origin xyz="0.0 0.0 0.126" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="1" joint="joint1" id="${id}" />
+
+    <!-- link 2 -->
+    <link name="robot${id}/link2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00000 0.00080 0.03183" rpy="0 0 0"/>
+        <!--<origin xyz="0.00000 -0.06820 -0.00117" rpy="0 0 0"/>-->
+        <mass value="0.94658"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00152547" ixy="0.0" ixz="0.0" iyy="0.00045954" iyz="-0.00001086" izz="0.00151740" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link2"/>
+
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint2" type="revolute">
+      <parent link="robot${id}/link2"/>
+      <child link="robot${id}/link3"/>
+      <origin xyz="0.0 0.069 0.033" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="-2.0" upper="2.0" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="2" joint="joint2" id="${id}" />
+
+    <!-- link 3 -->
+    <link name="robot${id}/link3">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras_long.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras_long_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.01768 -0.06881 0.20524" rpy="0 0 0"/>
+        <!--<origin xyz="-0.01232 -0.05731 -0.05876" rpy="0 0 0"/>-->
+        <mass value="1.30260"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.01111021" ixy="0.00001331" ixz="-0.00134208" iyy="0.01046642" iyz="0.00016235" izz="0.00202081" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link3"/>
+
+    <!-- Joint 3 -->
+    <joint name="robot${id}/joint3" type="revolute">
+      <parent link="robot${id}/link3"/>
+      <child link="robot${id}/link4"/>
+      <origin xyz="0.03000 -0.01200 0.31400" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="3" joint="joint3" id="${id}" />
+
+    <!-- link 4 -->
+    <link name="robot${id}/link4">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras_long.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras_long_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.12475 -0.05716 0.02979" rpy="0 0 0"/>
+        <!--<origin xyz="-0.07025 0.00034 -0.00021" rpy="0 0 0"/>-->
+        <mass value="1.15977"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00096726" ixy="0.00004383" ixz="-0.00002771" iyy="0.00318801" iyz="0.00000627" izz="0.00341484" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link4"/>
+
+    <!-- Joint 4 -->
+    <joint name="robot${id}/joint4" type="revolute">
+      <parent link="robot${id}/link4"/>
+      <child link="robot${id}/link5"/>
+      <origin xyz="0.24500 -0.05750 0.03000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.875}" upper="${pi*0.875}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="4" joint="joint4" id="${id}" />
+
+    <!-- link 5 -->
+    <link name="robot${id}/link5">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.05642 -0.00217 0.00002" rpy="0 0 0"/>
+        <!--<origin xyz="-0.00658 -0.04717 0.00002" rpy="0 0 0"/>-->
+        <mass value="0.44688"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00030285" ixy="0.00000761" ixz="0.00000031" iyy="0.00022339" iyz="-0.00000001" izz="0.00039766" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link5"/>
+
+    <!-- Joint 5 -->
+    <joint name="robot${id}/joint5" type="revolute">
+      <parent link="robot${id}/link5"/>
+      <child link="robot${id}/link6"/>
+      <origin xyz="0.06300 0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="5" joint="joint5" id="${id}" />
+
+    <!-- link 6 -->
+    <link name="robot${id}/link6">
+      <visual>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.06831 -0.04457 0.00000" rpy="0 0 0"/>
+        <!--<origin xyz="-0.05469 0.00043 0.00000" rpy="0 0 0"/>-->
+        <mass value="0.43273"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00021512" ixy="0.00001009" ixz="0.00000000" iyy="0.00042827" iyz="0.00000000" izz="0.00051436" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link6"/>
+
+    <!-- Joint 6 -->
+    <joint name="robot${id}/joint6" type="revolute">
+      <parent link="robot${id}/link6"/>
+      <child link="robot${id}/end_link"/>
+      <origin xyz="0.12300 -0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="6" joint="joint6" id="${id}" />
+
+    <!-- end link -->
+    <link name="robot${id}/end_link">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.0001" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>     
+    </link>
+    <xacro:RefLink ref="robot${id}/end_link"/>
+  </xacro:macro>
+
+  <xacro:macro name="papras_arm_multiturn" params="id">
+    <!-- link 1 -->
+    <link name="robot${id}/link1">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00023 0.00000 0.06223" rpy="0 0 0"/>
+        <mass value="0.85644"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00121064" ixy="0.0" ixz="0.00001100" iyy="0.00120886" iyz="0.0" izz="0.00038103" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link1"/>
+
+    <!-- Joint 1 -->
+    <joint name="robot${id}/joint1" type="revolute">
+      <parent link="robot${id}/link1"/>
+      <child link="robot${id}/link2"/>
+      <origin xyz="0.0 0.0 0.126" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="1" joint="joint1" id="${id}" />
+
+    <!-- link 2 -->
+    <link name="robot${id}/link2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00000 0.00080 0.03183" rpy="0 0 0"/>
+        <!--<origin xyz="0.00000 -0.06820 -0.00117" rpy="0 0 0"/>-->
+        <mass value="0.94658"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00152547" ixy="0.0" ixz="0.0" iyy="0.00045954" iyz="-0.00001086" izz="0.00151740" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link2"/>
+
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint2" type="revolute">
+      <parent link="robot${id}/link2"/>
+      <child link="robot${id}/link3"/>
+      <origin xyz="0.0 0.069 0.033" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="-2.0" upper="2.0" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="2" joint="joint2" id="${id}" />
+
+    <!-- link 3 -->
+    <link name="robot${id}/link3">
+      <visual>
+        <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.067 0.008 -0.019" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link3_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.01768 -0.06881 0.20524" rpy="0 0 0"/>
+        <!--<origin xyz="-0.01232 -0.05731 -0.05876" rpy="0 0 0"/>-->
+        <mass value="1.30260"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.01111021" ixy="0.00001331" ixz="-0.00134208" iyy="0.01046642" iyz="0.00016235" izz="0.00202081" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link3"/>
+
+    <!-- Joint 3 -->
+    <joint name="robot${id}/joint3" type="revolute">
+      <parent link="robot${id}/link3"/>
+      <child link="robot${id}/link4"/>
+      <origin xyz="0.03000 -0.01150 0.26400" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="3" joint="joint3" id="${id}" />
+
+    <!-- link 4 -->
+    <link name="robot${id}/link4">
+      <visual>
+        <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.12475 -0.05716 0.02979" rpy="0 0 0"/>
+        <!--<origin xyz="-0.07025 0.00034 -0.00021" rpy="0 0 0"/>-->
+        <mass value="1.15977"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00096726" ixy="0.00004383" ixz="-0.00002771" iyy="0.00318801" iyz="0.00000627" izz="0.00341484" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link4"/>
+
+    <!-- Joint 4 -->
+    <joint name="robot${id}/joint4" type="revolute">
+      <parent link="robot${id}/link4"/>
+      <child link="robot${id}/link5"/>
+      <origin xyz="0.19500 -0.05750 0.03000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.875}" upper="${pi*0.875}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="4" joint="joint4" id="${id}" />
+
+    <!-- link 5 -->
+    <link name="robot${id}/link5">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.05642 -0.00217 0.00002" rpy="0 0 0"/>
+        <!--<origin xyz="-0.00658 -0.04717 0.00002" rpy="0 0 0"/>-->
+        <mass value="0.44688"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00030285" ixy="0.00000761" ixz="0.00000031" iyy="0.00022339" iyz="-0.00000001" izz="0.00039766" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link5"/>
+
+    <!-- Joint 5 -->
+    <joint name="robot${id}/joint5" type="revolute">
+      <parent link="robot${id}/link5"/>
+      <child link="robot${id}/link6"/>
+      <origin xyz="0.06300 0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="5" joint="joint5" id="${id}" />
+
+    <!-- link 6 -->
+    <link name="robot${id}/link6">
+      <visual>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.06831 -0.04457 0.00000" rpy="0 0 0"/>
+        <!--<origin xyz="-0.05469 0.00043 0.00000" rpy="0 0 0"/>-->
+        <mass value="0.43273"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00021512" ixy="0.00001009" ixz="0.00000000" iyy="0.00042827" iyz="0.00000000" izz="0.00051436" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/link6"/>
+
+    <!-- Joint 6 -->
+    <joint name="robot${id}/joint6" type="continuous">
+      <parent link="robot${id}/link6"/>
+      <child link="robot${id}/end_link"/>
+      <origin xyz="0.12300 -0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100"/>
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="6" joint="joint6" id="${id}" />
+
+    <!-- end link -->
+    <link name="robot${id}/end_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00337 0.00000 0.00000" rpy="0 0 0"/>
+        <mass value="0.01919"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        <!--<inertia ixx="0.00000938" ixy="0.0" ixz="0.0" iyy="0.00000338" iyz="0.0" izz="0.00000635" />-->
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/end_link"/>
+  </xacro:macro>
+
+  <xacro:macro name="papras_gripper" params="id">
+    <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_link_fixed" type="fixed">
+      <parent link="robot${id}/end_link"/>
+      <child link="robot${id}/gripper_main_link"/>
+      <origin xyz="0.007 0.0 0.0" rpy="0 0 0" />
+    </joint>
+
+    <!-- gripper main link -->
+    <link name="robot${id}/gripper_main_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/gripper_main_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/gripper_main_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <mass value="0.509"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_main_link"/>
+
+    <!-- gripper joint -->
+    <joint name="robot${id}/gripper" type="revolute">
+      <axis xyz="0 0 1" />
+      <origin xyz="0.0552 -0.0400 0" rpy="0 0 -0.4"/>
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/gripper_link"/>
+      <limit velocity="3.03687" effort="100" lower="0.0" upper="1.15" />
+      <dynamics damping="0.1" friction="0.0" />
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper" joint="gripper" id="${id}"/>
+
+    <!-- gripper link -->
+    <link name="robot${id}/gripper_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/gripper_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/gripper_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.013"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_link"/>
+
+    <!-- gripper joint 1 -->
+    <joint name="robot${id}/gripper_sub" type="revolute">
+      <axis xyz="0 0 -1" />
+      <origin xyz="0.0552 0.0400 0" rpy="0 0 0.4"/>
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/gripper_sub_link"/>
+      <limit velocity="3.03687" effort="100" lower="0.0" upper="1.15" />
+      <dynamics damping="0.1" friction="0.0" />
+      <mimic joint="robot${id}/gripper" multiplier="1"/>
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper_sub" joint="gripper_sub" id="${id}"/>
+
+    <!-- gripper 1 link -->
+    <link name="robot${id}/gripper_sub_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/gripper_sub_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/gripper_sub_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.013"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_sub_link"/>
+
+    <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_effector_joint" type="fixed">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/end_effector_link"/>
+      <origin xyz="0.14 0.0 0.0" rpy="0 0 0" />
+    </joint>
+
+    <!-- End Effector -->
+    <link name="robot${id}/end_effector_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+
+      <!-- <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </collision> -->
+
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.001" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <gazebo reference="robot${id}/end_effector_link">
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+  </xacro:macro>
+
+<xacro:macro name="rh_p12_rn_gripper" params="id">
+    <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_link_fixed" type="fixed">
+      <parent link="robot${id}/end_link"/>
+      <child link="robot${id}/gripper_main_link"/>
+      <origin xyz="0.006 0.0 0.0" rpy="0 ${-pi/2} ${pi}" />
+    </joint>
+
+    <!-- gripper main link -->
+    <link name="robot${id}/gripper_main_link">
+     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_base.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 0.000 0.032" rpy="0 0 0"/>
+        <mass value="0.236"/>
+        <!--<inertia ixx="0.00017" ixy="0.0" ixz="0.0" iyy="0.00011" iyz="0.0" izz="0.00017" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_main_link"/>
+
+    <!-- gripper joint -->
+    <joint name="robot${id}/gripper" type="revolute">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/gripper_link"/>
+      <origin xyz="0.0 0.008 0.048" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.1" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper" joint="gripper" id="${id}"/>
+
+    <!-- gripper link -->
+    <link name="robot${id}/gripper_link">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_r1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_r1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 0.034 0.004" rpy="0 0 0"/>
+        <mass value="0.068"/>
+        <!--<inertia ixx="0.00004" ixy="0.0" ixz="0.0" iyy="0.00002" iyz="-0.00001" izz="0.00002" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_link"/>
+
+    <joint name="robot${id}/gripper_r2" type="revolute">
+      <parent link="robot${id}/gripper_link"/>
+      <child link="robot${id}/gripper_link_r2"/>
+      <origin xyz="0.0 0.0493634 0.0285" rpy="0 0 0"/>
+      <axis xyz="-1 0 0"/>
+      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
+      <dynamics damping="0.7"/>
+      <mimic joint="robot${id}/gripper" multiplier="${1.0/1.1}"/>
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper_r2" joint="gripper_r2" id="${id}"/>
+
+
+    <!-- rh_p12_rn_r2 -->
+    <link name="robot${id}/gripper_link_r2">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_r2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_r2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 0.006 0.011" rpy="0 0 0"/>
+        <mass value="0.022"/>
+        <!--<inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.0" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_link_r2"/>
+
+    <!-- Left Joint 1 -->
+    <joint name="robot${id}/gripper_l1" type="revolute">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/gripper_link_l1"/>
+      <origin xyz="0.0 -0.008 0.048" rpy="0 0 0"/>
+      <axis xyz="-1 0 0"/>
+      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.1" />
+      <dynamics damping="0.7"/>
+      <mimic joint="robot${id}/gripper" multiplier="${1.0}"/>
+
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper_l1" joint="gripper_l1" id="${id}"/>
+
+    <!-- rh_p12_rn_l1 -->
+    <link name="robot${id}/gripper_link_l1">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_l1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_l1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 -0.034 0.004" rpy="0 0 0"/>
+        <mass value="0.068"/>
+        <!--<inertia ixx="0.00004" ixy="0.0" ixz="0.0" iyy="0.00002" iyz="0.00001" izz="0.00002" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_link_l1"/>
+
+    <!-- Left Joint 2 -->
+    <joint name="robot${id}/gripper_l2" type="revolute">
+      <parent link="robot${id}/gripper_link_l1"/>
+      <child link="robot${id}/gripper_link_l2"/>
+      <origin xyz="0.0 -0.0493634 0.0285" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
+      <dynamics damping="0.7"/>
+      <mimic joint="robot${id}/gripper" multiplier="${1.0/1.1}"/>
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper_l2" joint="gripper_l2" id="${id}"/>
+
+
+    <link name="robot${id}/gripper_link_l2">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_l2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_l2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 -0.006 0.011" rpy="0 0 0"/>
+        <mass value="0.022"/>
+        <!--<inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.0" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+
+
+    <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_effector_joint" type="fixed">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/end_effector_link"/>
+      <origin xyz="0.0 0.0 0.135" rpy="${pi} ${-pi/2} 0" />
+    </joint>
+
+    <!-- End Effector -->
+    <link name="robot${id}/end_effector_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+
+      <!-- <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </collision> -->
+
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.001" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <gazebo reference="robot${id}/end_effector_link">
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+
+   
+
+  </xacro:macro>
+
+
+  <xacro:macro name="papras_soft_gripper_v2" params="id">
+    <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_link_fixed" type="fixed">
+      <parent link="robot${id}/end_link"/>
+      <child link="robot${id}/gripper_body"/>
+      <origin xyz="0.006 0.0 0.0" rpy="0 0 0" />
+    </joint>
+
+    <!-- gripper body -->
+    <link name="robot${id}/gripper_body">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/soft_gripper_body_v2.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/soft_gripper_body_v2_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <mass value="0.343"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_body"/>
+
+    <!-- jaw joint -->
+    <joint name="robot${id}/soft_gripper_jaw" type="revolute">
+      <axis xyz="0 1 0" />
+      <origin xyz="0.06625 0.019 0.00975" rpy="0 0 0"/>
+      <parent link="robot${id}/gripper_body"/>
+      <child link="robot${id}/gripper_jaw"/>
+      <limit velocity="3.03687" effort="100" lower="0.0" upper="1.78" />
+      <dynamics damping="0.1" friction="0.0" />
+    </joint>
+    <xacro:SimpleTransmissionEffort n="soft_gripper_jaw" joint="soft_gripper_jaw" id="${id}"/>
+
+    <!-- gripper jaw link -->
+    <link name="robot${id}/gripper_jaw">
+      <visual>
+        <origin xyz="0 0 0" rpy="3.14 0 1.57" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/soft_gripper_jaw_v2.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="3.14 0 1.57" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/soft_gripper_jaw_v2_simple.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.034"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_jaw"/>
+
+    <!-- pulley joint -->
+    <joint name="robot${id}/soft_gripper_pulley" type="revolute">
+      <axis xyz="0 0 -1" />
+      <origin xyz="0.01675 0 -0.015" rpy="0 0 0"/>
+      <parent link="robot${id}/gripper_body"/>
+      <child link="robot${id}/gripper_pulley"/>
+      <limit velocity="3.03687" effort="100" lower="0.0" upper="1.59" />
+      <dynamics damping="0.1" friction="0.0" />
+    </joint>
+    <xacro:SimpleTransmissionEffort n="soft_gripper_pulley" joint="soft_gripper_pulley" id="${id}"/>
+
+    <!-- gripper pulley link -->
+    <link name="robot${id}/gripper_pulley">
+      <visual>
+        <origin xyz="0 0 0" rpy="-1.57 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/soft_gripper_pulley_v2.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="-1.57 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/soft_gripper_pulley_v2_simple.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.007"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_pulley"/>
+
+    <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_effector_joint" type="fixed">
+      <parent link="robot${id}/gripper_body"/>
+      <child link="robot${id}/end_effector_link"/>
+      <origin xyz="0.188 0.0 -0.014" rpy="0 0 0" />
+    </joint>
+
+    <!-- End Effector -->
+    <link name="robot${id}/end_effector_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.001" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <gazebo reference="robot${id}/end_effector_link">
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <!-- camera link fixed joint -->
+    <joint name="robot${id}/camera_fixed_joint" type="fixed">
+      <parent link="robot${id}/gripper_body"/>
+      <child link="robot${id}/camera_link"/>
+      <origin xyz="0.07755 0 0.0545" rpy="0 -1.57 3.14"/>
+    </joint>
+
+    <!-- Camera Link -->
+    <link name="robot${id}/camera_link"/>
+  </xacro:macro>
+  <xacro:macro name="papras_camera_rh12" params="id">
+    <!-- camera link fixed joint -->
+    <joint name="robot${id}/camera_fixed_joint" type="fixed">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/camera_mount"/>
+      <origin xyz="0.04452 -0.0167 0.049" rpy="0 0 ${0.5*pi}" />
+    </joint>
+      <!-- <origin xyz="0.0592 0.0167 0.04452" rpy="${-0.5*pi} 0 ${-0.5*pi}" /> -->
+    <!-- Camera Mount -->
+    <link name="robot${id}/camera_mount">
+      <visual>
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/camera_mount.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/camera_mount_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0"/>
+        <mass value="0.088"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/camera_mount"/>
+
+    <joint name="robot${id}/camera_mount_link" type="fixed">
+      <parent link="robot${id}/camera_mount"/>
+      <child link="robot${id}/camera_link"/>
+      <origin xyz="-0.015 0 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="robot${id}/camera_link"/>
+
+    <joint name="robot${id}/camera_fixed_plugin_joint" type="fixed">
+      <parent link="robot${id}/camera_link"/>
+      <child link="robot${id}/camera_plugin_link"/>
+      <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+    </joint>
+
+    <link name="robot${id}/camera_plugin_link"/>
+    <xacro:RefLink ref="robot${id}/camera_plugin_link"/>
+
+  </xacro:macro>
+
+ <xacro:macro name="papras_camera_far_eye_rh12" params="id">
+    <!-- camera link fixed joint -->
+    <joint name="robot${id}/camera_fixed_joint" type="fixed">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/camera_mount"/>
+      <origin xyz="0.030 0.0 0.039" rpy="0 0 ${pi}" />
+    </joint>
+      <!-- <origin xyz="0.0592 0.0167 0.04452" rpy="${-0.5*pi} 0 ${-0.5*pi}" /> -->
+    <!-- Camera Mount -->
+    <link name="robot${id}/camera_mount">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/camera_mount_far_eye.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/camera_mount_far_eye.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.088"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/camera_mount"/>
+
+    <joint name="robot${id}/camera_mount_link" type="fixed">
+      <parent link="robot${id}/camera_mount"/>
+      <child link="robot${id}/camera_link"/>
+      <origin xyz="-0.015 0 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="robot${id}/camera_link"/>
+
+    <joint name="robot${id}/camera_fixed_plugin_joint" type="fixed">
+      <parent link="robot${id}/camera_link"/>
+      <child link="robot${id}/camera_plugin_link"/>
+      <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+    </joint>
+
+    <link name="robot${id}/camera_plugin_link"/>
+    <xacro:RefLink ref="robot${id}/camera_plugin_link"/>
+
+
+  </xacro:macro>
+
+
+
+  <xacro:macro name="papras_camera" params="id">
+    <!-- camera link fixed joint -->
+    <joint name="robot${id}/camera_fixed_joint" type="fixed">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/camera_mount"/>
+      <origin xyz="0.0592 0.0167 0.04452" rpy="${-0.5*pi} 0 ${-0.5*pi}" />
+    </joint>
+
+    <!-- Camera Mount -->
+    <link name="robot${id}/camera_mount">
+      <visual>
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/camera_mount.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/camera_mount_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0"/>
+        <mass value="0.088"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/camera_mount"/>
+
+    <joint name="robot${id}/camera_mount_link" type="fixed">
+      <parent link="robot${id}/camera_mount"/>
+      <child link="robot${id}/camera_link"/>
+      <origin xyz="-0.015 0 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="robot${id}/camera_link"/>
+
+    <joint name="robot${id}/camera_fixed_plugin_joint" type="fixed">
+      <parent link="robot${id}/camera_link"/>
+      <child link="robot${id}/camera_plugin_link"/>
+      <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+    </joint>
+
+    <link name="robot${id}/camera_plugin_link"/>
+    <xacro:RefLink ref="robot${id}/camera_plugin_link"/>
+
+
+  </xacro:macro>
+
+  <xacro:macro name="papras_arm_7dof" params="id">
+    <!-- link 1 -->
+    <link name="robot${id}/link1">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="-0.00205616406 0.00000000 0.07012969338"/>                                
+        <mass value="0.91200000"/>                                                        
+        <inertia ixx="0.00140582306367" ixy="0.00000000" ixz="0.00000000" iyy="0.00140582097352" iyz="-0.00000000" izz="0.00043779331105"/>                                             
+      </inertial>    
+    </link>
+    <xacro:RefLink ref="robot${id}/link1"/>
+     
+     <!-- Joint 1 -->
+    <joint name="robot${id}/joint1" type="revolute">
+      <parent link="robot${id}/link1"/>
+      <child link="robot${id}/link2"/>
+      <origin xyz="0.0 0.0 0.126" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="1" joint="joint1" id="${id}" />
+
+    <!-- link 2 -->
+    <link name="robot${id}/link2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="-0.00000000001 -0.01570756882 0.02819237930"/>                              
+        <mass value="0.88500000"/>                                                        
+        <inertia ixx="0.00155754725347" ixy="-0.00000000" ixz="-0.00000000" iyy="0.00048405544236" iyz="-0.00000173296990" izz="0.00154667193282"/>                                           
+      </inertial>      
+    </link>
+    <xacro:RefLink ref="robot${id}/link2"/>
+    
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint2" type="revolute">
+      <parent link="robot${id}/link2"/>
+      <child link="robot${id}/link3"/>
+      <origin xyz="0.0 0.00 0.033" rpy="${pi/2.0} ${-pi/2.0} 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="-2.0" upper="2.0" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="2" joint="joint2" id="${id}" />
+    
+    <!-- link 2 -->
+    <link name="robot${id}/link3">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/7dof/link3.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/7dof/link3.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="0.10300488 0.00026160 0.00111164"/>                                  
+        <mass value="1.01000000"/>                                                        
+        <inertia ixx="0.00182373" ixy="-0.00000000" ixz="-0.00000526" iyy="0.00433189" iyz="0.00000000" izz="0.00310084"/>                                                    
+      </inertial>   
+    </link>
+    <xacro:RefLink ref="robot${id}/link3"/>
+
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint3" type="revolute">
+      <parent link="robot${id}/link3"/>
+      <child link="robot${id}/link4"/>
+      <origin xyz="0.156382198147594 0 0.000400000000010851" rpy="0 ${-pi/2.0} ${-pi/2.0}"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="-${pi}" upper="${pi}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="3" joint="joint3" id="${id}" />
+
+        <!-- link 2 -->
+    <link name="robot${id}/link4">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/7dof/link4.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/7dof/link4.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="-0.00205466 0.07035925 0.01546531"/>                                 
+        <mass value="0.96600000"/>                                                        
+        <inertia ixx="0.00180447" ixy="0.00000423" ixz="0.00000322" iyy="0.00132106" iyz="-0.00029745" izz="0.00211226"/>                                                     
+      </inertial>  
+    </link>
+    <xacro:RefLink ref="robot${id}/link4"/>
+
+    <!-- Joint 3 -->
+    <joint name="robot${id}/joint4" type="revolute">
+      <parent link="robot${id}/link4"/>
+      <child link="robot${id}/link5"/>
+      <origin xyz="0.0575 0.10761780185239 0.0300000000000553" rpy="${pi} ${-pi/2.0} ${pi/2.0}"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="1.42" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="4" joint="joint4" id="${id}" />
+
+
+    <!-- link 5 -->
+    <link name="robot${id}/link5">
+      <visual>
+        <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.227 0.0085 -0.024" rpy="0 0 3.14"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link4_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>  
+        <origin xyz="0.133722 -0.058143 0.028408"/>
+                                                                                                        
+        <!-- <origin xyz="${0.277-0.09327796} 0.06664315 0.05240824" rpy="0 0 3.14"/>                                                                   -->
+        <mass value="1.22500000"/>                                                                                        
+        <inertia ixx="0.00184346" ixy="0.00000031" ixz="-0.00063174" iyy="0.00588246" iyz="0.00000015" izz="0.00647638"/> 
+      </inertial>                                                                                                         
+
+    </link>
+    <xacro:RefLink ref="robot${id}/link5"/>
+
+
+    <!-- Joint 4 -->
+    <joint name="robot${id}/joint5" type="revolute">
+      <parent link="robot${id}/link5"/>
+      <child link="robot${id}/link6"/>
+      <origin xyz="0.19500 -0.05750 0.03000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.875}" upper="${pi*0.875}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="5" joint="joint5" id="${id}" />
+
+    <!-- link 6 -->
+    <link name="robot${id}/link6">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="0.04029922252 -0.00098556287 -0.00018415947"/>                               
+        <mass value="0.37100000"/>                                                        
+        <inertia ixx="0.00025425095366" ixy="-0.00000045021116" ixz="-0.00000018765570" iyy="0.00024792762707" iyz="0.00000000815247" izz="0.00038245308001"/>                                              
+      </inertial>   
+    </link>
+    <xacro:RefLink ref="robot${id}/link6"/>
+
+    <!-- Joint 6 -->
+    <joint name="robot${id}/joint6" type="revolute">
+      <parent link="robot${id}/link6"/>
+      <child link="robot${id}/link7"/>
+      <origin xyz="0.06300 0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="6" joint="joint6" id="${id}" />
+
+        <!-- link 6 -->
+    <link name="robot${id}/link7">
+      <visual>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/link6_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                         
+        <origin xyz="${-0.034+ 0.08626593672} ${-0.098 + 0.05359265979} ${-0.028 + 0.02722564800}"/>                              
+        <mass value="0.38500000"/>                                                       
+        <inertia ixx="0.00032088715022" ixy="0.00000000348043" ixz="-0.00000000156396" iyy="0.00056261623134" iyz="-0.00000000024514" izz="0.00074173273605"/>                                             
+      </inertial>     
+    </link>
+    <xacro:RefLink ref="robot${id}/link7"/>
+
+        <!-- Joint 7 -->
+    <joint name="robot${id}/joint7" type="revolute">
+      <parent link="robot${id}/link7"/>
+      <child link="robot${id}/end_link"/>
+      <origin xyz="0.12300 -0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="7" joint="joint7" id="${id}" />
+
+        <!-- end link -->
+    <link name="robot${id}/end_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00337 0.00000 0.00000" rpy="0 0 0"/>
+        <mass value="0.01919"/>
+        <!-- <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" /> -->
+        <inertia ixx="0.00000938" ixy="0.0" ixz="0.0" iyy="0.00000338" iyz="0.0" izz="0.00000635" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/end_link"/>
+
+  </xacro:macro>
+
+<xacro:macro name="papras_arm_7dof_metal" params="id">
+    <!-- link 1 -->
+    <link name="robot${id}/link1">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="-0.00205616406 0.00000000 0.07012969338"/>                                
+        <mass value="0.91200000"/>                                                        
+        <inertia ixx="0.00140582306367" ixy="0.00000000" ixz="0.00000000" iyy="0.00140582097352" iyz="-0.00000000" izz="0.00043779331105"/>                                             
+      </inertial>    
+    </link>
+    <xacro:RefLink ref="robot${id}/link1"/>
+      <!-- Joint 1 -->
+    <joint name="robot${id}/joint1" type="revolute">
+      <parent link="robot${id}/link1"/>
+      <child link="robot${id}/link2"/>
+      <origin xyz="0.0 0.0 0.126" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="1" joint="joint1" id="${id}" />
+
+    <!-- link 2 -->
+    <link name="robot${id}/link2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="-0.00000000001 -0.01570756882 0.02819237930"/>                              
+        <mass value="0.88500000"/>                                                        
+        <inertia ixx="0.00155754725347" ixy="-0.00000000" ixz="-0.00000000" iyy="0.00048405544236" iyz="-0.00000173296990" izz="0.00154667193282"/>                                           
+      </inertial>      
+    </link>
+    <xacro:RefLink ref="robot${id}/link2"/>
+    
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint2" type="revolute">
+      <parent link="robot${id}/link2"/>
+      <child link="robot${id}/link3"/>
+      <origin xyz="0.0 0.00 0.033" rpy="${pi/2.0} ${-pi/2.0} 0"/>
+      <axis xyz="0 0 1"/>
+      <limit velocity="3.03687" effort="100" lower="-2.0" upper="2.0" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="2" joint="joint2" id="${id}" />
+    
+    <!-- link 2 -->
+    <link name="robot${id}/link3">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/7dof/link3.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/7dof/link3.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="0.10300488 0.00026160 0.00111164"/>                                  
+        <mass value="1.01000000"/>                                                        
+        <inertia ixx="0.00182373" ixy="-0.00000000" ixz="-0.00000526" iyy="0.00433189" iyz="0.00000000" izz="0.00310084"/>                                                    
+      </inertial>   
+    </link>
+    <xacro:RefLink ref="robot${id}/link3"/>
+
+    <!-- Joint 2 -->
+    <joint name="robot${id}/joint3" type="revolute">
+      <parent link="robot${id}/link3"/>
+      <child link="robot${id}/link4"/>
+      <origin xyz="0.156382198147594 0 0.000400000000010851" rpy="0 ${-pi/2.0} ${-pi/2.0}"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="-${pi}" upper="${pi}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="3" joint="joint3" id="${id}" />
+
+        <!-- link 2 -->
+    <link name="robot${id}/link4">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/7dof/link4.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/7dof/link4.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="-0.00205466 0.07035925 0.01546531"/>                                 
+        <mass value="0.96600000"/>                                                        
+        <inertia ixx="0.00180447" ixy="0.00000423" ixz="0.00000322" iyy="0.00132106" iyz="-0.00029745" izz="0.00211226"/>                                                     
+      </inertial>  
+    </link>
+    <xacro:RefLink ref="robot${id}/link4"/>
+
+    <!-- Joint 3 -->
+    <joint name="robot${id}/joint4" type="revolute">
+      <parent link="robot${id}/link4"/>
+      <child link="robot${id}/link5"/>
+      <origin xyz="0.0575 0.10761780185239 0.0300000000000553" rpy="${pi} ${-pi/2.0} ${pi/2.0}"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="1.51" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="4" joint="joint4" id="${id}" />
+
+
+    <!-- link 5 -->
+    <link name="robot${id}/link5">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link4.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link4.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>  
+        <origin xyz="0 0 0"/>
+                                                                                                        
+        <!-- <origin xyz="${0.277-0.09327796} 0.06664315 0.05240824" rpy="0 0 3.14"/>                                                                   -->
+        <mass value="1.22500000"/>                                                                                        
+        <inertia ixx="0.00184346" ixy="0.00000031" ixz="-0.00063174" iyy="0.00588246" iyz="0.00000015" izz="0.00647638"/> 
+      </inertial>                                                                                                         
+
+    </link>
+    <xacro:RefLink ref="robot${id}/link5"/>
+
+
+    <!-- Joint 4 -->
+    <joint name="robot${id}/joint5" type="revolute">
+      <parent link="robot${id}/link5"/>
+      <child link="robot${id}/link6"/>
+      <origin xyz="0.19500 -0.05750 0.03000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.875}" upper="${pi*0.875}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="5" joint="joint5" id="${id}" />
+
+    <!-- link 6 -->
+    <link name="robot${id}/link6">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link5.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                          
+        <origin xyz="0.04029922252 -0.00098556287 -0.00018415947"/>                               
+        <mass value="0.37100000"/>                                                        
+        <inertia ixx="0.00025425095366" ixy="-0.00000045021116" ixz="-0.00000018765570" iyy="0.00024792762707" iyz="0.00000000815247" izz="0.00038245308001"/>                                              
+      </inertial>   
+    </link>
+    <xacro:RefLink ref="robot${id}/link6"/>
+
+    <!-- Joint 6 -->
+    <joint name="robot${id}/joint6" type="revolute">
+      <parent link="robot${id}/link6"/>
+      <child link="robot${id}/link7"/>
+      <origin xyz="0.06300 0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*0.5}" upper="${pi*0.5}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="6" joint="joint6" id="${id}" />
+
+        <!-- link 6 -->
+    <link name="robot${id}/link7">
+      <visual>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link6_papras.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="-0.034 -0.098 -0.028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://papras_description/meshes/link6_papras_simple.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>                                                                         
+        <origin xyz="${-0.034+ 0.08626593672} ${-0.098 + 0.05359265979} ${-0.028 + 0.02722564800}"/>                              
+        <mass value="0.38500000"/>                                                       
+        <inertia ixx="0.00032088715022" ixy="0.00000000348043" ixz="-0.00000000156396" iyy="0.00056261623134" iyz="-0.00000000024514" izz="0.00074173273605"/>                                             
+      </inertial>     
+    </link>
+    <xacro:RefLink ref="robot${id}/link7"/>
+
+        <!-- Joint 7 -->
+    <joint name="robot${id}/joint7" type="revolute">
+      <parent link="robot${id}/link7"/>
+      <child link="robot${id}/end_link"/>
+      <origin xyz="0.12300 -0.04500 0.00000" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="3.03687" effort="100" lower="${-pi*1.0}" upper="${pi*1.0}" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionPosition n="7" joint="joint7" id="${id}" />
+
+        <!-- end link -->
+    <link name="robot${id}/end_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://papras_description/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://papras_description/meshes/end_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0.00337 0.00000 0.00000" rpy="0 0 0"/>
+        <mass value="0.01919"/>
+        <!-- <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" /> -->
+        <inertia ixx="0.00000938" ixy="0.0" ixz="0.0" iyy="0.00000338" iyz="0.0" izz="0.00000635" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/end_link"/>
+
+  </xacro:macro>
+  
+<xacro:macro name="papras_camera_D435i" params="id x y z xrot yrot zrot">
+    <!-- camera link fixed joint -->
+
+    
+    <joint name="robot${id}/camera_fixed_joint" type="fixed">
+      <parent link="robot${id}/camera_link"/>
+      <child link="robot${id}/camera_mount"/>
+      <origin xyz="0.0 0.0 0.0" rpy="${0.5*pi} 0.0 ${pi}" />
+    </joint>
+
+    <!-- Camera Mount -->
+    <link name="robot${id}/camera_mount">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/intelD435_and_mount.stl"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/intelD435_and_mount_simple.stl"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.088"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/camera_mount"/>
+
+    <joint name="robot${id}/camera_mount_link" type="fixed">
+      <parent link="robot${id}/end_effector_link"/>
+      <child link="robot${id}/camera_link"/>
+      <origin xyz="-0.07376941 0.03165541 0.06797407" rpy="-1.5513039669108857 0.001453680154470438 -1.5653784780429785" />
+    </joint>
+
+    <link name="robot${id}/camera_link"/>
+
+    <joint name="robot${id}/camera_fixed_plugin_joint" type="fixed">
+      <parent link="robot${id}/camera_link"/>
+      <child link="robot${id}/camera_plugin_link"/>
+      <origin xyz="0 0 0" rpy="${0.5*pi} ${-0.5*pi} 0" />
+    </joint>
+
+    <link name="robot${id}/camera_plugin_link"/>
+    <xacro:RefLink ref="robot${id}/camera_plugin_link"/>
+
+
+  </xacro:macro>
+
+ <xacro:macro name="papras_finray_gripper" params="id">
+ <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_link_fixed" type="fixed">
+      <parent link="robot${id}/end_link"/>
+      <child link="robot${id}/gripper_main_link"/>
+      <origin xyz="0.006 0.0 0.0" rpy="0 ${-pi/2} ${pi}" />
+    </joint>
+
+    <!-- gripper main link -->
+    <link name="robot${id}/gripper_main_link">
+     <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_base.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 0.000 0.032" rpy="0 0 0"/>
+        <mass value="0.236"/>
+        <!--<inertia ixx="0.00017" ixy="0.0" ixz="0.0" iyy="0.00011" iyz="0.0" izz="0.00017" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_main_link"/>
+
+    <!-- gripper joint -->
+    <joint name="robot${id}/gripper" type="revolute">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/gripper_link"/>
+      <origin xyz="0.0 0.008 0.048" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <!-- <limit velocity="6.5" effort="1000" lower="0.0" upper="1.1" /> -->
+      <limit velocity="3.03687" effort="100" lower="0.0" upper="1.15" />
+      <dynamics damping="0.7"/>
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper" joint="gripper" id="${id}"/>
+
+    <!-- gripper link -->
+    <link name="robot${id}/gripper_link">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_r1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_r1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 0.034 0.004" rpy="0 0 0"/>
+        <mass value="0.068"/>
+        <!--<inertia ixx="0.00004" ixy="0.0" ixz="0.0" iyy="0.00002" iyz="-0.00001" izz="0.00002" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_link"/>
+
+    <joint name="robot${id}/gripper_r2" type="revolute">
+      <parent link="robot${id}/gripper_link"/>
+      <child link="robot${id}/gripper_link_r2"/>
+      <origin xyz="0.0 0.0493634 0.0285" rpy="0 0 0"/>
+      <axis xyz="-1 0 0"/>
+      <!-- <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" /> -->
+      <limit velocity="3.03687" effort="100" lower="0.0" upper="1.15" />
+      <dynamics damping="0.7"/>
+      <mimic joint="robot${id}/gripper" multiplier="${1.0/1.1}"/>
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper_r2" joint="gripper_r2" id="${id}"/>
+
+
+    <!-- rh_p12_rn_r2 -->
+    <link name="robot${id}/gripper_link_r2">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/fingertip_finray_assy_r.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/fingertip_finray_assy_r.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 0.006 0.011" rpy="0 0 0"/>
+        <mass value="0.022"/>
+        <!--<inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.0" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_link_r2"/>
+
+    <!-- Left Joint 1 -->
+    <joint name="robot${id}/gripper_l1" type="revolute">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/gripper_link_l1"/>
+      <origin xyz="0.0 -0.008 0.048" rpy="0 0 0"/>
+      <axis xyz="-1 0 0"/>
+      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.1" />
+      <dynamics damping="0.7"/>
+      <mimic joint="robot${id}/gripper" multiplier="${1.0}"/>
+
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper_l1" joint="gripper_l1" id="${id}"/>
+
+    <!-- rh_p12_rn_l1 -->
+    <link name="robot${id}/gripper_link_l1">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_l1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/rh_p12_rn_l1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 -0.034 0.004" rpy="0 0 0"/>
+        <mass value="0.068"/>
+        <!--<inertia ixx="0.00004" ixy="0.0" ixz="0.0" iyy="0.00002" iyz="0.00001" izz="0.00002" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <xacro:RefLink ref="robot${id}/gripper_link_l1"/>
+
+    <!-- Left Joint 2 -->
+    <joint name="robot${id}/gripper_l2" type="revolute">
+      <parent link="robot${id}/gripper_link_l1"/>
+      <child link="robot${id}/gripper_link_l2"/>
+      <origin xyz="0.0 -0.0493634 0.0285" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit velocity="6.5" effort="1000" lower="0.0" upper="1.0" />
+      <dynamics damping="0.7"/>
+      <mimic joint="robot${id}/gripper" multiplier="${1.0/1.1}"/>
+    </joint>
+    <xacro:SimpleTransmissionEffort n="gripper_l2" joint="gripper_l2" id="${id}"/>
+
+
+    <link name="robot${id}/gripper_link_l2">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/fingertip_finray_assy_l.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="file://$(find papras_description)/meshes/fingertip_finray_assy_l.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0.000 -0.006 0.011" rpy="0 0 0"/>
+        <mass value="0.022"/>
+        <!--<inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.0" />-->
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+
+
+    <!-- gripper main fixed joint-->
+    <joint name="robot${id}/end_effector_joint" type="fixed">
+      <parent link="robot${id}/gripper_main_link"/>
+      <child link="robot${id}/end_effector_link"/>
+      <origin xyz="0.0 0.0 0.135" rpy="${pi} ${-pi/2} 0" />
+    </joint>
+
+    <!-- End Effector -->
+    <link name="robot${id}/end_effector_link">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+
+      <!-- <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <geometry>
+          <box size = "0.01 0.01 0.01"/>
+        </geometry>
+        <material name="red"/>
+      </collision> -->
+
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.001" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+      </inertial>
+    </link>
+    <gazebo reference="robot${id}/end_effector_link">
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>
