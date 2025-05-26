@@ -107,8 +107,6 @@ void DynamixelInfo::ReadDxlModelFile(uint8_t id, uint16_t model_num)
       temp_dxl_info.max_radian = static_cast<double>(stod(strs.at(1)));
     } else if (strs.at(0) == "torque_constant") {
       temp_dxl_info.torque_constant = static_cast<double>(stod(strs.at(1)));
-    } else if (strs.at(0) == "unit_scale") { // [PAPRAS] added for calculating proper position range
-      temp_dxl_info.unit_scale = static_cast<double>(stod(strs.at(1)));
     }
   }
 

@@ -46,7 +46,6 @@ typedef struct
 
 typedef  struct
 {
-  double unit_scale; // [PAPRAS] added 
   double torque_constant;
   double min_radian;
   double max_radian;

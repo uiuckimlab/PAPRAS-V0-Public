@@ -4,10 +4,9 @@
   <version>2.0.1</version>
   <description>ROS2 package for papras_controls</description>
   <license>Apache 2.0</license>
-
-  <author email="TODO@illinois.edu">Kazuki Shin</author>
-  <maintainer email="sankalp.yamsani@gmail.com">Sankalp Yamsani</maintainer>
-
+  <author email="obin.kwon000@gmail.com">Obin Kwon</author>
+  <author email="sankalp.yamsani@gmail.com">Sankalp Yamsani</author>
+  
   <buildtool_depend>ament_cmake</buildtool_depend>
   
   <depend>rclcpp</depend>

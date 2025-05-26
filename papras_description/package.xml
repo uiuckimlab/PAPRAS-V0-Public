@@ -6,8 +6,10 @@
   <description>    
     Package for PAPRAS description
   </description>
-  <maintainer email="sankalp.yamsani@gmail.com">sankalp</maintainer>
-  <license>TODO: License declaration</license>
+  
+  <license>Apache 2.0</license>
+  <author email="obin.kwon000@gmail.com">Obin Kwon</author>
+  <author email="sankalp.yamsani@gmail.com">Sankalp Yamsani</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
