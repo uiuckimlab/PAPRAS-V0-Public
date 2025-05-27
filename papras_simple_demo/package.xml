@@ -10,6 +10,8 @@
   <license>Apache 2.0</license>
   <author email="obin.kwon000@gmail.com">Obin Kwon</author>
   <author email="sankalp.yamsani@gmail.com">Sankalp Yamsani</author>
+   <maintainer email="obin.kwon000@gmail.com">Obin Kwon</maintainer>
+  <maintainer email="sankalp.yamsani@gmail.com">Sankalp Yamsani</maintainer>
   
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>std_msgs</depend>
