@@ -23,30 +23,29 @@ def generate_launch_description():
         DeclareLaunchArgument('log_level', default_value='debug'),
         DeclareLaunchArgument('pipeline', default_value='ompl'),
         DeclareLaunchArgument('rviz', default_value='true'),
-
+        DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('baud_rate', default_value='1000000'),
-        DeclareLaunchArgument('usb_port', default_value='/dev/ttyUSB0'),
+        DeclareLaunchArgument('usb_port', default_value='/dev/ttyUSB0')
     ]
 
     baud_rate = LaunchConfiguration('baud_rate')
     usb_port = LaunchConfiguration('usb_port')
 
     # Load Robot Description
-    robot_description = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name='xacro')]),
-            ' ',
-            PathJoinSubstitution(
-                [
-                    FindPackageShare('papras_simple_demo'),
-                    'urdf',
-                    'simple_robot.urdf.xacro'
-                    'usb_port:=' + usb_port,
-                    'baud_rate:=' + baud_rate,
-                ]
-            ),
-        ]
-    )
+
+    robot_description = Command([
+        FindExecutable(name='xacro'),
+        ' ',
+        PathJoinSubstitution([
+            FindPackageShare('papras_simple_demo'),
+            'urdf',
+            'simple_robot.urdf.xacro',
+        ]),
+        ' ',
+        'usb_port:=', usb_port,
+        ' ',
+        'baud_rate:=', baud_rate,
+    ])
     robot_description = ParameterValue(robot_description, value_type=str)
 
     start_rviz = LaunchConfiguration('rviz')
@@ -77,7 +76,7 @@ def generate_launch_description():
         [
             FindPackageShare('papras_controls'),
             'config',
-            'joint_trajectory_controller.yaml',
+            'joint_trajectory_controller_7dof.yaml',
         ]
     )
 

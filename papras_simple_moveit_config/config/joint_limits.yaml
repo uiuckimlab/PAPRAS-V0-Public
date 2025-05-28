@@ -10,12 +10,7 @@ default_acceleration_scaling_factor: 0.1
 joint_limits:
   robot1/gripper:
     has_velocity_limits: true
-    max_velocity: 3.03687
-    has_acceleration_limits: false
-    max_acceleration: 0
-  robot1/gripper_sub:
-    has_velocity_limits: true
-    max_velocity: 3.03687
+    max_velocity: 6.5
     has_acceleration_limits: false
     max_acceleration: 0
   robot1/joint1:

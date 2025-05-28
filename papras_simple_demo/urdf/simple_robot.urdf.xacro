@@ -23,8 +23,8 @@
   </joint>
 
   <xacro:papras_arm_7dof id="1"/>
-  <xacro:papras_gripper id="1"/>
-  <xacro:papras_camera id="1"/>
+  <xacro:rh_p12_rn_gripper id="1"/>
+  <xacro:papras_camera_rh12 id="1"/>
 
   <xacro:papras_ros2_control_hw systems="${systems}" system_prefix="${system_prefix}" arm_ids= "${arm_ids}" 
                             usb_port_location='$(arg usb_port)' baud_rate_val="$(arg baud_rate)" yaml_file="${yaml_file}"/>

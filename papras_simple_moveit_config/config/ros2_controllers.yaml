@@ -30,7 +30,6 @@ arm1_controller:
       - position
       - velocity
       - effort
-    allow_nonzero_velocity_at_trajectory_end: true
 gripper1_controller:
   ros__parameters:
     joints:
@@ -40,4 +39,4 @@ gripper1_controller:
     state_interfaces:
       - position
       - velocity
-    allow_nonzero_velocity_at_trajectory_end: true
+      - effort

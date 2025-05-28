@@ -7,13 +7,14 @@ moveit_setup_assistant_config:
   package_settings:
     author_name: obin kwon
     author_email: obinkwon@illinois.edu
-    generated_timestamp: 1743633378
+    generated_timestamp: 1748459130
   control_xacro:
     command:
       - position
     state:
       - position
       - velocity
+      - effort
   modified_urdf:
     xacros:
       - control_xacro
@@ -23,3 +24,4 @@ moveit_setup_assistant_config:
     state:
       - position
       - velocity
+      - effort
