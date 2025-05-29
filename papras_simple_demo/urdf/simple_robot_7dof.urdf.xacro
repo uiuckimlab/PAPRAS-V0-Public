@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot name="simple_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Import PAPRAS Macros -->
+  <xacro:include filename="$(find papras_description)/urdf/papras_macros.xacro"/>
+
+  <link name="world"/>
+
+  <joint name="robot1/env_arm_fixed" type="fixed">
+    <parent link="world"/>
+    <child link="robot1/link1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:papras_arm_7dof id="1"/>
+  <xacro:rh_p12_rn_gripper id="1"/>
+  <xacro:papras_camera_rh12 id="1"/>
+</robot>

@@ -1,0 +1,97 @@
+arm1_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - robot1/joint1
+    - robot1/joint2
+    - robot1/joint3
+    - robot1/joint4
+    - robot1/joint5
+    - robot1/joint6
+    - robot1/joint7
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+
+arm2_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - robot2/joint1
+    - robot2/joint2
+    - robot2/joint3
+    - robot2/joint4
+    - robot2/joint5
+    - robot2/joint6
+    - robot2/joint7
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+
+arm3_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - robot3/joint1
+    - robot3/joint2
+    - robot3/joint3
+    - robot3/joint4
+    - robot3/joint5
+    - robot3/joint6
+    - robot3/joint7
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+
+arm4_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - robot4/joint1
+    - robot4/joint2
+    - robot4/joint3
+    - robot4/joint4
+    - robot4/joint5
+    - robot4/joint6
+    - robot4/joint7
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+
+gripper1_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - robot1/gripper
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+  gains: # Required because we're controlling an effort interface
+    robot1/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
+
+gripper2_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - robot2/gripper
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+  gains: # Required because we're controlling an effort interface
+    robot2/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
+
+gripper3_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - robot3/gripper
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+  gains: # Required because we're controlling an effort interface
+    robot3/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
+
+gripper4_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - robot4/gripper
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+  gains: # Required because we're controlling an effort interface
+    robot4/gripper: {p: 100,  d: 10, i: 1, i_clamp: 1}
+
+

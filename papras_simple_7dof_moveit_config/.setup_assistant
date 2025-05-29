@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: papras_simple_demo
+    relative_path: urdf/simple_robot_7dof.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/simple_robot.srdf
+  CONFIG:
+    author_name: obin kwon
+    author_email: obinkwon@illinois.edu
+    generated_timestamp: 1748496574
