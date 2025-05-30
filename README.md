@@ -15,7 +15,7 @@
 - Additional dependencies
   ```
   sudo apt-get remove ros-humble-dynamixel-sdk # remove if it's installed 
-  sudo apt-get install ros-humble-realtime-tools ros-humble-moveit ros-humble-moveit-ros ros-humble-moveit-core ros-humble-moveit-configs-utils ros-humble-gazebo-ros ros-humble-gazebo-ros2-control ros-humble-moveit-ros-control-interface
+  sudo apt-get install ros-humble-ros2-control ros-humble-ros2-controllers ros-humble-pinocchio ros-humble-realtime-tools ros-humble-moveit ros-humble-moveit-ros ros-humble-moveit-core ros-humble-moveit-configs-utils ros-humble-gazebo-ros ros-humble-gazebo-ros2-control ros-humble-moveit-ros-control-interface
   ```
 
 - Build the package
