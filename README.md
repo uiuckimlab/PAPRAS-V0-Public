@@ -2,7 +2,7 @@
 - The hw interface is a modification of [dynamixel_hardware_interface](https://github.com/ROBOTIS-GIT/dynamixel_hardware_interface/tree/humble), to overwrite the motor id and other properties from yaml.
 ### Prerequisites
 - Setup ROS2 environment
-  https://docs.ros.org/en/humble/Installation.html
+  https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
 
 ### Installation
 - Please install followings:
