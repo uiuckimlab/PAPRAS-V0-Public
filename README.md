@@ -52,7 +52,24 @@
 
   - Both command will launch moveit
 
+### Hardware Setup
+- After build and source, Run ./create_udev_rules bash script located in `scripts` This script copies a udev rule to /etc to facilitate bringing up the PAPRAS usb connection.
+```
+cd ~/${WORKSPACE}/src/PAPRAS-V0-Public/scripts
+```
+```
+chmod +x create_udev_rules && ./create_udev_rules
+```
+```
+[Example Output]
+ 
+This script copies a udev rule to /etc to facilitate bringing
+up the PAPRAS usb connection.
 
+[sudo] password for obin: 
+
+Reload rules
+```
 
 ## TODO
 
