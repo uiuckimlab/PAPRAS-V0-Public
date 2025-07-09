@@ -1,4 +1,4 @@
-# PAPRAS
+# [PAPRAS](https://uiuckimlab.github.io/papras-pages/)
 
 Project-NR: Developing Plug-And-Play Robotic Arm System (PAPRAS)
 
@@ -106,6 +106,23 @@ rosrun plotjuggler plotjuggler
 Streaming Panel -> Select `ROS Topic Subscriber` -> Click Start \
 Select all `/ft_sensor_topic` topics and click OK \
 Drag & Drop any of the joint force/torque values onto plot.
+
+
+## Citation
+Please cite this paper in your publications if PAPRAS helps your research. 
+
+    @misc{kim2023paprasplugandplayroboticarm,
+         title={PAPRAS: Plug-And-Play Robotic Arm System}, 
+         author={Joohyung Kim and Dhruv C Mathur and Kazuki Shin and Sean Taylor},
+         year={2023},
+         eprint={2302.09655},
+         archivePrefix={arXiv},
+         primaryClass={cs.RO},
+         url={https://arxiv.org/abs/2302.09655}
+      }
+
+
+[Project Page](https://uiuckimlab.github.io/papras-pages/)
 
 
 # Credits
