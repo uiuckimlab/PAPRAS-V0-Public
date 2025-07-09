@@ -72,7 +72,8 @@ Reload rules
 ```
 
 ## Citation
-Please cite this paper in your publications if PAPRAS helps your research. 
+This repository is based on [PAPRAS](https://uiuckimlab.github.io/papras-pages/).
+If you find this code useful in your research, please consider citing:
 
     @misc{kim2023paprasplugandplayroboticarm,
          title={PAPRAS: Plug-And-Play Robotic Arm System}, 
@@ -83,11 +84,6 @@ Please cite this paper in your publications if PAPRAS helps your research.
          primaryClass={cs.RO},
          url={https://arxiv.org/abs/2302.09655}
       }
-
-
-[Project Page](https://uiuckimlab.github.io/papras-pages/)
-
-
 
 ## TODO
 
