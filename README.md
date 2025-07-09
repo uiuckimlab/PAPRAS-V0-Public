@@ -1,4 +1,4 @@
-# PAPRAS-ROS2
+# [PAPRAS-ROS2](https://uiuckimlab.github.io/papras-pages/)
 - The hw interface is a modification of [dynamixel_hardware_interface](https://github.com/ROBOTIS-GIT/dynamixel_hardware_interface/tree/humble), to overwrite the motor id and other properties from yaml.
 ### Prerequisites
 - Setup ROS2 environment
@@ -70,6 +70,24 @@ up the PAPRAS usb connection.
 
 Reload rules
 ```
+
+## Citation
+Please cite this paper in your publications if PAPRAS helps your research. 
+
+    @misc{kim2023paprasplugandplayroboticarm,
+         title={PAPRAS: Plug-And-Play Robotic Arm System}, 
+         author={Joohyung Kim and Dhruv C Mathur and Kazuki Shin and Sean Taylor},
+         year={2023},
+         eprint={2302.09655},
+         archivePrefix={arXiv},
+         primaryClass={cs.RO},
+         url={https://arxiv.org/abs/2302.09655}
+      }
+
+
+[Project Page](https://uiuckimlab.github.io/papras-pages/)
+
+
 
 ## TODO
 
